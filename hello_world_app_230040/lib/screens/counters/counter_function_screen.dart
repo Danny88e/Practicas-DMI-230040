@@ -21,7 +21,7 @@ class _CounterFunctionsScreenState extends State<CounterFunctionsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Counter Functions Mati',
+          'Counter Functions Luis Daniel Suarez 230040',
           style: GoogleFonts.unbounded(),
         ),
         actions: [
