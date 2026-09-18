@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; // Importación necesaria para el sonido del sistema
 import 'package:google_fonts/google_fonts.dart';
 
 class CounterFunctionsScreen extends StatefulWidget {
@@ -28,6 +29,8 @@ class _CounterFunctionsScreenState extends State<CounterFunctionsScreen> {
           IconButton(
             icon: const Icon(Icons.refresh_rounded),
             onPressed: () {
+              // Sonido al presionar
+              SystemSound.play(SystemSoundType.click);
               setState(() {
                 clickCounter = 0;
               });
@@ -59,7 +62,10 @@ class _CounterFunctionsScreenState extends State<CounterFunctionsScreen> {
         children: [
           FloatingActionButton(
             shape: const StadiumBorder(),
+            enableFeedback: true, // Asegura que el feedback nativo esté activo
             onPressed: () {
+              // Emite sonido de click del sistema
+              SystemSound.play(SystemSoundType.click);
               clickCounter++;
               setState(() {});
             },
@@ -70,7 +76,10 @@ class _CounterFunctionsScreenState extends State<CounterFunctionsScreen> {
 
           FloatingActionButton(
             shape: const StadiumBorder(),
+            enableFeedback: true,
             onPressed: () {
+              // Emite sonido de click del sistema
+              SystemSound.play(SystemSoundType.click);
               clickCounter--;
               setState(() {});
             },
@@ -81,14 +90,15 @@ class _CounterFunctionsScreenState extends State<CounterFunctionsScreen> {
 
           FloatingActionButton(
             shape: const StadiumBorder(),
+            enableFeedback: true,
             onPressed: () {
+              // Emite sonido de click del sistema
+              SystemSound.play(SystemSoundType.click);
               clickCounter = 0;
               setState(() {});
             },
             child: const Icon(Icons.refresh_outlined),
           ),
-          
-      
         ],
       ),
     );
