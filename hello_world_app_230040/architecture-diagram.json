@@ -1,362 +1,215 @@
 ﻿{
-    "components":  [
-                       {
-                           "id":  "pubspec",
-                           "y":  115,
-                           "url":  "https://github.com/Danny88e/Practicas-DMI-230040/blob/DMI-Practica02/hello_world_app_230040/pubspec.yaml",
-                           "label":  "pubspec.yaml",
-                           "x":  45,
-                           "sub":  "SDK · google_fonts · lint",
-                           "kind":  "config",
-                           "path":  "hello_world_app_230040/pubspec.yaml"
-                       },
-                       {
-                           "id":  "analysis",
-                           "y":  210,
-                           "url":  "https://github.com/Danny88e/Practicas-DMI-230040/blob/DMI-Practica02/hello_world_app_230040/analysis_options.yaml",
-                           "label":  "analysis_options.yaml",
-                           "x":  45,
-                           "sub":  "Reglas flutter_lints",
-                           "kind":  "config",
-                           "path":  "hello_world_app_230040/analysis_options.yaml"
-                       },
-                       {
-                           "id":  "gitignore",
-                           "y":  305,
-                           "url":  "https://github.com/Danny88e/Practicas-DMI-230040/blob/DMI-Practica02/hello_world_app_230040/.gitignore",
-                           "label":  ".gitignore",
-                           "x":  45,
-                           "sub":  "Exclusiones del proyecto",
-                           "kind":  "config",
-                           "path":  "hello_world_app_230040/.gitignore"
-                       },
-                       {
-                           "id":  "readme",
-                           "y":  400,
-                           "url":  "https://github.com/Danny88e/Practicas-DMI-230040/blob/DMI-Practica02/hello_world_app_230040/README.md",
-                           "label":  "README.md",
-                           "x":  45,
-                           "sub":  "Documentación del proyecto",
-                           "kind":  "config",
-                           "path":  "hello_world_app_230040/README.md"
-                       },
-                       {
-                           "id":  "lib",
-                           "y":  90,
-                           "url":  "https://github.com/Danny88e/Practicas-DMI-230040/tree/DMI-Practica02/hello_world_app_230040/lib",
-                           "label":  "lib/",
-                           "x":  425,
-                           "sub":  "Código Dart de la aplicación",
-                           "kind":  "code",
-                           "path":  "hello_world_app_230040/lib",
-                           "folder":  true
-                       },
-                       {
-                           "id":  "main",
-                           "y":  185,
-                           "url":  "https://github.com/Danny88e/Practicas-DMI-230040/blob/DMI-Practica02/hello_world_app_230040/lib/main.dart",
-                           "label":  "lib/main.dart",
-                           "x":  425,
-                           "sub":  "main() · MyApp · MaterialApp",
-                           "kind":  "code",
-                           "path":  "hello_world_app_230040/lib/main.dart"
-                       },
-                       {
-                           "id":  "screens",
-                           "y":  280,
-                           "url":  "https://github.com/Danny88e/Practicas-DMI-230040/tree/DMI-Practica02/hello_world_app_230040/lib/screens",
-                           "label":  "lib/screens/",
-                           "x":  425,
-                           "sub":  "Pantallas implementadas",
-                           "kind":  "code",
-                           "path":  "hello_world_app_230040/lib/screens",
-                           "folder":  true
-                       },
-                       {
-                           "id":  "functions",
-                           "y":  375,
-                           "url":  "https://github.com/Danny88e/Practicas-DMI-230040/blob/DMI-Practica02/hello_world_app_230040/lib/screens/counters/counter_function_screen.dart",
-                           "label":  "counter_function_screen.dart",
-                           "x":  425,
-                           "sub":  "Pantalla activa · + · − · reinicio",
-                           "kind":  "code",
-                           "path":  "hello_world_app_230040/lib/screens/counters/counter_function_screen.dart"
-                       },
-                       {
-                           "id":  "counter",
-                           "y":  470,
-                           "url":  "https://github.com/Danny88e/Practicas-DMI-230040/blob/DMI-Practica02/hello_world_app_230040/lib/screens/counters/counter_screen.dart",
-                           "label":  "counter_screen.dart",
-                           "x":  425,
-                           "sub":  "Pantalla alternativa · no montada",
-                           "kind":  "code",
-                           "path":  "hello_world_app_230040/lib/screens/counters/counter_screen.dart"
-                       },
-                       {
-                           "id":  "test",
-                           "y":  565,
-                           "url":  "https://github.com/Danny88e/Practicas-DMI-230040/blob/DMI-Practica02/hello_world_app_230040/test/widget_test.dart",
-                           "label":  "test/widget_test.dart",
-                           "x":  425,
-                           "sub":  "Pruebas de widgets",
-                           "kind":  "code",
-                           "path":  "hello_world_app_230040/test/widget_test.dart"
-                       },
-                       {
-                           "x":  825,
-                           "url":  "https://github.com/Danny88e/Practicas-DMI-230040/blob/DMI-Practica02/hello_world_app_230040/pubspec.yaml",
-                           "id":  "flutter",
-                           "kind":  "runtime",
-                           "label":  "Flutter SDK",
-                           "y":  100,
-                           "path":  "hello_world_app_230040/pubspec.yaml",
-                           "sub":  "Material 3 · widgets · SystemSound"
-                       },
-                       {
-                           "x":  825,
-                           "url":  "https://github.com/Danny88e/Practicas-DMI-230040/blob/DMI-Practica02/hello_world_app_230040/pubspec.yaml",
-                           "id":  "font",
-                           "kind":  "dep",
-                           "label":  "google_fonts",
-                           "y":  235,
-                           "path":  "hello_world_app_230040/pubspec.yaml",
-                           "sub":  "Unbounded · fuente por paquete"
-                       },
-                       {
-                           "x":  825,
-                           "url":  "https://github.com/Danny88e/Practicas-DMI-230040/blob/DMI-Practica02/hello_world_app_230040/pubspec.yaml",
-                           "id":  "icons",
-                           "kind":  "dep",
-                           "label":  "cupertino_icons",
-                           "y":  370,
-                           "path":  "hello_world_app_230040/pubspec.yaml",
-                           "sub":  "Dependencia declarada"
-                       },
-                       {
-                           "x":  825,
-                           "url":  "https://github.com/Danny88e/Practicas-DMI-230040/blob/DMI-Practica02/hello_world_app_230040/pubspec.yaml",
-                           "id":  "lint",
-                           "kind":  "dep",
-                           "label":  "flutter_lints",
-                           "y":  505,
-                           "path":  "hello_world_app_230040/pubspec.yaml",
-                           "sub":  "Dependencia de desarrollo"
-                       },
-                       {
-                           "id":  "android",
-                           "y":  95,
-                           "url":  "https://github.com/Danny88e/Practicas-DMI-230040/tree/DMI-Practica02/hello_world_app_230040/android",
-                           "label":  "android/",
-                           "x":  1235,
-                           "sub":  "Gradle · Kotlin · recursos Android",
-                           "kind":  "platform",
-                           "path":  "hello_world_app_230040/android",
-                           "folder":  true
-                       },
-                       {
-                           "id":  "ios",
-                           "y":  190,
-                           "url":  "https://github.com/Danny88e/Practicas-DMI-230040/tree/DMI-Practica02/hello_world_app_230040/ios",
-                           "label":  "ios/",
-                           "x":  1235,
-                           "sub":  "Runner · configuración iOS",
-                           "kind":  "platform",
-                           "path":  "hello_world_app_230040/ios",
-                           "folder":  true
-                       },
-                       {
-                           "id":  "linux",
-                           "y":  285,
-                           "url":  "https://github.com/Danny88e/Practicas-DMI-230040/tree/DMI-Practica02/hello_world_app_230040/linux",
-                           "label":  "linux/",
-                           "x":  1235,
-                           "sub":  "Runner Linux",
-                           "kind":  "platform",
-                           "path":  "hello_world_app_230040/linux",
-                           "folder":  true
-                       },
-                       {
-                           "id":  "macos",
-                           "y":  380,
-                           "url":  "https://github.com/Danny88e/Practicas-DMI-230040/tree/DMI-Practica02/hello_world_app_230040/macos",
-                           "label":  "macos/",
-                           "x":  1235,
-                           "sub":  "Runner macOS · AppIcon",
-                           "kind":  "platform",
-                           "path":  "hello_world_app_230040/macos",
-                           "folder":  true
-                       },
-                       {
-                           "id":  "web",
-                           "y":  475,
-                           "url":  "https://github.com/Danny88e/Practicas-DMI-230040/tree/DMI-Practica02/hello_world_app_230040/web",
-                           "label":  "web/",
-                           "x":  1235,
-                           "sub":  "index.html · manifest · icons",
-                           "kind":  "platform",
-                           "path":  "hello_world_app_230040/web",
-                           "folder":  true
-                       },
-                       {
-                           "id":  "windows",
-                           "y":  570,
-                           "url":  "https://github.com/Danny88e/Practicas-DMI-230040/tree/DMI-Practica02/hello_world_app_230040/windows",
-                           "label":  "windows/",
-                           "x":  1235,
-                           "sub":  "Runner Windows · recursos",
-                           "kind":  "platform",
-                           "path":  "hello_world_app_230040/windows",
-                           "folder":  true
-                       },
-                       {
-                           "id":  "noassets",
-                           "label":  "Assets de app",
-                           "sub":  "No hay assets declarados en pubspec",
-                           "y":  610,
-                           "kind":  "note",
-                           "x":  45
-                       },
-                       {
-                           "id":  "android-icons",
-                           "y":  665,
-                           "url":  "https://github.com/Danny88e/Practicas-DMI-230040/tree/DMI-Practica02/hello_world_app_230040/android/app/src/main/res/mipmap-hdpi",
-                           "label":  "Android launcher icons",
-                           "x":  1235,
-                           "sub":  "android/app/src/main/res/mipmap-hdpi/",
-                           "kind":  "platform",
-                           "path":  "hello_world_app_230040/android/app/src/main/res/mipmap-hdpi",
-                           "folder":  true
-                       },
-                       {
-                           "id":  "web-icons",
-                           "y":  755,
-                           "url":  "https://github.com/Danny88e/Practicas-DMI-230040/tree/DMI-Practica02/hello_world_app_230040/web/icons",
-                           "label":  "Web icons",
-                           "x":  1235,
-                           "sub":  "web/icons/",
-                           "kind":  "platform",
-                           "path":  "hello_world_app_230040/web/icons",
-                           "folder":  true
-                       },
-                       {
-                           "id":  "macos-icons",
-                           "y":  845,
-                           "url":  "https://github.com/Danny88e/Practicas-DMI-230040/tree/DMI-Practica02/hello_world_app_230040/macos/Runner/Assets.xcassets/AppIcon.appiconset",
-                           "label":  "macOS AppIcon",
-                           "x":  1235,
-                           "sub":  "macos/Runner/Assets.xcassets/AppIcon.appiconset/",
-                           "kind":  "platform",
-                           "path":  "hello_world_app_230040/macos/Runner/Assets.xcassets/AppIcon.appiconset",
-                           "folder":  true
-                       }
-                   ],
-    "cards":  [
-                  {
-                      "items":  [
-                                    "main() inicia MyApp",
-                                    "MaterialApp monta CounterFunctionsScreen",
-                                    "El contador usa setState y SystemSound"
-                                ],
-                      "title":  "Flujo de ejecución"
-                  },
-                  {
-                      "items":  [
-                                    "google_fonts aplica Unbounded · dependencia declarada",
-                                    "cupertino_icons está declarado",
-                                    "No hay assets de aplicación declarados en pubspec.yaml"
-                                ],
-                      "title":  "Dependencias y recursos"
-                  },
-                  {
-                      "items":  [
-                                    "Android · iOS · Linux · macOS · Web · Windows",
-                                    "Iconos versionados para Android, macOS y Web",
-                                    "Pruebas de widgets en test/widget_test.dart"
-                                ],
-                      "title":  "Targets detectados"
-                  }
-              ],
-    "schema_version":  1,
-    "meta":  {
-                 "repository":  "https://github.com/Danny88e/Practicas-DMI-230040",
-                 "generator":  "Interactive SVG architecture map",
-                 "branch":  "DMI-Practica02",
-                 "project_root":  "hello_world_app_230040",
-                 "assets":  "No pubspec.yaml app assets; platform icons are included",
-                 "generated_from":  "Tracked project paths on DMI-Practica02",
-                 "title":  "Arquitectura de hello_world_app_230040"
-             },
-    "connections":  [
-                        {
-                            "label":  "declara paquete",
-                            "from":  "pubspec",
-                            "to":  "main"
-                        },
-                        {
-                            "label":  "aplica lint",
-                            "from":  "analysis",
-                            "to":  "test"
-                        },
-                        {
-                            "label":  "home · monta",
-                            "from":  "main",
-                            "to":  "functions"
-                        },
-                        {
-                            "label":  "importa · no usa",
-                            "from":  "main",
-                            "to":  "counter"
-                        },
-                        {
-                            "label":  "widgets + sonido",
-                            "from":  "functions",
-                            "to":  "flutter"
-                        },
-                        {
-                            "label":  "usa Unbounded",
-                            "from":  "functions",
-                            "to":  "font"
-                        },
-                        {
-                            "label":  "declara",
-                            "from":  "pubspec",
-                            "to":  "icons"
-                        },
-                        {
-                            "label":  "dev dependency",
-                            "from":  "pubspec",
-                            "to":  "lint"
-                        },
-                        {
-                            "label":  "build",
-                            "from":  "flutter",
-                            "to":  "android"
-                        },
-                        {
-                            "label":  "build",
-                            "from":  "flutter",
-                            "to":  "ios"
-                        },
-                        {
-                            "label":  "build",
-                            "from":  "flutter",
-                            "to":  "linux"
-                        },
-                        {
-                            "label":  "build",
-                            "from":  "flutter",
-                            "to":  "macos"
-                        },
-                        {
-                            "label":  "build",
-                            "from":  "flutter",
-                            "to":  "web"
-                        },
-                        {
-                            "label":  "build",
-                            "from":  "flutter",
-                            "to":  "windows"
-                        }
-                    ],
-    "diagram_type":  "architecture"
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Arquitectura de proyecto Flutter",
+    "quality_profile": "standard",
+    "repository": {
+      "url": "https://github.com/Danny88e/Practicas-DMI-230040",
+      "provider": "github",
+      "revision": "1234567890abcdef1234567890abcdef12345678"
+    }
+  },
+  "components": [
+    {
+      "id": "pubspec-lock",
+      "type": "security",
+      "label": "pubspec.lock",
+      "sublabel": "Versiones resueltas",
+      "pos": [40, 50],
+      "size": [180, 64],
+      "sources": [{ "path": "pubspec.lock" }]
+    },
+    {
+      "id": "analysis-options",
+      "type": "security",
+      "label": "analysis_options.yaml",
+      "sublabel": "Lint y análisis Dart",
+      "pos": [40, 135],
+      "size": [180, 64],
+      "sources": [{ "path": "analysis_options.yaml" }]
+    },
+    {
+      "id": "metadata",
+      "type": "security",
+      "label": ".metadata",
+      "sublabel": "Metadatos del proyecto",
+      "pos": [40, 220],
+      "size": [180, 64],
+      "sources": [{ "path": ".metadata" }]
+    },
+    {
+      "id": "gitignore",
+      "type": "security",
+      "label": ".gitignore",
+      "sublabel": "Exclusiones de Git",
+      "pos": [40, 305],
+      "size": [180, 64],
+      "sources": [{ "path": ".gitignore" }]
+    },
+    {
+      "id": "dart-tool",
+      "type": "external",
+      "label": ".dart_tool/",
+      "sublabel": "Estado local generado",
+      "pos": [40, 390],
+      "size": [180, 64]
+    },
+    {
+      "id": "pubspec",
+      "type": "security",
+      "label": "pubspec.yaml",
+      "sublabel": "Deps, SDK y fuentes",
+      "pos": [40, 475],
+      "size": [180, 64],
+      "sources": [{ "path": "pubspec.yaml" }]
+    },
+    {
+      "id": "assets",
+      "type": "cloud",
+      "label": "assets/",
+      "sublabel": "Fuente tf2build.ttf",
+      "pos": [285, 220],
+      "size": [180, 64]
+    },
+    {
+      "id": "images",
+      "type": "cloud",
+      "label": "images/",
+      "sublabel": "cap1.png, cap2.png, cap3.png",
+      "pos": [285, 345],
+      "size": [180, 64]
+    },
+    {
+      "id": "test",
+      "type": "backend",
+      "label": "test/",
+      "sublabel": "widget_test.dart",
+      "pos": [535, 95],
+      "size": [180, 64],
+      "sources": [{ "path": "test" }]
+    },
+    {
+      "id": "lib",
+      "type": "frontend",
+      "label": "lib/",
+      "sublabel": "Código fuente Dart de la app",
+      "pos": [535, 275],
+      "size": [205, 72],
+      "sources": [{ "path": "lib" }]
+    },
+    {
+      "id": "build",
+      "type": "cloud",
+      "label": "build/",
+      "sublabel": "Salidas de compilación",
+      "pos": [840, 275],
+      "size": [180, 64]
+    },
+    {
+      "id": "android",
+      "type": "external",
+      "label": "android/",
+      "sublabel": "Destino Android",
+      "pos": [1130, 50],
+      "size": [180, 64],
+      "sources": [{ "path": "android" }]
+    },
+    {
+      "id": "ios",
+      "type": "external",
+      "label": "ios/",
+      "sublabel": "Destino iOS",
+      "pos": [1130, 135],
+      "size": [180, 64],
+      "sources": [{ "path": "ios" }]
+    },
+    {
+      "id": "linux",
+      "type": "external",
+      "label": "linux/",
+      "sublabel": "Destino Linux",
+      "pos": [1130, 220],
+      "size": [180, 64],
+      "sources": [{ "path": "linux" }]
+    },
+    {
+      "id": "macos",
+      "type": "external",
+      "label": "macos/",
+      "sublabel": "Destino macOS",
+      "pos": [1130, 305],
+      "size": [180, 64],
+      "sources": [{ "path": "macos" }]
+    },
+    {
+      "id": "web",
+      "type": "external",
+      "label": "web/",
+      "sublabel": "Destino Web",
+      "pos": [1130, 390],
+      "size": [180, 64],
+      "sources": [{ "path": "web" }]
+    },
+    {
+      "id": "windows",
+      "type": "external",
+      "label": "windows/",
+      "sublabel": "Destino Windows",
+      "pos": [1130, 475],
+      "size": [180, 64],
+      "sources": [{ "path": "windows" }]
+    }
+  ],
+  "connections": [
+    {
+      "from": "assets",
+      "to": "lib",
+      "label": "recursos consumidos"
+    },
+    {
+      "from": "images",
+      "to": "lib",
+      "label": "imagenes consumidas"
+    },
+    {
+      "from": "pubspec",
+      "to": "lib",
+      "label": "dependencias y fuentes"
+    },
+    {
+      "from": "test",
+      "to": "lib",
+      "label": "prueba codigo"
+    },
+    {
+      "from": "lib",
+      "to": "build",
+      "label": "Flutter build"
+    },
+    {
+      "from": "build",
+      "to": "android"
+    },
+    {
+      "from": "build",
+      "to": "ios"
+    },
+    {
+      "from": "build",
+      "to": "linux"
+    },
+    {
+      "from": "build",
+      "to": "macos"
+    },
+    {
+      "from": "build",
+      "to": "web"
+    },
+    {
+      "from": "build",
+      "to": "windows"
+    }
+  ]
 }
