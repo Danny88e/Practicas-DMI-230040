@@ -1,6 +1,6 @@
 {
-    "name": "hello_world_app_230040",
-    "short_name": "hello_world_app_230040",
+    "name": "Yes No App",
+    "short_name": "Yes No App",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
