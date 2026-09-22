@@ -34,14 +34,8 @@ flutter pub get
 flutter run
 ```
 
-## Recursos de Flutter
-
-- [Aprender Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Crear tu primera aplicacion Flutter](https://docs.flutter.dev/get-started/codelab)
-- [Recursos de aprendizaje de Flutter](https://docs.flutter.dev/reference/learning-resources)
-
 ## Evidencias
 
-![Captura 1](capturas/Captura%20de%20pantalla%20(2).png)
-![Captura 2](capturas/Captura%20de%20pantalla%20(3).png)
-![Captura 3](capturas/Captura%20de%20pantalla%20(4).png)
+![Captura 1](capturas/1.png)
+![Captura 2](capturas/2.png)
+![Captura 3](capturas/3.png)
