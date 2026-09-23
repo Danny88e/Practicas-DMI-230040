@@ -1,124 +1,215 @@
-{
+﻿{
   "schema_version": 1,
   "diagram_type": "architecture",
   "meta": {
-    "title": "Arquitectura de hello_world_app_230040",
-    "quality_profile": "showcase",
-    "viewBox": [1200, 640],
+    "title": "Arquitectura de proyecto Flutter",
+    "quality_profile": "standard",
     "repository": {
-      "url": "https://github.com/Danny88e/Practicas-DMI-230040.git",
+      "url": "https://github.com/Danny88e/Practicas-DMI-230040",
       "provider": "github",
-      "revision": "963625c8166526e943f3afb30f1a618c163feb6d"
+      "revision": "1234567890abcdef1234567890abcdef12345678"
     }
   },
   "components": [
     {
-      "id": "user",
+      "id": "pubspec-lock",
+      "type": "security",
+      "label": "pubspec.lock",
+      "sublabel": "Versiones resueltas",
+      "pos": [40, 50],
+      "size": [180, 64],
+      "sources": [{ "path": "pubspec.lock" }]
+    },
+    {
+      "id": "analysis-options",
+      "type": "security",
+      "label": "analysis_options.yaml",
+      "sublabel": "Lint y análisis Dart",
+      "pos": [40, 135],
+      "size": [180, 64],
+      "sources": [{ "path": "analysis_options.yaml" }]
+    },
+    {
+      "id": "metadata",
+      "type": "security",
+      "label": ".metadata",
+      "sublabel": "Metadatos del proyecto",
+      "pos": [40, 220],
+      "size": [180, 64],
+      "sources": [{ "path": ".metadata" }]
+    },
+    {
+      "id": "gitignore",
+      "type": "security",
+      "label": ".gitignore",
+      "sublabel": "Exclusiones de Git",
+      "pos": [40, 305],
+      "size": [180, 64],
+      "sources": [{ "path": ".gitignore" }]
+    },
+    {
+      "id": "dart-tool",
       "type": "external",
-      "label": "Persona usuaria",
-      "sublabel": "Pulsa +, − y reiniciar",
-      "pos": [30, 250],
-      "size": [145, 72]
+      "label": ".dart_tool/",
+      "sublabel": "Estado local generado",
+      "pos": [40, 390],
+      "size": [180, 64]
     },
     {
-      "id": "app-shell",
-      "type": "frontend",
-      "label": "MyApp / MaterialApp",
-      "sublabel": "Inicio y tema Material 3",
-      "pos": [235, 250],
-      "size": [180, 72],
-      "sources": [
-        { "path": "hello_world_app_230040/lib/main.dart", "line": 4, "end_line": 18, "label": "inicio y configuración" }
-      ]
+      "id": "pubspec",
+      "type": "security",
+      "label": "pubspec.yaml",
+      "sublabel": "Deps, SDK y fuentes",
+      "pos": [40, 475],
+      "size": [180, 64],
+      "sources": [{ "path": "pubspec.yaml" }]
     },
     {
-      "id": "counter-screen",
-      "type": "frontend",
-      "label": "CounterFunctionsScreen",
-      "sublabel": "Interfaz y estado clickCounter",
-      "pos": [480, 250],
-      "size": [190, 72],
-      "sources": [
-        { "path": "hello_world_app_230040/lib/screens/counters/counter_function_screen.dart", "line": 5, "end_line": 96, "label": "pantalla activa" }
-      ]
-    },
-    {
-      "id": "flutter-sdk",
+      "id": "assets",
       "type": "cloud",
-      "label": "Flutter / Material 3",
-      "sublabel": "Framework de widgets y renderizado",
-      "pos": [735, 250],
-      "size": [170, 72],
-      "sources": [
-        { "path": "hello_world_app_230040/pubspec.yaml", "line": 29, "end_line": 40, "label": "dependencias y Material" }
-      ]
+      "label": "assets/",
+      "sublabel": "Fuente tf2build.ttf",
+      "pos": [285, 220],
+      "size": [180, 64]
     },
     {
-      "id": "host-platforms",
-      "type": "external",
-      "label": "Plataformas destino",
-      "sublabel": "Android, iOS, web y escritorio",
-      "pos": [970, 250],
-      "size": [180, 72]
+      "id": "images",
+      "type": "cloud",
+      "label": "images/",
+      "sublabel": "cap1.png, cap2.png, cap3.png",
+      "pos": [285, 345],
+      "size": [180, 64]
     },
     {
-      "id": "google-fonts",
-      "type": "external",
-      "label": "google_fonts",
-      "sublabel": "Tipografía Unbounded",
-      "pos": [490, 435],
-      "size": [160, 68],
-      "sources": [
-        { "path": "hello_world_app_230040/pubspec.yaml", "line": 38, "end_line": 38, "label": "paquete" },
-        { "path": "hello_world_app_230040/lib/screens/counters/counter_function_screen.dart", "line": 3, "end_line": 3, "label": "importación" }
-      ]
+      "id": "test",
+      "type": "backend",
+      "label": "test/",
+      "sublabel": "widget_test.dart",
+      "pos": [535, 95],
+      "size": [180, 64],
+      "sources": [{ "path": "test" }]
     },
     {
-      "id": "system-sound",
-      "type": "external",
-      "label": "Sonido del sistema",
-      "sublabel": "SystemSoundType.click",
-      "pos": [720, 435],
-      "size": [165, 68],
-      "sources": [
-        { "path": "hello_world_app_230040/lib/screens/counters/counter_function_screen.dart", "line": 2, "end_line": 2, "label": "servicios Flutter" },
-        { "path": "hello_world_app_230040/lib/screens/counters/counter_function_screen.dart", "line": 30, "end_line": 33, "label": "reproducción" }
-      ]
-    },
-    {
-      "id": "counter-screen-alt",
+      "id": "lib",
       "type": "frontend",
-      "label": "CounterScreen",
-      "sublabel": "Contador alternativo no montado",
-      "pos": [255, 435],
-      "size": [170, 68],
-      "sources": [
-        { "path": "hello_world_app_230040/lib/screens/counters/counter_screen.dart", "line": 3, "end_line": 39, "label": "pantalla alternativa" }
-      ]
+      "label": "lib/",
+      "sublabel": "Código fuente Dart de la app",
+      "pos": [535, 275],
+      "size": [205, 72],
+      "sources": [{ "path": "lib" }]
+    },
+    {
+      "id": "build",
+      "type": "cloud",
+      "label": "build/",
+      "sublabel": "Salidas de compilación",
+      "pos": [840, 275],
+      "size": [180, 64]
+    },
+    {
+      "id": "android",
+      "type": "external",
+      "label": "android/",
+      "sublabel": "Destino Android",
+      "pos": [1130, 50],
+      "size": [180, 64],
+      "sources": [{ "path": "android" }]
+    },
+    {
+      "id": "ios",
+      "type": "external",
+      "label": "ios/",
+      "sublabel": "Destino iOS",
+      "pos": [1130, 135],
+      "size": [180, 64],
+      "sources": [{ "path": "ios" }]
+    },
+    {
+      "id": "linux",
+      "type": "external",
+      "label": "linux/",
+      "sublabel": "Destino Linux",
+      "pos": [1130, 220],
+      "size": [180, 64],
+      "sources": [{ "path": "linux" }]
+    },
+    {
+      "id": "macos",
+      "type": "external",
+      "label": "macos/",
+      "sublabel": "Destino macOS",
+      "pos": [1130, 305],
+      "size": [180, 64],
+      "sources": [{ "path": "macos" }]
+    },
+    {
+      "id": "web",
+      "type": "external",
+      "label": "web/",
+      "sublabel": "Destino Web",
+      "pos": [1130, 390],
+      "size": [180, 64],
+      "sources": [{ "path": "web" }]
+    },
+    {
+      "id": "windows",
+      "type": "external",
+      "label": "windows/",
+      "sublabel": "Destino Windows",
+      "pos": [1130, 475],
+      "size": [180, 64],
+      "sources": [{ "path": "windows" }]
     }
   ],
   "connections": [
-    { "id": "user-starts-app", "from": "user", "to": "app-shell", "label": "inicia aplicación", "variant": "emphasis", "labelAt": [205, 336] },
-    { "id": "app-mounts-screen", "from": "app-shell", "to": "counter-screen", "label": "home", "variant": "emphasis", "labelDy": 48 },
-    { "id": "screen-renders-framework", "from": "counter-screen", "to": "flutter-sdk", "label": "widgets Material", "variant": "emphasis", "labelAt": [703, 336] },
-    { "id": "framework-runs-host", "from": "flutter-sdk", "to": "host-platforms", "label": "ejecución compilada", "labelAt": [938, 336] },
-    { "id": "screen-uses-fonts", "from": "counter-screen", "to": "google-fonts", "label": "Unbounded", "fromSide": "bottom", "toSide": "top", "labelAt": [520, 355] },
-    { "id": "screen-plays-sound", "from": "counter-screen", "to": "system-sound", "label": "clic nativo", "fromSide": "bottom", "toSide": "top" },
-    { "id": "alternative-screen", "from": "app-shell", "to": "counter-screen-alt", "label": "importada, no seleccionada", "variant": "dashed", "fromSide": "bottom", "toSide": "top" }
-  ],
-  "boundaries": [
-    { "kind": "region", "label": "Código de la aplicación", "wraps": ["app-shell", "counter-screen", "counter-screen-alt"], "pad": 30 }
-  ],
-  "cards": [
     {
-      "dot": "cyan",
-      "title": "Flujo principal",
-      "items": ["main() inicia MyApp", "MaterialApp muestra CounterFunctionsScreen", "Las acciones actualizan clickCounter con setState"]
+      "from": "assets",
+      "to": "lib",
+      "label": "recursos consumidos"
     },
     {
-      "dot": "amber",
-      "title": "Integraciones verificadas",
-      "items": ["google_fonts aplica Unbounded", "SystemSound reproduce feedback nativo", "No se detectaron API, base de datos ni almacenamiento"]
+      "from": "images",
+      "to": "lib",
+      "label": "imagenes consumidas"
+    },
+    {
+      "from": "pubspec",
+      "to": "lib",
+      "label": "dependencias y fuentes"
+    },
+    {
+      "from": "test",
+      "to": "lib",
+      "label": "prueba codigo"
+    },
+    {
+      "from": "lib",
+      "to": "build",
+      "label": "Flutter build"
+    },
+    {
+      "from": "build",
+      "to": "android"
+    },
+    {
+      "from": "build",
+      "to": "ios"
+    },
+    {
+      "from": "build",
+      "to": "linux"
+    },
+    {
+      "from": "build",
+      "to": "macos"
+    },
+    {
+      "from": "build",
+      "to": "web"
+    },
+    {
+      "from": "build",
+      "to": "windows"
     }
   ]
 }
