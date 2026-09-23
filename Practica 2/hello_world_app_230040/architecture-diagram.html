@@ -61,7 +61,7 @@
 </head>
 <body>
   <header>
-    <div><h1 id="title">Arquitectura de flutter_application_1</h1><p id="subtitle">JSON Archify incrustado en este documento</p></div>
+    <div><h1 id="title">Arquitectura de hello_world_app_230040</h1><p id="subtitle">JSON Archify incrustado en este documento</p></div>
     <div class="toolbar"><button id="theme" type="button">◔ Dark</button><button type="button">▣ Classic⌄</button><button id="present" type="button">⛶ Present</button><button id="download" type="button">Export⌄</button></div>
   </header>
   <main>
@@ -73,40 +73,290 @@
 
   <!-- Pega aquí tu JSON Archify válido. No se hace fetch de ningún archivo externo. -->
   <script id="architecture-data" type="application/json">
+
 {
   "schema_version": 1,
   "diagram_type": "architecture",
   "meta": {
-    "title": "Arquitectura de flutter_application_1",
-    "repository": { "url": "https://github.com/Danny88e/Practicas-DMI-230040", "provider": "github", "revision": "main", "base_path": "hello_world_app_230040" }
+    "title": "Arquitectura de hello_world_app_230040",
+    "quality_profile": "standard",
+    "repository": {
+      "url": "https://github.com/Danny88e/Practicas-DMI-230040",
+      "provider": "github",
+      "revision": "107e883973a8f6df6e463bde74e239fd72f006fb"
+    }
   },
   "components": [
-    { "id": "pubspec-lock", "type": "security", "label": "pubspec.lock", "sublabel": "Versiones resueltas", "pos": [40, 50], "size": [180, 64], "sources": [{ "path": "pubspec.lock" }] },
-    { "id": "analysis-options", "type": "security", "label": "analysis_options.yaml", "sublabel": "Lint y análisis Dart", "pos": [40, 135], "size": [180, 64], "sources": [{ "path": "analysis_options.yaml" }] },
-    { "id": "metadata", "type": "security", "label": ".metadata", "sublabel": "Metadatos del proyecto", "pos": [40, 220], "size": [180, 64], "sources": [{ "path": ".metadata" }] },
-    { "id": "gitignore", "type": "security", "label": ".gitignore", "sublabel": "Exclusiones de Git", "pos": [40, 305], "size": [180, 64], "sources": [{ "path": ".gitignore" }] },
-    { "id": "dart-tool", "type": "external", "label": ".dart_tool/", "sublabel": "Estado local generado", "pos": [40, 390], "size": [180, 64] },
-    { "id": "pubspec", "type": "security", "label": "pubspec.yaml", "sublabel": "Deps, SDK y fuentes", "pos": [40, 475], "size": [180, 64], "sources": [{ "path": "pubspec.yaml" }] },
-    { "id": "assets", "type": "cloud", "label": "assets/", "sublabel": "Fuente tf2build.ttf", "pos": [285, 220], "size": [180, 64] },
-    { "id": "images", "type": "cloud", "label": "images/", "sublabel": "cap1.png, cap2.png, cap3.png", "pos": [285, 345], "size": [180, 64] },
-    { "id": "test", "type": "backend", "label": "test/", "sublabel": "widget_test.dart", "pos": [535, 95], "size": [180, 64], "sources": [{ "path": "test" }] },
-    { "id": "lib", "type": "frontend", "label": "lib/", "sublabel": "Código fuente Dart de la app", "pos": [535, 275], "size": [205, 72], "sources": [{ "path": "lib" }] },
-    { "id": "build", "type": "cloud", "label": "build/", "sublabel": "Salidas de compilación", "pos": [840, 275], "size": [180, 64] },
-    { "id": "android", "type": "external", "label": "android/", "sublabel": "Destino Android", "pos": [1130, 50], "size": [180, 64], "sources": [{ "path": "android" }] },
-    { "id": "ios", "type": "external", "label": "ios/", "sublabel": "Destino iOS", "pos": [1130, 135], "size": [180, 64], "sources": [{ "path": "ios" }] },
-    { "id": "linux", "type": "external", "label": "linux/", "sublabel": "Destino Linux", "pos": [1130, 220], "size": [180, 64], "sources": [{ "path": "linux" }] },
-    { "id": "macos", "type": "external", "label": "macos/", "sublabel": "Destino macOS", "pos": [1130, 305], "size": [180, 64], "sources": [{ "path": "macos" }] },
-    { "id": "web", "type": "external", "label": "web/", "sublabel": "Destino Web", "pos": [1130, 390], "size": [180, 64], "sources": [{ "path": "web" }] },
-    { "id": "windows", "type": "external", "label": "windows/", "sublabel": "Destino Windows", "pos": [1130, 475], "size": [180, 64], "sources": [{ "path": "windows" }] }
+    {
+      "id": "pubspec-lock",
+      "type": "security",
+      "label": "pubspec.lock",
+      "sublabel": "Versiones resueltas",
+      "pos": [40, 50],
+      "size": [180, 64],
+      "sources": [{ "path": "Practica 2/hello_world_app_230040/pubspec.lock" }]
+    },
+    {
+      "id": "analysis-options",
+      "type": "security",
+      "label": "analysis_options.yaml",
+      "sublabel": "Lint y análisis Dart",
+      "pos": [40, 135],
+      "size": [180, 64],
+      "sources": [{ "path": "Practica 2/hello_world_app_230040/analysis_options.yaml" }]
+    },
+    {
+      "id": "metadata",
+      "type": "security",
+      "label": ".metadata",
+      "sublabel": "Metadatos del proyecto",
+      "pos": [40, 220],
+      "size": [180, 64],
+      "sources": [{ "path": "Practica 2/hello_world_app_230040/.metadata" }]
+    },
+    {
+      "id": "gitignore",
+      "type": "security",
+      "label": ".gitignore",
+      "sublabel": "Exclusiones de Git",
+      "pos": [40, 305],
+      "size": [180, 64],
+      "sources": [{ "path": "Practica 2/hello_world_app_230040/.gitignore" }]
+    },
+    {
+      "id": "dart-tool",
+      "type": "external",
+      "label": ".dart_tool/",
+      "sublabel": "Estado local generado",
+      "pos": [40, 390],
+      "size": [180, 64]
+    },
+    {
+      "id": "pubspec",
+      "type": "security",
+      "label": "pubspec.yaml",
+      "sublabel": "Deps, SDK y fuentes",
+      "pos": [40, 475],
+      "size": [180, 64],
+      "sources": [{ "path": "Practica 2/hello_world_app_230040/pubspec.yaml" }]
+    },
+    {
+      "id": "assets",
+      "type": "cloud",
+      "label": "assets/",
+      "sublabel": "Fuente tf2build.ttf",
+      "pos": [285, 220],
+      "size": [180, 64]
+    },
+    {
+      "id": "images",
+      "type": "cloud",
+      "label": "images/",
+      "sublabel": "cap1.png, cap2.png, cap3.png",
+      "pos": [285, 345],
+      "size": [180, 64]
+    },
+    {
+      "id": "test",
+      "type": "backend",
+      "label": "test/",
+      "sublabel": "widget_test.dart",
+      "pos": [535, 95],
+      "size": [180, 64],
+      "sources": [{ "path": "Practica 2/hello_world_app_230040/test/widget_test.dart" }]
+    },
+    {
+      "id": "lib",
+      "type": "frontend",
+      "label": "lib/",
+      "sublabel": "Código fuente Dart de la app",
+      "pos": [535, 275],
+      "size": [205, 72],
+      "sources": [{ "path": "Practica 2/hello_world_app_230040/lib/main.dart" }]
+    },
+    {
+      "id": "main-dart",
+      "type": "frontend",
+      "label": "main.dart",
+      "sublabel": "Punto de entrada y MyApp",
+      "pos": [535, 550],
+      "size": [205, 64],
+      "sources": [{ "path": "Practica 2/hello_world_app_230040/lib/main.dart" }]
+    },
+    {
+      "id": "screens",
+      "type": "frontend",
+      "label": "screens/",
+      "sublabel": "Pantallas de la aplicación",
+      "pos": [790, 275],
+      "size": [205, 72],
+      "sources": [{ "path": "Practica 2/hello_world_app_230040/lib/screens/counters/counter_screen.dart" }]
+    },
+    {
+      "id": "counters",
+      "type": "frontend",
+      "label": "counters/",
+      "sublabel": "Pantallas de contador",
+      "pos": [1045, 275],
+      "size": [205, 72],
+      "sources": [{ "path": "Practica 2/hello_world_app_230040/lib/screens/counters/counter_function_screen.dart" }]
+    },
+    {
+      "id": "counter-screen",
+      "type": "frontend",
+      "label": "counter_screen.dart",
+      "sublabel": "CounterScreen",
+      "pos": [1300, 180],
+      "size": [225, 72],
+      "sources": [{ "path": "Practica 2/hello_world_app_230040/lib/screens/counters/counter_screen.dart" }]
+    },
+    {
+      "id": "counter-function-screen",
+      "type": "frontend",
+      "label": "counter_function_screen.dart",
+      "sublabel": "CounterFunctionsScreen",
+      "pos": [1300, 320],
+      "size": [225, 72],
+      "sources": [{ "path": "Practica 2/hello_world_app_230040/lib/screens/counters/counter_function_screen.dart" }]
+    },
+    {
+      "id": "build",
+      "type": "cloud",
+      "label": "build/",
+      "sublabel": "Salidas de compilación",
+      "pos": [790, 550],
+      "size": [180, 64]
+    },
+    {
+      "id": "android",
+      "type": "external",
+      "label": "android/",
+      "sublabel": "Destino Android",
+      "pos": [1580, 50],
+      "size": [180, 64],
+      "sources": [{ "path": "Practica 2/hello_world_app_230040/android/settings.gradle.kts" }]
+    },
+    {
+      "id": "ios",
+      "type": "external",
+      "label": "ios/",
+      "sublabel": "Destino iOS",
+      "pos": [1580, 135],
+      "size": [180, 64],
+      "sources": [{ "path": "Practica 2/hello_world_app_230040/ios/Runner/AppDelegate.swift" }]
+    },
+    {
+      "id": "linux",
+      "type": "external",
+      "label": "linux/",
+      "sublabel": "Destino Linux",
+      "pos": [1580, 220],
+      "size": [180, 64],
+      "sources": [{ "path": "Practica 2/hello_world_app_230040/linux/runner/main.cc" }]
+    },
+    {
+      "id": "macos",
+      "type": "external",
+      "label": "macos/",
+      "sublabel": "Destino macOS",
+      "pos": [1580, 305],
+      "size": [180, 64],
+      "sources": [{ "path": "Practica 2/hello_world_app_230040/macos/Runner/AppDelegate.swift" }]
+    },
+    {
+      "id": "web",
+      "type": "external",
+      "label": "web/",
+      "sublabel": "Destino Web",
+      "pos": [1580, 390],
+      "size": [180, 64],
+      "sources": [{ "path": "Practica 2/hello_world_app_230040/web/index.html" }]
+    },
+    {
+      "id": "windows",
+      "type": "external",
+      "label": "windows/",
+      "sublabel": "Destino Windows",
+      "pos": [1580, 475],
+      "size": [180, 64],
+      "sources": [{ "path": "Practica 2/hello_world_app_230040/windows/runner/main.cpp" }]
+    }
   ],
   "connections": [
-    { "from": "assets", "to": "lib", "label": "recursos consumidos" },
-    { "from": "images", "to": "lib", "label": "imagenes consumidas" },
-    { "from": "pubspec", "to": "lib", "label": "dependencias y fuentes" },
-    { "from": "test", "to": "lib", "label": "prueba codigo" },
-    { "from": "lib", "to": "build", "label": "Flutter build" },
-    { "from": "build", "to": "android" }, { "from": "build", "to": "ios" }, { "from": "build", "to": "linux" },
-    { "from": "build", "to": "macos" }, { "from": "build", "to": "web" }, { "from": "build", "to": "windows" }
+    {
+      "from": "assets",
+      "to": "lib",
+      "label": "recursos consumidos",
+      "labelAt": [500, 423]
+    },
+    {
+      "from": "images",
+      "to": "lib",
+      "label": "imagenes consumidas",
+      "labelAt": [500, 460]
+    },
+    {
+      "from": "pubspec",
+      "to": "lib",
+      "label": "dependencias y fuentes",
+      "labelAt": [511, 490]
+    },
+    {
+      "from": "lib",
+      "to": "main-dart",
+      "label": "contiene",
+      "labelAt": [638, 448]
+    },
+    {
+      "from": "main-dart",
+      "to": "screens",
+      "label": "importa pantallas"
+    },
+    {
+      "from": "screens",
+      "to": "counters",
+      "label": "contiene"
+    },
+    {
+      "from": "counters",
+      "to": "counter-screen",
+      "label": "contiene"
+    },
+    {
+      "from": "counters",
+      "to": "counter-function-screen",
+      "label": "contiene"
+    },
+    {
+      "from": "lib",
+      "to": "build",
+      "label": "Flutter build",
+      "labelAt": [765, 468]
+    },
+    {
+      "from": "build",
+      "to": "android"
+    },
+    {
+      "from": "build",
+      "to": "ios"
+    },
+    {
+      "from": "build",
+      "to": "linux"
+    },
+    {
+      "from": "build",
+      "to": "macos"
+    },
+    {
+      "from": "build",
+      "to": "web"
+    },
+    {
+      "from": "build",
+      "to": "windows"
+    }
   ]
 }
   </script>
@@ -118,7 +368,7 @@
       const make = (tag, attrs = {}, text = '') => { const node = document.createElementNS(svgNS, tag); Object.entries(attrs).forEach(([key, value]) => node.setAttribute(key, value)); if (text) node.textContent = text; return node; };
       const text = (parent, x, y, className, value) => parent.appendChild(make('text', { x, y, class: className }, value));
       const path = (from, to) => { const startX = from.x + from.w, startY = from.y + from.h / 2, endX = to.x, endY = to.y + to.h / 2, bend = Math.max(35, Math.abs(endX - startX) / 2); return `M ${startX} ${startY} C ${startX + bend} ${startY}, ${endX - bend} ${endY}, ${endX} ${endY}`; };
-      const githubUrl = (base, pathName, projectRoot = 'hello_world_app_230040') => { const cleanPath = pathName.replace(/^\//, ''), cleanRoot = projectRoot.replace(/^\/+|\/+$/g, ''); const fullPath = cleanPath === cleanRoot || cleanPath.startsWith(`${cleanRoot}/`) ? cleanPath : `${cleanRoot}/${cleanPath}`; return `${base.replace(/\/$/, '')}/blob/main/${fullPath}`; };
+      const githubUrl = (base, pathName, projectRoot = 'Practica 2/hello_world_app_230040') => { const cleanPath = pathName.replace(/^\//, ''), cleanRoot = projectRoot.replace(/^\/+|\/+$/g, ''); const fullPath = cleanPath === cleanRoot || cleanPath.startsWith(`${cleanRoot}/`) ? cleanPath : `${cleanRoot}/${cleanPath}`; return `${base.replace(/\/$/, '')}/blob/main/${fullPath}`; };
       function render() {
         try {
           const data = JSON.parse(dataNode.textContent);
