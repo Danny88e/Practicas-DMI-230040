@@ -1,13 +1,13 @@
-﻿{
+{
   "schema_version": 1,
   "diagram_type": "architecture",
   "meta": {
-    "title": "Arquitectura de proyecto Flutter",
+    "title": "Arquitectura de hello_world_app_230040",
     "quality_profile": "standard",
     "repository": {
       "url": "https://github.com/Danny88e/Practicas-DMI-230040",
       "provider": "github",
-      "revision": "1234567890abcdef1234567890abcdef12345678"
+      "revision": "107e883973a8f6df6e463bde74e239fd72f006fb"
     }
   },
   "components": [
@@ -18,7 +18,7 @@
       "sublabel": "Versiones resueltas",
       "pos": [40, 50],
       "size": [180, 64],
-      "sources": [{ "path": "pubspec.lock" }]
+      "sources": [{ "path": "Practica 2/hello_world_app_230040/pubspec.lock" }]
     },
     {
       "id": "analysis-options",
@@ -27,7 +27,7 @@
       "sublabel": "Lint y análisis Dart",
       "pos": [40, 135],
       "size": [180, 64],
-      "sources": [{ "path": "analysis_options.yaml" }]
+      "sources": [{ "path": "Practica 2/hello_world_app_230040/analysis_options.yaml" }]
     },
     {
       "id": "metadata",
@@ -36,7 +36,7 @@
       "sublabel": "Metadatos del proyecto",
       "pos": [40, 220],
       "size": [180, 64],
-      "sources": [{ "path": ".metadata" }]
+      "sources": [{ "path": "Practica 2/hello_world_app_230040/.metadata" }]
     },
     {
       "id": "gitignore",
@@ -45,7 +45,7 @@
       "sublabel": "Exclusiones de Git",
       "pos": [40, 305],
       "size": [180, 64],
-      "sources": [{ "path": ".gitignore" }]
+      "sources": [{ "path": "Practica 2/hello_world_app_230040/.gitignore" }]
     },
     {
       "id": "dart-tool",
@@ -62,7 +62,7 @@
       "sublabel": "Deps, SDK y fuentes",
       "pos": [40, 475],
       "size": [180, 64],
-      "sources": [{ "path": "pubspec.yaml" }]
+      "sources": [{ "path": "Practica 2/hello_world_app_230040/pubspec.yaml" }]
     },
     {
       "id": "assets",
@@ -87,7 +87,7 @@
       "sublabel": "widget_test.dart",
       "pos": [535, 95],
       "size": [180, 64],
-      "sources": [{ "path": "test" }]
+      "sources": [{ "path": "Practica 2/hello_world_app_230040/test/widget_test.dart" }]
     },
     {
       "id": "lib",
@@ -96,14 +96,59 @@
       "sublabel": "Código fuente Dart de la app",
       "pos": [535, 275],
       "size": [205, 72],
-      "sources": [{ "path": "lib" }]
+      "sources": [{ "path": "Practica 2/hello_world_app_230040/lib/main.dart" }]
+    },
+    {
+      "id": "main-dart",
+      "type": "frontend",
+      "label": "main.dart",
+      "sublabel": "Punto de entrada y MyApp",
+      "pos": [535, 550],
+      "size": [205, 64],
+      "sources": [{ "path": "Practica 2/hello_world_app_230040/lib/main.dart" }]
+    },
+    {
+      "id": "screens",
+      "type": "frontend",
+      "label": "screens/",
+      "sublabel": "Pantallas de la aplicación",
+      "pos": [790, 275],
+      "size": [205, 72],
+      "sources": [{ "path": "Practica 2/hello_world_app_230040/lib/screens/counters/counter_screen.dart" }]
+    },
+    {
+      "id": "counters",
+      "type": "frontend",
+      "label": "counters/",
+      "sublabel": "Pantallas de contador",
+      "pos": [1045, 275],
+      "size": [205, 72],
+      "sources": [{ "path": "Practica 2/hello_world_app_230040/lib/screens/counters/counter_function_screen.dart" }]
+    },
+    {
+      "id": "counter-screen",
+      "type": "frontend",
+      "label": "counter_screen.dart",
+      "sublabel": "CounterScreen",
+      "pos": [1300, 180],
+      "size": [225, 72],
+      "sources": [{ "path": "Practica 2/hello_world_app_230040/lib/screens/counters/counter_screen.dart" }]
+    },
+    {
+      "id": "counter-function-screen",
+      "type": "frontend",
+      "label": "counter_function_screen.dart",
+      "sublabel": "CounterFunctionsScreen",
+      "pos": [1300, 320],
+      "size": [225, 72],
+      "sources": [{ "path": "Practica 2/hello_world_app_230040/lib/screens/counters/counter_function_screen.dart" }]
     },
     {
       "id": "build",
       "type": "cloud",
       "label": "build/",
       "sublabel": "Salidas de compilación",
-      "pos": [840, 275],
+      "pos": [790, 550],
       "size": [180, 64]
     },
     {
@@ -111,81 +156,106 @@
       "type": "external",
       "label": "android/",
       "sublabel": "Destino Android",
-      "pos": [1130, 50],
+      "pos": [1580, 50],
       "size": [180, 64],
-      "sources": [{ "path": "android" }]
+      "sources": [{ "path": "Practica 2/hello_world_app_230040/android/settings.gradle.kts" }]
     },
     {
       "id": "ios",
       "type": "external",
       "label": "ios/",
       "sublabel": "Destino iOS",
-      "pos": [1130, 135],
+      "pos": [1580, 135],
       "size": [180, 64],
-      "sources": [{ "path": "ios" }]
+      "sources": [{ "path": "Practica 2/hello_world_app_230040/ios/Runner/AppDelegate.swift" }]
     },
     {
       "id": "linux",
       "type": "external",
       "label": "linux/",
       "sublabel": "Destino Linux",
-      "pos": [1130, 220],
+      "pos": [1580, 220],
       "size": [180, 64],
-      "sources": [{ "path": "linux" }]
+      "sources": [{ "path": "Practica 2/hello_world_app_230040/linux/runner/main.cc" }]
     },
     {
       "id": "macos",
       "type": "external",
       "label": "macos/",
       "sublabel": "Destino macOS",
-      "pos": [1130, 305],
+      "pos": [1580, 305],
       "size": [180, 64],
-      "sources": [{ "path": "macos" }]
+      "sources": [{ "path": "Practica 2/hello_world_app_230040/macos/Runner/AppDelegate.swift" }]
     },
     {
       "id": "web",
       "type": "external",
       "label": "web/",
       "sublabel": "Destino Web",
-      "pos": [1130, 390],
+      "pos": [1580, 390],
       "size": [180, 64],
-      "sources": [{ "path": "web" }]
+      "sources": [{ "path": "Practica 2/hello_world_app_230040/web/index.html" }]
     },
     {
       "id": "windows",
       "type": "external",
       "label": "windows/",
       "sublabel": "Destino Windows",
-      "pos": [1130, 475],
+      "pos": [1580, 475],
       "size": [180, 64],
-      "sources": [{ "path": "windows" }]
+      "sources": [{ "path": "Practica 2/hello_world_app_230040/windows/runner/main.cpp" }]
     }
   ],
   "connections": [
     {
       "from": "assets",
       "to": "lib",
-      "label": "recursos consumidos"
+      "label": "recursos consumidos",
+      "labelAt": [500, 423]
     },
     {
       "from": "images",
       "to": "lib",
-      "label": "imagenes consumidas"
+      "label": "imagenes consumidas",
+      "labelAt": [500, 460]
     },
     {
       "from": "pubspec",
       "to": "lib",
-      "label": "dependencias y fuentes"
+      "label": "dependencias y fuentes",
+      "labelAt": [511, 490]
     },
     {
-      "from": "test",
-      "to": "lib",
-      "label": "prueba codigo"
+      "from": "lib",
+      "to": "main-dart",
+      "label": "contiene",
+      "labelAt": [638, 448]
+    },
+    {
+      "from": "main-dart",
+      "to": "screens",
+      "label": "importa pantallas"
+    },
+    {
+      "from": "screens",
+      "to": "counters",
+      "label": "contiene"
+    },
+    {
+      "from": "counters",
+      "to": "counter-screen",
+      "label": "contiene"
+    },
+    {
+      "from": "counters",
+      "to": "counter-function-screen",
+      "label": "contiene"
     },
     {
       "from": "lib",
       "to": "build",
-      "label": "Flutter build"
+      "label": "Flutter build",
+      "labelAt": [765, 468]
     },
     {
       "from": "build",
