@@ -1,7 +1,9 @@
+// Campo de texto para escribir y enviar mensajes.
+// Recibe un callback [onValue] que se ejecuta al presionar enviar o "enter".
+
 import 'package:flutter/material.dart';
 
 class MessageFieldBox extends StatelessWidget {
-
   final ValueChanged<String> onValue;
 
   const MessageFieldBox({super.key, required this.onValue});
@@ -12,22 +14,22 @@ class MessageFieldBox extends StatelessWidget {
     final focusNode = FocusNode();
 
     final outlineInputBorder = UnderlineInputBorder(
-        borderSide: const BorderSide(color: Colors.transparent),
-        borderRadius: BorderRadius.circular(40));
+      borderSide: const BorderSide(color: Colors.transparent),
+      borderRadius: BorderRadius.circular(40),
+    );
 
     final inputDecoration = InputDecoration(
-      hintText: 'End your message with a "?"',
+      hintText: 'Escribe un mensaje...',
       enabledBorder: outlineInputBorder,
       focusedBorder: outlineInputBorder,
       filled: true,
       suffixIcon: IconButton(
-        icon: const Icon(Icons.send_outlined),
+        icon: const Icon(Icons.send_rounded),
         onPressed: () {
-          final textValue = textController.value.text;
-          print('button: $textValue');
-          textController.clear();
-          focusNode.requestFocus();
+          final textValue = textController.value.text.trim();
+          if (textValue.isEmpty) return;
           onValue(textValue);
+          textController.clear();
         },
       ),
     );
@@ -40,10 +42,11 @@ class MessageFieldBox extends StatelessWidget {
       controller: textController,
       decoration: inputDecoration,
       onFieldSubmitted: (value) {
-        print('Submit value $value');
+        final trimmed = value.trim();
+        if (trimmed.isEmpty) return;
+        onValue(trimmed);
         textController.clear();
         focusNode.requestFocus();
-        onValue(value);
       },
     );
   }
