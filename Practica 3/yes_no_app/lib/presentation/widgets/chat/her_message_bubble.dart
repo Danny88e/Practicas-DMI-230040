@@ -46,7 +46,7 @@ class HerMessageBubble extends StatelessWidget {
                 Text(
                   timeText,
                   style: TextStyle(
-                    color: Colors.white.withOpacity(0.7),
+                    color: Colors.white.withValues(alpha: 0.7),
                     fontSize: 11,
                   ),
                 ),
@@ -83,6 +83,9 @@ class _ImageBubble extends StatelessWidget {
         width: size.width * 0.7,
         height: 150,
         fit: BoxFit.cover,
+        // yesno.wtf no incluye Access-Control-Allow-Origin en sus GIFs.
+        // En web, usa un elemento <img> para mostrarlos sin exigir CORS.
+        webHtmlElementStrategy: WebHtmlElementStrategy.prefer,
         loadingBuilder: (context, child, loadingProgress) {
           if (loadingProgress == null) return child;
 

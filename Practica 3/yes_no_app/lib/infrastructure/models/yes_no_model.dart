@@ -29,13 +29,13 @@ class YesNoModel {
     String text;
     switch (answer) {
       case 'yes':
-        text = '¡Sí! 💪';
+        text = '¡Sí!';
         break;
       case 'no':
-        text = 'No 🚫';
+        text = 'No';
         break;
       default:
-        text = 'Tal vez... 🤔';
+        text = 'Tal vez...';
     }
 
     return Message(

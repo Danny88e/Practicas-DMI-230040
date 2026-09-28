@@ -72,11 +72,14 @@ lib/
 ## Cómo ejecutar
 
 ```bash
-# 1. Instalar dependencias
+# Desde la raíz del repositorio, entra a la carpeta del proyecto:
+cd "Practica 3/yes_no_app"
+
+# Instalar dependencias
 flutter pub get
 
-# 2. Ejecutar en dispositivo/emulador
-flutter run
+# Ejecutar en Chrome
+flutter run -d chrome
 ```
 
 > **Nota:** Se requiere conexión a Internet para que la API de yesno.wtf funcione.
@@ -108,3 +111,10 @@ GET https://yesno.wtf/api?force=maybe
 | Sí | 40 % | ¡Sí! 💪 + GIF |
 | No | 40 % | No 🚫 + GIF |
 | Tal vez | 20 % | Tal vez... 🤔 + GIF |
+
+## Evidencias
+
+![SportBot muestra una respuesta afirmativa y el GIF de la API](Evidencia/Si.png)
+
+Captura de una respuesta afirmativa recibida desde yesno.wtf.
+
