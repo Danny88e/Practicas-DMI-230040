@@ -18,7 +18,7 @@ La interfaz utiliza Material 3 y la tipografía Unbounded mediante el paquete `g
 
 El diagrama es interactivo y estático, por lo que se puede abrir directamente desde el repositorio en GitHub Pages:
 
-### [Ver diagrama en GitHub Pages](https://danny88e.github.io/Practicas-DMI-230040/hello_world_app_230040/architecture-diagram.html)
+### [Ver diagrama en GitHub Pages](https://danny88e.github.io/Practicas-DMI-230040/Practica%202/hello_world_app_230040/architecture-diagram.html)
 
 También puedes [abrir el HTML del diagrama en el repositorio](architecture-diagram.html) o, en Windows, ejecutar [Abrir diagrama.bat](Abrir%20diagrama.bat).
 
