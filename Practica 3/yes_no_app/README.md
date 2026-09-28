@@ -106,15 +106,9 @@ GET https://yesno.wtf/api?force=maybe
 
 ## Resultados esperados
 
-| Respuesta | Proporción | Texto mostrado |
-|---|---|---|
-| Sí | 40 % | ¡Sí! 💪 + GIF |
-| No | 40 % | No 🚫 + GIF |
-| Tal vez | 20 % | Tal vez... 🤔 + GIF |
-
-## Evidencias
-
-![SportBot muestra una respuesta afirmativa y el GIF de la API](Evidencia/Si.png)
-
-Captura de una respuesta afirmativa recibida desde yesno.wtf.
+| Respuesta | Proporción | Texto mostrado | Evidencia |
+|---|---:|---|---|
+| Sí | 40 % | ¡Sí! 💪 + GIF | <img src="Evidencia/Si.png" alt="SportBot muestra una respuesta afirmativa y su GIF" width="150"> |
+| No | 40 % | No 🚫 + GIF | <img src="Evidencia/No.png" alt="SportBot muestra una respuesta negativa y su GIF" width="150"> |
+| Tal vez | 20 % | Tal vez... 🤔 + GIF | <img src="Evidencia/Tal%20vez.png" alt="SportBot muestra una respuesta de tal vez y su GIF" width="150"> |
 
