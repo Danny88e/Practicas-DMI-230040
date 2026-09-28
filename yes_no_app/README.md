@@ -1,47 +1,33 @@
-# hello_world_app_230040
+# Práctica 03: Yes, No, Maybe
 
-Aplicacion Flutter desarrollada para la practica 02 de Desarrollo Movil Integral.
+> Aplicación de chat desarrollada con Flutter para practicar interfaces de conversación y administración del estado.
 
-## Descripcion
+## Descripción
 
-El proyecto implementa una pantalla de contador interactiva para practicar el uso
-de widgets con estado en Flutter. La aplicacion permite:
+La aplicación muestra una conversación con burbujas de mensajes y un campo para escribir y enviar texto. El estado de la conversación se administra con `Provider` y `ChangeNotifier`. Incluye una imagen de perfil local y una imagen remota en las burbujas de respuesta.
 
-- Incrementar el contador.
-- Decrementar el contador.
-- Reiniciar el valor a cero.
-- Mostrar el color del contador segun su valor: azul en cero, verde en valores
-  positivos y rojo en valores negativos.
-- Adaptar el texto entre `Click` y `Clicks`.
+> **Nota:** en esta versión, el envío agrega el mensaje escrito a la conversación; no hay integración con la API yesno.wtf.
 
-La interfaz utiliza Material 3, iconos de Material y la tipografia **Unbounded**
-mediante el paquete `google_fonts`.
+## Tecnologías
 
-## Tecnologias
+- Flutter y Dart
+- Material Design
+- `provider` para administrar el estado
+- Imágenes locales y remotas
 
-- Flutter
-- Dart
-- Material 3
-- Google Fonts
+## Ejecución
 
-## Ejecucion
-
-Desde esta carpeta, instala las dependencias y ejecuta la aplicacion en el
-dispositivo o navegador disponible:
+Desde esta carpeta, instala las dependencias y ejecuta la aplicación en un dispositivo o navegador disponible:
 
 ```bash
 flutter pub get
 flutter run
 ```
 
-## Recursos de Flutter
+## Estructura principal
 
-- [Aprender Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Crear tu primera aplicacion Flutter](https://docs.flutter.dev/get-started/codelab)
-- [Recursos de aprendizaje de Flutter](https://docs.flutter.dev/reference/learning-resources)
-
-## Evidencias
-
-![Captura 1](capturas/Captura%20de%20pantalla%20(2).png)
-![Captura 2](capturas/Captura%20de%20pantalla%20(3).png)
-![Captura 3](capturas/Captura%20de%20pantalla%20(4).png)
+- `lib/domain/`: entidad del mensaje.
+- `lib/presentation/providers/`: estado de la conversación.
+- `lib/presentation/screens/`: pantalla del chat.
+- `lib/presentation/widgets/`: burbujas y campo de texto.
+- `assets/`: recursos locales de la interfaz.
