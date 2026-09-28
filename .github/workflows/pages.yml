@@ -35,8 +35,8 @@ jobs:
 
       - name: Prepare diagram site
         run: |
-          mkdir -p site/hello_world_app_230040
-          cp 'Practica 2/hello_world_app_230040/architecture-diagram.html' site/hello_world_app_230040/
+          mkdir -p 'site/Practica 2/hello_world_app_230040'
+          cp 'Practica 2/hello_world_app_230040/architecture-diagram.html' 'site/Practica 2/hello_world_app_230040/'
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
