@@ -26,9 +26,9 @@ Cada práctica tiene su propio README con el objetivo, descripción y, cuando co
 
 | No. | Práctica | Descripción | Potenciador | Estatus |
 | ---: | --- | --- | ---: | --- |
-| 01 | [Metodología de evaluación](metodologia_evaluacion/README.md) | Revisión de los criterios y fechas de evaluación de la asignatura. | 5 firmas | 🟢 Completada |
+| 01 | [Metodología de evaluación](Practica%201/README.md) | Revisión de los criterios y fechas de evaluación de la asignatura. | 5 firmas | 🟢 Completada |
 | 02 | [Mi primera aplicación móvil con Flutter](Practica%202/hello_world_app_230040/README.md) | Aplicación de contador con controles para incrementar, decrementar y reiniciar, con color dinámico según el valor. | 20 firmas | 🟢 Completada |
-| 03 | [Yes, No, Maybe](yes_no_app/README.md) | Interfaz de chat en Flutter con mensajes, estado administrado con Provider e imágenes remotas. | — | 🟢 Completada |
+| 03 | [Yes, No, Maybe](Practica%203/yes_no_app/README.md) | Interfaz de chat en Flutter con mensajes, estado administrado con Provider e imágenes remotas. | 30 firmas | 🟢 Completada |
 
 ## Tecnologías
 
@@ -41,14 +41,15 @@ Cada práctica tiene su propio README con el objetivo, descripción y, cuando co
 
 ```text
 .
-├── metodologia_evaluacion/  # README de la práctica 01
+├── Practica 1/               # README de la práctica 01
 ├── Practica 2/
 │   └── hello_world_app_230040/  # Aplicación de contador y diagrama
-└── yes_no_app/              # Aplicación de chat
+└── Practica 3/
+	└── yes_no_app/          # Aplicación de chat
 ```
 
 ## Diagrama de arquitectura — práctica 02
 
 El diagrama interactivo está disponible en GitHub Pages:
 
-**[Ver diagrama en GitHub Pages](https://danny88e.github.io/Practicas-DMI-230040/hello_world_app_230040/architecture-diagram.html)**
+**[Ver diagrama en GitHub Pages](https://danny88e.github.io/Practicas-DMI-230040/Practica%202/hello_world_app_230040/architecture-diagram.html)**
