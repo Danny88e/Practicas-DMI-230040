@@ -1,33 +1,37 @@
-# hello_world_app_230040
+# Práctica 02: Mi primera aplicación móvil con Flutter
 
-Aplicacion Flutter desarrollada para la practica 02 de Desarrollo Movil Integral.
+Aplicación Flutter desarrollada para la materia **Desarrollo Móvil Integral**. El ejercicio practica la composición de widgets, el manejo de estado y la interacción mediante controles.
 
-## Descripcion
+## Descripción
 
-El proyecto implementa una pantalla de contador interactiva para practicar el uso
-de widgets con estado en Flutter. La aplicacion permite:
+La aplicación presenta un contador interactivo que permite:
 
-- Incrementar el contador.
-- Decrementar el contador.
+- Incrementar y decrementar el contador.
 - Reiniciar el valor a cero.
-- Mostrar el color del contador segun su valor: azul en cero, verde en valores
-  positivos y rojo en valores negativos.
-- Adaptar el texto entre `Click` y `Clicks`.
+- Cambiar el color del contador: azul cuando vale cero, verde para valores positivos y rojo para valores negativos.
+- Mostrar **Click** o **Clicks** según el valor.
+- Reproducir el sonido de clic del sistema al interactuar.
 
-La interfaz utiliza Material 3, iconos de Material y la tipografia **Unbounded**
-mediante el paquete `google_fonts`.
+La interfaz utiliza Material 3 y la tipografía Unbounded mediante el paquete `google_fonts`.
 
-## Tecnologias
+## Diagrama de arquitectura
 
-- Flutter
-- Dart
-- Material 3
-- Google Fonts
+El diagrama es interactivo y estático, por lo que se puede abrir directamente desde el repositorio en GitHub Pages:
 
-## Ejecucion
+### [Ver diagrama en GitHub Pages](https://danny88e.github.io/Practicas-DMI-230040/hello_world_app_230040/architecture-diagram.html)
 
-Desde esta carpeta, instala las dependencias y ejecuta la aplicacion en el
-dispositivo o navegador disponible:
+También puedes [abrir el HTML del diagrama en el repositorio](architecture-diagram.html) o, en Windows, ejecutar [Abrir diagrama.bat](Abrir%20diagrama.bat).
+
+## Tecnologías
+
+- Flutter y Dart
+- Material Design 3
+- `google_fonts`
+- `SystemSound` de Flutter
+
+## Ejecución
+
+Desde esta carpeta, instala las dependencias y ejecuta la aplicación en un dispositivo o navegador disponible:
 
 ```bash
 flutter pub get
@@ -39,3 +43,8 @@ flutter run
 ![Captura 1](capturas/1.png)
 ![Captura 2](capturas/2.png)
 ![Captura 3](capturas/3.png)
+
+## Recursos
+
+- [Documentación oficial de Flutter](https://docs.flutter.dev/)
+- [Codelab: tu primera aplicación Flutter](https://docs.flutter.dev/get-started/codelab)

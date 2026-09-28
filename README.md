@@ -1,18 +1,54 @@
-# Practicas de Desarrollo Movil Integral
+# Repositorio de Prácticas de DMI
 
-Repositorio de evidencias y ejercicios de la asignatura **Desarrollo Movil Integral**.
+**Ingeniería en Desarrollo y Gestión de Software**
+*Construyendo aplicaciones móviles multiplataforma con Flutter, desde los primeros widgets hasta aplicaciones interactivas.*
 
-## Informacion de la asignatura
+[![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev/)
+[![Dart](https://img.shields.io/badge/Dart-0175C2?style=for-the-badge&logo=dart&logoColor=white)](https://dart.dev/)
+
+
+## Descripción
+
+Este repositorio reúne las prácticas y evidencias de la materia **Desarrollo Móvil Integral**. Los ejercicios aplican los fundamentos de desarrollo multiplataforma con **Flutter** y **Dart**, desde la revisión de la metodología de evaluación hasta la creación de interfaces con estado y una aplicación de chat.
+
+Cada práctica tiene su propio README con el objetivo, descripción y, cuando corresponde, instrucciones de ejecución y evidencias.
+
+## Información de la materia
 
 | Campo | Detalle |
 | --- | --- |
-| Carrera | Ingenieria en Desarrollo y Gestion de Software |
-| Docente | M.T.I. Marco Ramirez Hernandez |
-| Periodo | Sep - Dic 2026 |
+| **Materia** | Desarrollo Móvil Integral |
+| **Carrera** | Ingeniería en Desarrollo y Gestión de Software |
+| **Docente** | M.T.I. Marco A. Ramírez Hernández |
+| **Periodo** | Septiembre – Diciembre de 2026 |
 
-## Practicas
+## Tabla de prácticas de la materia
 
-| No. | Nombre | Descripcion | Potenciador | Estatus |
+| No. | Práctica | Descripción | Potenciador | Estatus |
 | ---: | --- | --- | ---: | --- |
-| 1 | Metodologia de evaluacion de la materia | Transcribir y comprender la metodologia y las fechas de evaluacion de la asignatura. | 5 firmas | Concluida |
-| 2 | Mi primera aplicacion movil con Flutter | Codificar una aplicacion movil con el framework Flutter, utilizando widgets `StatelessWidget` y `StatefulWidget`. | 20 firmas | Concluida |
+| 01 | [Metodología de evaluación](metodologia_evaluacion/README.md) | Revisión de los criterios y fechas de evaluación de la asignatura. | 5 firmas | 🟢 Completada |
+| 02 | [Mi primera aplicación móvil con Flutter](Practica%202/hello_world_app_230040/README.md) | Aplicación de contador con controles para incrementar, decrementar y reiniciar, con color dinámico según el valor. | 20 firmas | 🟢 Completada |
+| 03 | [Yes, No, Maybe](yes_no_app/README.md) | Interfaz de chat en Flutter con mensajes, estado administrado con Provider e imágenes remotas. | — | 🟢 Completada |
+
+## Tecnologías
+
+- [Flutter](https://flutter.dev/) y [Dart](https://dart.dev/)
+- Material Design 3
+- Provider para gestión de estado en la práctica 03
+- Git y GitHub
+
+## Estructura del repositorio
+
+```text
+.
+├── metodologia_evaluacion/  # README de la práctica 01
+├── Practica 2/
+│   └── hello_world_app_230040/  # Aplicación de contador y diagrama
+└── yes_no_app/              # Aplicación de chat
+```
+
+## Diagrama de arquitectura — práctica 02
+
+El diagrama interactivo está disponible en GitHub Pages:
+
+**[Ver diagrama en GitHub Pages](https://danny88e.github.io/Practicas-DMI-230040/hello_world_app_230040/architecture-diagram.html)**
