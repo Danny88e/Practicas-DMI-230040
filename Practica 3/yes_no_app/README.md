@@ -122,8 +122,8 @@ El diagrama interactivo está disponible en GitHub Pages:
 
 ### Evidencia Diagrama de Arquitectura
 
-![Diagrama de Arquitectura 1](Evidencia/diagrama1.png)
-![Diagrama de Arquitectura 2](Evidencia/diagrama2.png)
+![Diagrama de Arquitectura 1](Evidencia/Diagrama1.png)
+![Diagrama de Arquitectura 2](Evidencia/Diagrama2.png)
 
 #### Realizado por
 
