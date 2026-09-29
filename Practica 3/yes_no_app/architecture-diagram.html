@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8"/>
@@ -10,41 +10,49 @@
   --bg:#080c18;--surface:#0e1428;--border:#1e2a4a;--text:#e2e8f0;--muted:#64748b;--accent:#a855f7;
   --col-ext:#f97316;--col-config:#22d3ee;--col-domain:#ec4899;--col-infra:#a855f7;
   --col-prov:#f59e0b;--col-screen:#3b82f6;--col-widget:#10b981;--col-plat:#6b7280;--col-dep:#d97706;
+  --bar-bg: #090d1e; --panel-bg: #0a0f20; --item-bg: #131d36; --item-hover: #1e1050; --btn-bg: #1a2040;
+  --glass-bg: rgba(10, 15, 32, 0.85);
+}
+body.light{
+  --bg:#f0f4ff;--surface:#ffffff;--border:#cbd5e1;--text:#1e293b;--muted:#64748b;--accent:#7c3aed;
+  --bar-bg: #e2e8f0; --panel-bg: #f8fafc; --item-bg: #f1f5f9; --item-hover: #e2e8f0; --btn-bg: #ffffff;
+  --glass-bg: rgba(255, 255, 255, 0.85);
 }
 body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;height:100vh;display:flex;flex-direction:column;overflow:hidden}
-#topbar{display:flex;align-items:center;gap:16px;padding:10px 20px;background:#090d1e;border-bottom:1px solid var(--border);flex-shrink:0;z-index:100}
+#topbar{display:flex;align-items:center;gap:16px;padding:10px 20px;background:var(--bar-bg);border-bottom:1px solid var(--border);flex-shrink:0;z-index:100}
 #title-block{flex:1}
 #title-block h1{font-size:18px;font-weight:700;letter-spacing:.5px}
 #title-block h1 span{color:var(--accent)}
 #title-block small{color:var(--muted);font-size:11px}
-.pill{background:#1a2040;border:1px solid var(--border);border-radius:20px;padding:5px 14px;font-size:12px;cursor:pointer;transition:all .2s;white-space:nowrap;color:var(--text)}
+.pill{background:var(--btn-bg);border:1px solid var(--border);border-radius:20px;padding:5px 14px;font-size:12px;cursor:pointer;transition:all .2s;white-space:nowrap;color:var(--text)}
 .pill:hover{border-color:var(--accent);color:var(--accent)}
 .pill.active{background:var(--accent);border-color:var(--accent);color:#fff}
-body.light{--bg:#f0f4ff;--surface:#fff;--border:#cbd5e1;--text:#1e293b;--muted:#94a3b8;--accent:#7c3aed}
-#guided-bar{display:flex;align-items:center;gap:12px;padding:8px 20px;background:#0a0f20;border-bottom:1px solid var(--border);flex-shrink:0;font-size:12px;flex-wrap:wrap}
+#guided-bar{display:flex;align-items:center;gap:12px;padding:8px 20px;background:var(--panel-bg);border-bottom:1px solid var(--border);flex-shrink:0;font-size:12px;flex-wrap:wrap}
 #guided-bar .label{color:var(--muted);font-size:11px}
-.guide-chip{display:flex;align-items:center;gap:6px;background:#131d36;border:1px solid var(--border);border-radius:6px;padding:4px 10px;cursor:pointer;transition:all .2s;font-size:11px;color:var(--text)}
+.guide-chip{display:flex;align-items:center;gap:6px;background:var(--item-bg);border:1px solid var(--border);border-radius:6px;padding:4px 10px;cursor:pointer;transition:all .2s;font-size:11px;color:var(--text)}
 .guide-chip:hover{border-color:var(--accent)}
-.guide-chip.active{border-color:var(--accent);background:#1e1050;color:var(--accent)}
+.guide-chip.active{border-color:var(--accent);background:var(--item-hover);color:var(--accent)}
 .guide-chip .num{background:var(--accent);color:#fff;border-radius:3px;padding:1px 5px;font-size:10px;font-weight:700}
 .guide-chip.active .num{background:#fff;color:var(--accent)}
-#play-btn{background:#131d36;border:1px solid var(--border);border-radius:6px;padding:4px 12px;cursor:pointer;font-size:11px;color:var(--text);transition:all .2s}
+#play-btn{background:var(--item-bg);border:1px solid var(--border);border-radius:6px;padding:4px 12px;cursor:pointer;font-size:11px;color:var(--text);transition:all .2s}
 #play-btn:hover{border-color:#10b981;color:#10b981}
 .guided-steps{color:var(--muted);font-size:11px;margin-left:auto}
 #layout{display:flex;flex:1;overflow:hidden}
-#sidebar{width:200px;background:#0a0f20;border-right:1px solid var(--border);padding:14px 12px;display:flex;flex-direction:column;gap:8px;overflow-y:auto;flex-shrink:0}
+#sidebar{width:200px;background:var(--panel-bg);border-right:1px solid var(--border);padding:14px 12px;display:flex;flex-direction:column;gap:8px;overflow-y:auto;flex-shrink:0}
 #sidebar h3{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
 .filter-item{display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;cursor:pointer;font-size:12px;transition:all .15s;border:1px solid transparent;color:var(--text)}
-.filter-item:hover{background:#131d36}
-.filter-item.active{background:#131d36;border-color:var(--border)}
+.filter-item:hover{background:var(--item-bg)}
+.filter-item.active{background:var(--item-bg);border-color:var(--border)}
 .dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
-.filter-count{margin-left:auto;background:#1e2a4a;border-radius:10px;padding:1px 6px;font-size:10px;color:var(--muted)}
+.filter-count{margin-left:auto;background:var(--item-hover);border-radius:10px;padding:1px 6px;font-size:10px;color:var(--muted)}
 #canvas-wrap{flex:1;overflow:auto;background:var(--bg);position:relative}
-#canvas{position:relative;width:1650px;min-height:940px;padding:30px}
+#canvas{position:relative;width:2100px;min-height:940px;padding:30px}
 .zone{position:absolute;border-radius:12px;border:1.5px dashed;pointer-events:none}
 .zone-label{position:absolute;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:2px 8px;border-radius:4px;top:-11px;left:12px}
-.node{position:absolute;background:#0e1428;border-radius:10px;border:1.5px solid var(--border);padding:12px 14px;min-width:160px;cursor:pointer;transition:transform .2s,box-shadow .2s,border-color .2s;user-select:none}
-.node:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,.5)}
+.node{position:absolute;background:var(--surface);border-radius:12px;border:2px solid var(--border);padding:14px;min-width:170px;cursor:pointer;transition:all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);user-select:none;box-shadow:0 4px 6px rgba(0,0,0,0.1)}
+.node:hover{transform:translateY(-5px) scale(1.05);box-shadow:0 12px 40px rgba(0,0,0,0.2);border-color:var(--accent);z-index:50;}
+.node::after {content:'';position:absolute;inset:0;border-radius:10px;box-shadow:0 0 15px var(--accent);opacity:0;transition:opacity 0.3s;}
+.node:hover::after {opacity:0.3;}
 .node.highlighted{box-shadow:0 0 0 2px currentColor,0 8px 30px rgba(0,0,0,.5);transform:translateY(-2px)}
 .node.dimmed{opacity:.2;pointer-events:none}
 .node-icon{font-size:18px;margin-bottom:6px}
@@ -53,7 +61,7 @@ body.light{--bg:#f0f4ff;--surface:#fff;--border:#cbd5e1;--text:#1e293b;--muted:#
 .node-badge{display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;text-transform:uppercase;letter-spacing:.5px}
 .node-details{margin-top:8px;font-size:10px;color:var(--muted);line-height:1.5}
 .node-details code{color:#a5b4fc;font-family:monospace;font-size:9px}
-.node-conn{position:absolute;top:-8px;right:10px;background:#1e2a4a;border:1px solid var(--border);border-radius:10px;font-size:9px;padding:1px 6px;color:var(--muted)}
+.node-conn{position:absolute;top:-8px;right:10px;background:var(--item-bg);border:1px solid var(--border);border-radius:10px;font-size:9px;padding:1px 6px;color:var(--muted)}
 .n-ext{border-color:var(--col-ext);color:var(--col-ext)}
 .n-config{border-color:var(--col-config);color:var(--col-config)}
 .n-domain{border-color:var(--col-domain);color:var(--col-domain)}
@@ -67,29 +75,34 @@ body.light{--bg:#f0f4ff;--surface:#fff;--border:#cbd5e1;--text:#1e293b;--muted:#
 .ap{fill:none;stroke-width:1.5;stroke-dasharray:6 4;animation:dash 2s linear infinite;opacity:.7}
 .ap.solid{stroke-dasharray:none;animation:none}
 @keyframes dash{to{stroke-dashoffset:-20}}
-#detail-panel{position:fixed;right:-390px;top:0;bottom:0;width:370px;background:#0a0f20;border-left:1px solid var(--border);padding:20px;transition:right .3s ease;overflow-y:auto;z-index:200}
-#detail-panel.open{right:0}
-#detail-panel h2{font-size:17px;font-weight:700;margin-bottom:4px}
-.dp-path{font-size:11px;color:var(--muted);margin-bottom:14px;word-break:break-all}
-#dp-close{position:absolute;top:14px;right:14px;background:#1e2a4a;border:none;color:var(--text);border-radius:6px;width:26px;height:26px;cursor:pointer;font-size:14px}
-#dp-close:hover{background:#2d3d6a}
-.dp-section{margin-bottom:14px}
-.dp-section h3{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;border-bottom:1px solid var(--border);padding-bottom:4px}
-.dp-row{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #131d36;font-size:12px}
+#modal-overlay {position:fixed;inset:0;background:var(--glass-bg);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s ease;z-index:1000;}
+#modal-overlay.open {opacity:1;pointer-events:auto;}
+#modal-card {background:var(--surface);border:1px solid var(--border);border-radius:24px;width:90%;max-width:550px;max-height:85vh;padding:30px;box-shadow:0 25px 50px -12px rgba(0,0,0,0.5);transform:scale(0.8) translateY(20px);opacity:0;transition:all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);overflow-y:auto;position:relative;}
+#modal-overlay.open #modal-card {transform:scale(1) translateY(0);opacity:1;}
+#mc-close {position:absolute;top:20px;right:20px;background:var(--item-bg);border:1px solid var(--border);color:var(--text);border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+#mc-close:hover {background:var(--accent);color:#fff;transform:rotate(90deg);}
+#mc-content h2 {font-size:24px;font-weight:800;margin-bottom:8px;letter-spacing:-0.5px;}
+.mc-badge {display:inline-block;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px;}
+.mc-path {font-size:13px;color:var(--muted);margin-bottom:20px;font-family:monospace;background:var(--item-bg);padding:6px 12px;border-radius:8px;}
+.mc-section {margin-bottom:24px;animation:fadeInUp 0.5s ease backwards;}
+.mc-section h3 {font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px;border-bottom:1px solid var(--border);padding-bottom:6px;}
+.mc-desc {font-size:15px;line-height:1.6;color:var(--text);}
+@keyframes fadeInUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+.dp-row{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border);font-size:12px}
 .dp-row .key{color:var(--muted)}
 .dp-row .val{font-weight:600;text-align:right;max-width:60%}
 .dep-item{font-size:11px;padding:3px 0;color:var(--muted);display:flex;align-items:flex-start;gap:6px}
 .dep-item::before{content:'->>';color:var(--accent);flex-shrink:0}
 .dep-item.in::before{content:'<-';color:#10b981}
-.code-block{background:#131d36;border-radius:6px;padding:10px 12px;font-family:'Courier New',monospace;font-size:10px;color:#a5b4fc;line-height:1.6;white-space:pre-wrap;word-break:break-all}
-#legend{position:fixed;bottom:12px;left:216px;display:flex;gap:10px;flex-wrap:wrap;background:#0a0f20;border:1px solid var(--border);border-radius:8px;padding:8px 14px;font-size:10px;z-index:100}
+.code-block{background:var(--item-bg);border-radius:6px;padding:10px 12px;font-family:'Courier New',monospace;font-size:10px;color:#a5b4fc;line-height:1.6;white-space:pre-wrap;word-break:break-all}
+#legend{position:fixed;bottom:12px;left:216px;display:flex;gap:10px;flex-wrap:wrap;background:var(--panel-bg);border:1px solid var(--border);border-radius:8px;padding:8px 14px;font-size:10px;z-index:100}
 .leg-item{display:flex;align-items:center;gap:5px;cursor:pointer;color:var(--text)}
 .leg-dot{width:8px;height:8px;border-radius:50%;transition:transform .2s}
 .leg-item:hover .leg-dot{transform:scale(1.4)}
 #zoom-ctrl{position:fixed;bottom:12px;right:20px;display:flex;gap:4px;z-index:100}
-.zbtn{background:#0a0f20;border:1px solid var(--border);border-radius:6px;width:28px;height:28px;cursor:pointer;font-size:14px;color:var(--text);display:flex;align-items:center;justify-content:center;transition:all .2s}
+.zbtn{background:var(--panel-bg);border:1px solid var(--border);border-radius:6px;width:28px;height:28px;cursor:pointer;font-size:14px;color:var(--text);display:flex;align-items:center;justify-content:center;transition:all .2s}
 .zbtn:hover{border-color:var(--accent);color:var(--accent)}
-#zoom-label{background:#0a0f20;border:1px solid var(--border);border-radius:6px;padding:0 10px;font-size:11px;display:flex;align-items:center;color:var(--muted)}
+#zoom-label{background:var(--panel-bg);border:1px solid var(--border);border-radius:6px;padding:0 10px;font-size:11px;display:flex;align-items:center;color:var(--muted)}
 .signal-dot{position:absolute;width:8px;height:8px;border-radius:50%;pointer-events:none;z-index:50;filter:blur(1px)}
 #toast{position:fixed;bottom:55px;left:50%;transform:translateX(-50%);background:#1e1050;border:1px solid var(--accent);border-radius:8px;padding:8px 20px;font-size:12px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:300;white-space:nowrap}
 #toast.show{opacity:1}
@@ -101,7 +114,7 @@ body.light{--bg:#f0f4ff;--surface:#fff;--border:#cbd5e1;--text:#1e293b;--muted:#
 <div id="topbar">
   <div id="title-block">
     <h1>Arquitectura &middot; <span>yes_no_app</span> <small style="font-size:12px">&mdash; SportBot</small></h1>
-    <small>Practica 03 &middot; Flutter &middot; DMI-230040</small>
+    <small>Practica 03 &middot; Flutter &middot; DMI-230040</small><br><small style="color:var(--accent); font-weight:bold; font-size:12px;">Realizado por: Luis Daniel Suarez Escamilla 10A IDGS</small>
   </div>
   <button class="pill active" id="mode-flow" onclick="setMode('flow')">&#9889; Signal Flow</button>
   <button class="pill" id="mode-static" onclick="setMode('static')">&#9633; Classic</button>
@@ -173,6 +186,39 @@ body.light{--bg:#f0f4ff;--surface:#fff;--border:#cbd5e1;--text:#1e293b;--muted:#
         <div class="node-path">assets/sportbot_icon.jpg</div>
         <div class="node-details"><code>AssetImage - avatar del bot en AppBar</code></div>
         <span class="node-badge" style="background:rgba(217,119,6,.15);color:var(--col-dep)">ASSET</span>
+      </div>
+
+      <!-- ZONE: Root -->
+      <div class="zone" style="left:1630px;top:28px;width:400px;height:450px;border-color:rgba(100,116,139,.4);background:rgba(100,116,139,.03)">
+        <span class="zone-label" style="color:var(--col-plat);background:rgba(100,116,139,.15)">&#128193; Raíz del Proyecto</span>
+      </div>
+      <div class="node n-plat" id="n-test" style="left:1650px;top:60px;width:360px" onclick="openDetail('test')">
+        <div class="node-icon">&#129514;</div>
+        <div class="node-name">test/</div>
+        <div class="node-path">Pruebas unitarias y de widgets</div>
+        <div class="node-details"><code>flutter test</code></div>
+        <span class="node-badge" style="background:rgba(107,114,128,.15);color:var(--col-plat)">TESTING</span>
+      </div>
+      <div class="node n-config" id="n-analysis" style="left:1650px;top:160px;width:360px" onclick="openDetail('analysis')">
+        <div class="node-icon">&#128220;</div>
+        <div class="node-name">analysis_options.yaml</div>
+        <div class="node-path">Reglas del linter</div>
+        <div class="node-details"><code>include: package:flutter_lints...</code></div>
+        <span class="node-badge" style="background:rgba(34,211,238,.15);color:var(--col-config)">CONFIG</span>
+      </div>
+      <div class="node n-dep" id="n-gitignore" style="left:1650px;top:260px;width:360px" onclick="openDetail('gitignore')">
+        <div class="node-icon">&#128062;</div>
+        <div class="node-name">.gitignore</div>
+        <div class="node-path">Exclusiones de Git</div>
+        <div class="node-details"><code>/build/</code></div>
+        <span class="node-badge" style="background:rgba(217,119,6,.15);color:var(--col-dep)">GIT</span>
+      </div>
+      <div class="node n-dep" id="n-readme" style="left:1650px;top:360px;width:360px" onclick="openDetail('readme')">
+        <div class="node-icon">&#128196;</div>
+        <div class="node-name">README.md</div>
+        <div class="node-path">Documentación del proyecto</div>
+        <div class="node-details"><code>Instrucciones y descripción</code></div>
+        <span class="node-badge" style="background:rgba(217,119,6,.15);color:var(--col-dep)">DOCS</span>
       </div>
 
       <!-- ZONE: Flutter lib -->
@@ -321,9 +367,11 @@ body.light{--bg:#f0f4ff;--surface:#fff;--border:#cbd5e1;--text:#1e293b;--muted:#
   </div>
 </div>
 
-<div id="detail-panel">
-  <button id="dp-close" onclick="closeDetail()">X</button>
-  <div id="dp-content"></div>
+<div id="modal-overlay">
+  <div id="modal-card">
+    <button id="mc-close" onclick="closeDetail()">X</button>
+    <div id="mc-content"></div>
+  </div>
 </div>
 
 <div id="legend">
@@ -346,6 +394,10 @@ body.light{--bg:#f0f4ff;--surface:#fff;--border:#cbd5e1;--text:#1e293b;--muted:#
 <div id="toast"></div>
 <script>
 const DETAILS={
+  test:{name:'test/',path:'yes_no_app/test/',layer:'TESTING',color:'#6b7280',desc:'Directorio para pruebas unitarias, de widgets y de integración.',fields:[['Comando','flutter test']],out:[],inn:[],code:'void main() {\n  testWidgets(\'My widget test\', (WidgetTester tester) async {\n    // Build our app and trigger a frame.\n  });\n}'},
+  analysis:{name:'analysis_options.yaml',path:'yes_no_app/analysis_options.yaml',layer:'CONFIG',color:'#22d3ee',desc:'Configura el analizador estático de Dart y las reglas de linting.',fields:[['Lints','flutter_lints']],out:[],inn:[],code:'include: package:flutter_lints/flutter.yaml\nlinter:\n  rules:\n    - prefer_const_constructors'},
+  gitignore:{name:'.gitignore',path:'yes_no_app/.gitignore',layer:'GIT',color:'#d97706',desc:'Archivos excluidos del control de versiones (ej. carpetas build, archivos generados).',fields:[],out:[],inn:[],code:'/build/\n.dart_tool/\n.flutter-plugins\n.pub-cache/'},
+  readme:{name:'README.md',path:'yes_no_app/README.md',layer:'DOCS',color:'#d97706',desc:'Documentación principal del repositorio.',fields:[],out:[],inn:[],code:'# yes_no_app\n\nA new Flutter project.'},
   pubspec:{name:'pubspec.yaml',path:'yes_no_app/pubspec.yaml',layer:'DEP',color:'#d97706',
     desc:'Archivo de configuracion del proyecto Flutter. Define metadatos, version del SDK y dependencias de terceros.',
     fields:[['SDK','Dart ^3.13.2'],['Version','1.0.0+1'],['Plataforma','Flutter']],
@@ -538,23 +590,27 @@ function startSignalFlow(){
 
 function openDetail(key){
   const d=DETAILS[key];if(!d)return;
-  const outH=d.out.map(s=>'<div class="dep-item">'+s+'</div>').join('');
-  const inH=d.inn.map(s=>'<div class="dep-item in">'+s+'</div>').join('');
-  const fH=d.fields.map(([k,v])=>'<div class="dp-row"><span class="key">'+k+'</span><span class="val">'+v+'</span></div>').join('');
-  document.getElementById('dp-content').innerHTML=
-    '<h2 style="color:'+d.color+'">'+d.name+'</h2>'+
-    '<div class="dp-path">'+d.path+'</div>'+
-    '<span class="node-badge" style="background:rgba(100,100,200,.15);color:'+d.color+';margin-bottom:12px;display:inline-flex">'+d.layer+'</span>'+
-    '<div class="dp-section"><h3>Descripcion</h3><p style="font-size:12px;color:var(--muted);line-height:1.6">'+d.desc+'</p></div>'+
-    (d.fields.length?'<div class="dp-section"><h3>Propiedades</h3>'+fH+'</div>':'')+
-    (d.out.length?'<div class="dp-section"><h3>Salidas (OUT)</h3>'+outH+'</div>':'')+
-    (d.inn.length?'<div class="dp-section"><h3>Entradas (IN)</h3>'+inH+'</div>':'')+
-    '<div class="dp-section"><h3>Codigo relevante</h3><div class="code-block">'+
+  const outH=d.out.map((s,i)=>`<div class="dep-item" style="animation-delay:${i*0.05}s">${s}</div>`).join('');
+  const inH=d.inn.map((s,i)=>`<div class="dep-item in" style="animation-delay:${i*0.05}s">${s}</div>`).join('');
+  const fH=d.fields.map(([k,v],i)=>`<div class="dp-row" style="animation-delay:${i*0.05}s"><span class="key">${k}</span><span class="val">${v}</span></div>`).join('');
+  
+  const bg = d.color.replace('#', '');
+  const r = parseInt(bg.substr(0,2),16), g = parseInt(bg.substr(2,2),16), b = parseInt(bg.substr(4,2),16);
+  
+  document.getElementById('mc-content').innerHTML=
+    `<h2 style="color:${d.color}">${d.name}</h2>`+
+    `<div class="mc-badge" style="background:rgba(${r},${g},${b},0.15);color:${d.color};border:1px solid rgba(${r},${g},${b},0.3)">${d.layer}</div>`+
+    `<div class="mc-path">&#128194; ${d.path}</div>`+
+    `<div class="mc-section" style="animation-delay:0.1s"><h3>Descripción</h3><p class="mc-desc">${d.desc}</p></div>`+
+    (d.fields.length?`<div class="mc-section" style="animation-delay:0.2s"><h3>Propiedades</h3>${fH}</div>`:'')+
+    (d.out.length?`<div class="mc-section" style="animation-delay:0.3s"><h3>Salidas (OUT)</h3>${outH}</div>`:'')+
+    (d.inn.length?`<div class="mc-section" style="animation-delay:0.4s"><h3>Entradas (IN)</h3>${inH}</div>`:'')+
+    `<div class="mc-section" style="animation-delay:0.5s"><h3>Código relevante</h3><div class="code-block">`+
       d.code.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+
-    '</div></div>';
-  document.getElementById('detail-panel').classList.add('open');
+    `</div></div>`;
+  document.getElementById('modal-overlay').classList.add('open');
 }
-function closeDetail(){document.getElementById('detail-panel').classList.remove('open');}
+function closeDetail(){document.getElementById('modal-overlay').classList.remove('open');}
 
 function filterLayer(layer){
   document.querySelectorAll('.filter-item').forEach(e=>e.classList.remove('active'));
@@ -613,7 +669,7 @@ function resetZoom(){
 }
 function toggleTheme(){
   document.body.classList.toggle('light');
-  document.getElementById('theme-btn').textContent=document.body.classList.contains('light')?'Dark':'Dark';
+  document.getElementById('theme-btn').innerHTML=document.body.classList.contains('light')?'&#127774; Light':'&#127769; Dark';
 }
 function setMode(m){
   signalMode=(m==='flow');
@@ -644,6 +700,9 @@ document.getElementById('canvas-wrap').addEventListener('click',function(e){
     document.getElementById('guide-desc').textContent='Haz clic en un nodo para explorar sus dependencias';
     closeDetail();
   }
+});
+document.getElementById('modal-overlay').addEventListener('click',function(e){
+  if(e.target===this) closeDetail();
 });
 window.addEventListener('load',()=>{setTimeout(()=>{drawArrows();startSignalFlow();},250);});
 window.addEventListener('resize',()=>{setTimeout(drawArrows,100);});

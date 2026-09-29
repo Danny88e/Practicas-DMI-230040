@@ -47,9 +47,3 @@ Cada práctica tiene su propio README con el objetivo, descripción y, cuando co
 └── Practica 3/
 	└── yes_no_app/          # Aplicación de chat
 ```
-
-## Diagrama de arquitectura — práctica 02
-
-El diagrama interactivo está disponible en GitHub Pages:
-
-**[Ver diagrama en GitHub Pages](https://danny88e.github.io/Practicas-DMI-230040/Practica%202/hello_world_app_230040/architecture-diagram.html)**

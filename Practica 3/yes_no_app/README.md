@@ -112,3 +112,20 @@ GET https://yesno.wtf/api?force=maybe
 | No | 40 % | No 🚫 + GIF | <img src="Evidencia/No.png" alt="SportBot muestra una respuesta negativa y su GIF" width="150"> |
 | Tal vez | 20 % | Tal vez... 🤔 + GIF | <img src="Evidencia/Tal%20vez.png" alt="SportBot muestra una respuesta de tal vez y su GIF" width="150"> |
 
+## Arquitectura del proyecto
+
+### Diagrama de arquitectura — práctica 03
+
+El diagrama interactivo está disponible en GitHub Pages:
+
+**[Ver diagrama en GitHub Pages](https://danny88e.github.io/Practicas-DMI-230040/Practica%203/yes_no_app/architecture-diagram.html)**
+
+### Evidencia Diagrama de Arquitectura
+
+![Diagrama de Arquitectura 1](Evidencia/diagrama1.png)
+![Diagrama de Arquitectura 2](Evidencia/diagrama2.png)
+
+#### Realizado por
+
+**Luis Daniel Suarez Escamilla 230040**
+@[Danny88e](https://github.com/Danny88e)    
