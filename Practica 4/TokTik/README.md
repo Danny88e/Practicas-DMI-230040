@@ -76,16 +76,33 @@ lib/
 
 ---
 
+## Videos — Descarga desde Google Drive
+
+> Los archivos de video **no están incluidos en el repositorio** porque algunos superan el límite de 100 MB de GitHub (`7.mp4` = ~112 MB).
+
+📁 **Carpeta de Drive con todos los videos:**  
+👉 [https://drive.google.com/drive/folders/1UIfiS2BddDjaQhLNDF1gzXh5rHRjgOhO?usp=sharing](https://drive.google.com/drive/folders/1UIfiS2BddDjaQhLNDF1gzXh5rHRjgOhO?usp=sharing)
+
+Antes de ejecutar la app, descarga los 14 videos y colócalos en:
+```
+Practica 4/TokTik/assets/videos/
+```
+Los archivos deben nombrarse exactamente: `1.mp4`, `2.mp4`, ..., `14.mp4`
+
+---
+
 ## Cómo ejecutar
 
 ```bash
-# Desde la raíz del repositorio, entra a la carpeta del proyecto:
+# 1. Descarga los videos desde Drive y colócalos en assets/videos/
+
+# 2. Entra a la carpeta del proyecto:
 cd "Practica 4/TokTik"
 
-# Instalar dependencias
+# 3. Instalar dependencias
 flutter pub get
 
-# Ejecutar en dispositivo o emulador
+# 4. Ejecutar en dispositivo o emulador
 flutter run
 
 # Ejecutar en Chrome (web)

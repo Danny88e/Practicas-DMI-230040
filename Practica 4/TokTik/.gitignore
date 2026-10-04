@@ -47,5 +47,6 @@ app.*.map.json
 # Widget Preview related
 .widget_preview/
 
-# Large assets
-assets/videos/
+# Videos son demasiado grandes para GitHub (algunos superan 100 MB).
+# Descargalos desde Google Drive - ver assets/videos/README.txt
+assets/videos/*.mp4
