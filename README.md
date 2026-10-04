@@ -29,6 +29,7 @@ Cada práctica tiene su propio README con el objetivo, descripción y, cuando co
 | 01 | [Metodología de evaluación](Practica%201/README.md) | Revisión de los criterios y fechas de evaluación de la asignatura. | 5 firmas | 🟢 Completada |
 | 02 | [Mi primera aplicación móvil con Flutter](Practica%202/hello_world_app_230040/README.md) | Aplicación de contador con controles para incrementar, decrementar y reiniciar, con color dinámico según el valor. | 20 firmas | 🟢 Completada |
 | 03 | [Yes, No, Maybe](Practica%203/yes_no_app/README.md) | Interfaz de chat en Flutter con mensajes, estado administrado con Provider e imágenes remotas. | 30 firmas | 🟢 Completada |
+| 04 | [TokTik: Video App](Practica%204/TokTik/README.md) | Reproducción de videos con gestos y transiciones suaves | ?? firmas | 🟡 Pendiente |
 
 ## Tecnologías
 
