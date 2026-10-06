@@ -14,8 +14,8 @@ class DiscoverScreen extends StatelessWidget {
 
     // Etiqueta de temporada para el título de la AppBar
     String seasonLabel = '';
-    if (season == AppSeason.halloween) seasonLabel = ' 🎃 Halloween';
-    if (season == AppSeason.christmas) seasonLabel = ' 🎄 Navidad';
+    if (season == AppSeason.halloween) seasonLabel = ' 🎃 Feliz Halloween';
+    if (season == AppSeason.christmas) seasonLabel = ' 🎄 Feliz Navidad';
 
     return Scaffold(
       appBar: AppBar(
