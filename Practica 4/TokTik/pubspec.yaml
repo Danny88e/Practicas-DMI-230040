@@ -1,5 +1,5 @@
 name: toktik
-description: "TokTik - App de reproducción automática de videos estilo TikTok con temas estacionales."
+description: "TokTik - App de videos cortos con temas estacionales, APIs externas y persistencia local."
 publish_to: 'none'
 
 version: 1.0.0+1
@@ -16,6 +16,10 @@ dependencies:
   video_player: ^2.9.1
   animate_do: ^3.3.4
   intl: ^0.19.0
+  dio: ^5.4.0
+  shared_preferences: ^2.3.2
+  youtube_player_flutter: ^9.1.1
+  cached_network_image: ^3.4.1
 
 dev_dependencies:
   flutter_test:

@@ -6,4 +6,4 @@ abstract class VideoPostDatasource {
 
   Future<List<VideoPost>> getTrendingVideosByPage( int page );
 
-}
+}

@@ -4,6 +4,8 @@ import 'package:toktik/config/theme/app_theme.dart';
 import 'package:toktik/presentation/providers/discover_provider.dart';
 import 'package:toktik/presentation/widgets/shared/video_scrollable_view.dart';
 
+/// Pestaña "For You" — feed principal de videos.
+/// Muestra videos locales + Pexels + Pixabay en un PageView vertical.
 class DiscoverScreen extends StatelessWidget {
   const DiscoverScreen({super.key});
 
@@ -12,12 +14,12 @@ class DiscoverScreen extends StatelessWidget {
     final discoverProvider = context.watch<DiscoverProvider>();
     final season = AppTheme.currentSeason;
 
-    // Etiqueta de temporada para el título de la AppBar
     String seasonLabel = '';
     if (season == AppSeason.halloween) seasonLabel = ' 🎃 Feliz Halloween';
     if (season == AppSeason.christmas) seasonLabel = ' 🎄 Feliz Navidad';
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         title: Row(
           mainAxisSize: MainAxisSize.min,
@@ -30,7 +32,8 @@ class DiscoverScreen extends StatelessWidget {
                 width: 36,
                 height: 36,
                 fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => const Icon(Icons.play_circle),
+                errorBuilder: (_, __, ___) =>
+                    const Icon(Icons.play_circle, color: Colors.white),
               ),
             ),
             const SizedBox(width: 10),
@@ -44,10 +47,19 @@ class DiscoverScreen extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      extendBodyBehindAppBar: true,
       body: discoverProvider.initialLoading
-          ? const Center(child: CircularProgressIndicator(strokeWidth: 2))
-          : VideoScrollableView(videos: discoverProvider.videos),
+          ? const Center(
+              child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+          : discoverProvider.videos.isEmpty
+              ? const Center(
+                  child: Text('No hay videos disponibles.',
+                      style: TextStyle(color: Colors.white)))
+              : VideoScrollableView(
+                  videos: discoverProvider.videos,
+                  onLikeToggle: (video) => discoverProvider.toggleLike(video),
+                  onViewIncrement: (videoId) =>
+                      discoverProvider.incrementViews(videoId),
+                ),
     );
   }
 }
