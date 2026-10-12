@@ -1,17 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:toktik/services/local_storage_service.dart';
 
-/// Enum para identificar la temporada activa según la fecha actual.
-enum AppSeason { halloween, christmas, normal }
+/// Enum para identificar la temporada activa según la fecha actual o selección de prueba.
+enum AppSeason { halloween, christmas, valentines, normal }
 
 class AppTheme {
 
-  /// Determina la temporada activa basándose en la fecha del sistema.
+  /// Determina la temporada activa.
+  /// 1. Primero verifica si hay una temporada forzada en LocalStorage (mecanismo de prueba).
+  /// 2. Si no hay override, usa la fecha del sistema (Oct=Halloween, Dic=Navidad, Feb=San Valentín, Resto=Normal).
   static AppSeason get currentSeason {
+    try {
+      final override = LocalStorageService.getSeasonOverride();
+      if (override != null) {
+        switch (override) {
+          case 'halloween':
+            return AppSeason.halloween;
+          case 'christmas':
+            return AppSeason.christmas;
+          case 'valentines':
+            return AppSeason.valentines;
+          case 'normal':
+            return AppSeason.normal;
+        }
+      }
+    } catch (_) {}
+
     final now = DateTime.now();
     final month = now.month;
 
-    if (month == 10) return AppSeason.halloween;   // Octubre → Halloween
+    if (month == 10) return AppSeason.halloween;    // Octubre → Halloween
     if (month == 12) return AppSeason.christmas;    // Diciembre → Navidad
+    if (month == 2)  return AppSeason.valentines;   // Febrero → San Valentín
     return AppSeason.normal;
   }
 
@@ -22,18 +42,21 @@ class AppTheme {
         return 'assets/icons/Logo_TokTik_Octubre.jfif';
       case AppSeason.christmas:
         return 'assets/icons/Logo_TokTik_Diciembre.jfif';
+      case AppSeason.valentines:
       case AppSeason.normal:
         return 'assets/icons/Logo_TokTik.jfif';
     }
   }
 
-  /// Genera el ThemeData apropiado según la temporada actual.
+  /// Genera el ThemeData apropiado según la temporada activa.
   ThemeData getTheme() {
     switch (currentSeason) {
       case AppSeason.halloween:
         return _halloweenTheme();
       case AppSeason.christmas:
         return _christmasTheme();
+      case AppSeason.valentines:
+        return _valentinesTheme();
       case AppSeason.normal:
         return _normalTheme();
     }
@@ -142,6 +165,49 @@ class AppTheme {
     ),
     progressIndicatorTheme: const ProgressIndicatorThemeData(
       color: Color(0xFFFFD700),
+    ),
+  );
+
+  // ─────────────────────────────────────────────
+  // Tema San Valentín (Febrero / Valentine's Day)
+  // Colores: rosa intenso, carmesí, dorado suave
+  // ─────────────────────────────────────────────
+  ThemeData _valentinesTheme() => ThemeData(
+    useMaterial3: true,
+    brightness: Brightness.dark,
+    colorScheme: const ColorScheme(
+      brightness: Brightness.dark,
+      primary: Color(0xFFFF4081),         // rosa brillante
+      onPrimary: Colors.white,
+      secondary: Color(0xFFE91E63),       // rosa carmesí
+      onSecondary: Colors.white,
+      error: Color(0xFFCF6679),
+      onError: Colors.black,
+      surface: Color(0xFF1F0010),          // fondo vino/rosa muy oscuro
+      onSurface: Color(0xFFFFD1DC),        // texto rosa pastel
+      surfaceContainerHighest: Color(0xFF38001F),
+      outline: Color(0xFFFF4081),
+    ),
+    scaffoldBackgroundColor: const Color(0xFF14000B),
+    appBarTheme: const AppBarTheme(
+      backgroundColor: Color(0xFF1F0010),
+      foregroundColor: Color(0xFFFF4081),
+    ),
+    iconTheme: const IconThemeData(color: Color(0xFFFF4081)),
+    textTheme: const TextTheme(
+      titleLarge: TextStyle(
+        color: Color(0xFFFFD1DC),
+        fontSize: 18,
+        fontWeight: FontWeight.bold,
+        shadows: [
+          Shadow(color: Color(0xFFFF4081), blurRadius: 8),
+          Shadow(color: Colors.black87, blurRadius: 4),
+        ],
+      ),
+      bodyMedium: TextStyle(color: Color(0xFFFFD1DC)),
+    ),
+    progressIndicatorTheme: const ProgressIndicatorThemeData(
+      color: Color(0xFFFF4081),
     ),
   );
 }

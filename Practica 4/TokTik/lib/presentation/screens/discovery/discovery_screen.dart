@@ -67,22 +67,158 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
       );
     }
 
-    return ListView.builder(
-      padding: const EdgeInsets.only(top: 8, bottom: 20),
-      itemCount: provider.videos.length,
-      itemBuilder: (context, index) {
-        final video = provider.videos[index];
-        return _YoutubeVideoCard(
-          video: video,
-          onTap: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => YoutubePlayerScreen(video: video),
-            ),
+    return CustomScrollView(
+      slivers: [
+        // ── Sección de Desplazamiento Lateral de videos ──────────────────────
+        SliverToBoxAdapter(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Padding(
+                padding: EdgeInsets.fromLTRB(16, 12, 16, 8),
+                child: Row(
+                  children: [
+                    Icon(Icons.local_fire_department, color: Colors.amber, size: 20),
+                    SizedBox(width: 6),
+                    Text(
+                      'Tendencias (Desplazamiento Lateral)',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 175,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  physics: const BouncingScrollPhysics(),
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  itemCount: provider.videos.length,
+                  itemBuilder: (context, index) {
+                    final video = provider.videos[index];
+                    return _YoutubeHorizontalCard(
+                      video: video,
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => YoutubePlayerScreen(video: video),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.fromLTRB(16, 16, 16, 4),
+                child: Text(
+                  'Feed de videos de YouTube',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white70,
+                  ),
+                ),
+              ),
+            ],
           ),
-          onLikeTap: () => context.read<DiscoveryProvider>().toggleLike(video),
-        );
-      },
+        ),
+
+        // ── Feed vertical de tarjetas detalladas ──────────────────────────────
+        SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (context, index) {
+              final video = provider.videos[index];
+              return _YoutubeVideoCard(
+                video: video,
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => YoutubePlayerScreen(video: video),
+                  ),
+                ),
+                onLikeTap: () => context.read<DiscoveryProvider>().toggleLike(video),
+              );
+            },
+            childCount: provider.videos.length,
+          ),
+        ),
+        const SliverPadding(padding: EdgeInsets.only(bottom: 24)),
+      ],
+    );
+  }
+}
+
+// ─── Tarjeta horizontal para carrusel ─────────────────────────────────────────
+
+class _YoutubeHorizontalCard extends StatelessWidget {
+  final VideoPost video;
+  final VoidCallback onTap;
+
+  const _YoutubeHorizontalCard({
+    required this.video,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 140,
+      margin: const EdgeInsets.only(right: 12),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Miniatura
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: SizedBox(
+                width: 140,
+                height: 100,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    if (video.thumbnailUrl != null && video.thumbnailUrl!.isNotEmpty)
+                      CachedNetworkImage(
+                        imageUrl: video.thumbnailUrl!,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => Container(
+                          color: Colors.grey[900],
+                          child: const Icon(Icons.video_library, color: Colors.white38),
+                        ),
+                      )
+                    else
+                      Container(color: Colors.grey[900]),
+                    const Center(
+                      child: Icon(
+                        Icons.play_circle_fill,
+                        color: Colors.redAccent,
+                        size: 36,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              video.caption,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

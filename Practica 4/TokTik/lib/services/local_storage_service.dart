@@ -36,6 +36,23 @@ class LocalStorageService {
   }
 
   // ──────────────────────────────────────────────────────────────────────
+  // TEMPORADA / SEASON OVERRIDE (Mecanismo de prueba)
+  // ──────────────────────────────────────────────────────────────────────
+
+  /// Obtiene la temporada forzada manualmente ('halloween', 'christmas', 'valentines', 'normal')
+  /// o null si se usa la fecha actual del dispositivo.
+  static String? getSeasonOverride() => _prefs.getString('season_override');
+
+  /// Guarda la temporada forzada para pruebas (o null para volver al modo automático).
+  static Future<void> setSeasonOverride(String? season) async {
+    if (season == null) {
+      await _prefs.remove('season_override');
+    } else {
+      await _prefs.setString('season_override', season);
+    }
+  }
+
+  // ──────────────────────────────────────────────────────────────────────
   // LIKES
   // ──────────────────────────────────────────────────────────────────────
 
@@ -43,9 +60,17 @@ class LocalStorageService {
   static bool isLiked(String videoId) =>
       _prefs.getBool('liked_$videoId') ?? false;
 
-  /// Guarda o elimina el like de un video.
+  /// Guarda o elimina el estado de like de un video.
   static Future<void> setLiked(String videoId, bool liked) async {
     await _prefs.setBool('liked_$videoId', liked);
+  }
+
+  /// Retorna el número de likes guardados localmente para un video, si existe.
+  static int? getLikes(String videoId) => _prefs.getInt('likes_count_$videoId');
+
+  /// Guarda el número de likes de un video en el local storage.
+  static Future<void> setLikes(String videoId, int count) async {
+    await _prefs.setInt('likes_count_$videoId', count);
   }
 
   // ──────────────────────────────────────────────────────────────────────

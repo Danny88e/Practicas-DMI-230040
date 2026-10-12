@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:toktik/config/theme/app_theme.dart';
 import 'package:toktik/infrastructure/datasources/pexels_datasource_impl.dart';
 import 'package:toktik/infrastructure/datasources/pixabay_datasource_impl.dart';
 import 'package:toktik/infrastructure/datasources/youtube_datasource_impl.dart';
@@ -8,7 +7,8 @@ import 'package:toktik/infrastructure/repositories/video_posts_repository_impl.d
 import 'package:toktik/presentation/providers/discover_provider.dart';
 import 'package:toktik/presentation/providers/discovery_provider.dart';
 import 'package:toktik/presentation/providers/favorites_provider.dart';
-import 'package:toktik/presentation/screens/home/home_screen.dart';
+import 'package:toktik/presentation/providers/theme_provider.dart';
+import 'package:toktik/presentation/screens/splash/splash_screen.dart';
 import 'package:toktik/services/local_storage_service.dart';
 
 /// Punto de entrada principal de TokTik.
@@ -37,6 +37,11 @@ class MyApp extends StatelessWidget {
 
     return MultiProvider(
       providers: [
+        // Tema reactivo con mecanismo de pruebas estacionales
+        ChangeNotifierProvider(
+          create: (_) => ThemeProvider(),
+        ),
+
         // Feed "For You": local + Pexels + Pixabay
         ChangeNotifierProvider(
           lazy: false,
@@ -54,12 +59,17 @@ class MyApp extends StatelessWidget {
           create: (_) => FavoritesProvider()..loadFavorites(),
         ),
       ],
-      child: MaterialApp(
-        title: 'TokTik',
-        debugShowCheckedModeBanner: false,
-        // El tema cambia automáticamente según la fecha del sistema
-        theme: AppTheme().getTheme(),
-        home: const HomeScreen(),
+      child: Consumer<ThemeProvider>(
+        builder: (context, themeProvider, child) {
+          return MaterialApp(
+            title: 'TokTik',
+            debugShowCheckedModeBanner: false,
+            // El tema cambia reactivamente según la fecha o selección de prueba
+            theme: themeProvider.currentTheme,
+            // Inicia con Splash Screen (3 seg) → luego HomeScreen
+            home: const SplashScreen(),
+          );
+        },
       ),
     );
   }

@@ -20,13 +20,48 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
+  late final PageController _pageController;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(initialPage: _currentIndex);
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  void _onPageChanged(int index) {
+    setState(() => _currentIndex = index);
+    if (index == 2) {
+      context.read<FavoritesProvider>().refresh();
+    }
+  }
+
+  void _onDestinationSelected(int index) {
+    setState(() => _currentIndex = index);
+    _pageController.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+    if (index == 2) {
+      context.read<FavoritesProvider>().refresh();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // IndexedStack mantiene el estado de cada pestaña al navegar
-      body: IndexedStack(
-        index: _currentIndex,
+      // PageView horizontal: permite desplazamiento lateral entre For You, Discovery y Favoritos
+      body: PageView(
+        controller: _pageController,
+        scrollDirection: Axis.horizontal,
+        physics: const BouncingScrollPhysics(),
+        onPageChanged: _onPageChanged,
         children: const [
           DiscoverScreen(),
           DiscoveryScreen(),
@@ -35,13 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _currentIndex,
-        onDestinationSelected: (index) {
-          setState(() => _currentIndex = index);
-          // Al entrar a Favoritos, refresca la lista desde SharedPreferences
-          if (index == 2) {
-            context.read<FavoritesProvider>().refresh();
-          }
-        },
+        onDestinationSelected: _onDestinationSelected,
         destinations: const [
           NavigationDestination(
             icon: Icon(Icons.home_outlined),

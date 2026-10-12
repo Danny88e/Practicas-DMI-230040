@@ -63,20 +63,40 @@ class _VideoDescriptionState extends State<VideoDescription> {
         // ── Descripción (si existe) ───────────────────────────────────
         if (widget.video.description.isNotEmpty) ...[
           const SizedBox(height: 4),
-          Text(
-            _hasLongDescription && !_isExpanded
-                ? _truncated
-                : widget.video.description,
-            style: bodyStyle,
-          ),
+          if (_hasLongDescription && _isExpanded)
+            // Sección con desplazamiento vertical cuando está expandida
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxHeight: 130),
+              child: RawScrollbar(
+                thumbVisibility: true,
+                thumbColor: Colors.white54,
+                radius: const Radius.circular(4),
+                thickness: 3,
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: Text(
+                      widget.video.description,
+                      style: bodyStyle,
+                    ),
+                  ),
+                ),
+              ),
+            )
+          else
+            Text(
+              _hasLongDescription ? _truncated : widget.video.description,
+              style: bodyStyle,
+            ),
 
-          // ── Botón Ver más / Ver menos ─────────────────────────────
+          // ── Botón (... más / Ver menos) ───────────────────────────
           if (_hasLongDescription) ...[
             const SizedBox(height: 2),
             GestureDetector(
               onTap: () => setState(() => _isExpanded = !_isExpanded),
               child: Text(
-                _isExpanded ? 'Ver menos' : 'Ver más',
+                _isExpanded ? 'Ver menos' : '... más',
                 style: linkStyle,
               ),
             ),

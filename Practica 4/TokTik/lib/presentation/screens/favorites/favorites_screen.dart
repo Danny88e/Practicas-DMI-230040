@@ -249,9 +249,25 @@ class _EmptyFavorites extends StatelessWidget {
 
 // ─── Reproductor fullscreen para favoritos locales/Pexels/Pixabay ────────────
 
-class _FullscreenFavoritePlayer extends StatelessWidget {
+class _FullscreenFavoritePlayer extends StatefulWidget {
   final VideoPost video;
   const _FullscreenFavoritePlayer({required this.video});
+
+  @override
+  State<_FullscreenFavoritePlayer> createState() =>
+      _FullscreenFavoritePlayerState();
+}
+
+class _FullscreenFavoritePlayerState extends State<_FullscreenFavoritePlayer> {
+  final ValueNotifier<bool> _isMutedNotifier = ValueNotifier(false);
+  final ValueNotifier<bool> _isPlayingNotifier = ValueNotifier(true);
+
+  @override
+  void dispose() {
+    _isMutedNotifier.dispose();
+    _isPlayingNotifier.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -264,13 +280,66 @@ class _FullscreenFavoritePlayer extends StatelessWidget {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          video.caption,
+          widget.video.caption,
           style: const TextStyle(color: Colors.white, fontSize: 14),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
+        actions: [
+          // Boton de mute en la barra de la pantalla de favoritos
+          ValueListenableBuilder<bool>(
+            valueListenable: _isMutedNotifier,
+            builder: (_, isMuted, __) => IconButton(
+              icon: Icon(
+                isMuted ? Icons.volume_off : Icons.volume_up,
+                color: Colors.white,
+              ),
+              onPressed: () =>
+                  _isMutedNotifier.value = !_isMutedNotifier.value,
+            ),
+          ),
+        ],
       ),
-      body: FullScreenPlayer(videoPost: video),
+      body: Stack(
+        children: [
+          FullScreenPlayer(
+            videoPost: widget.video,
+            isMutedNotifier: _isMutedNotifier,
+            isPlayingNotifier: _isPlayingNotifier,
+          ),
+          // Boton Play/Pause central
+          Center(
+            child: ValueListenableBuilder<bool>(
+              valueListenable: _isPlayingNotifier,
+              builder: (_, isPlaying, __) {
+                return GestureDetector(
+                  onTap: () =>
+                      _isPlayingNotifier.value = !_isPlayingNotifier.value,
+                  child: AnimatedOpacity(
+                    opacity: isPlaying ? 0.0 : 1.0,
+                    duration: const Duration(milliseconds: 300),
+                    child: Container(
+                      width: 80,
+                      height: 80,
+                      decoration: const BoxDecoration(
+                        color: Colors.black45,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        isPlaying
+                            ? Icons.pause_rounded
+                            : Icons.play_arrow_rounded,
+                        color: Colors.white,
+                        size: 50,
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

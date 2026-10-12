@@ -14,16 +14,19 @@ Aplicación móvil desarrollada en Flutter inspirada en TikTok. Permite reproduc
 
 ## Funcionalidades
 
-- Reproducción automática de videos en pantalla completa (vertical scroll).
-- Pausar/reanudar video con un toque en pantalla.
-- Visualización de **likes** y **vistas** con formato compacto (K, M).
-- Ícono de disco rotatorio animado en cada video.
-- **Filtrado de videos ilógicos**: se excluyen videos donde `likes > views`.
-- **Temas estacionales automáticos** según el mes del año:
-  - 🎃 **Octubre** → Tema Halloween (naranja, morado oscuro)
-  - 🎄 **Diciembre** → Tema Navidad (rojo, verde pino, dorado)
-  - 📅 **Resto del año** → Tema normal oscuro
-- **Ícono de la app dinámico** que cambia según la temporada activa.
+- **Splash Screen de 3 segundos con sonido estacional**:
+  - 🎃 **Octubre**: Logo Halloween (`Logo_TokTik_Octubre.jfif`) + audio temático (`OctubreP4.mpeg`).
+  - 🎄 **Diciembre**: Logo Navideño (`Logo_TokTik_Diciembre.jfif`) + audio navideño (`DiciembreP4.mpeg`).
+  - 💝 **Febrero**: San Valentín con paleta rosa/carmesí.
+  - 📱 **Resto del año**: Logo estándar TokTik.
+- **Mecanismo de Prueba de Temporadas**: Botón interactivo en el AppBar que permite forzar cualquier temporada y la persiste en `SharedPreferences`.
+- **Botón de Silenciar/Activar Sonido (Mute/Unmute)**: Ubicado en la columna lateral derecha de interacción del video con `ValueNotifier`.
+- **Botón Central Play/Pause**: Ícono central animado que aparece al pausar el video y permite alternar la reproducción.
+- **Descripción Extensa con Desplazamiento Vertical**: Botón `... más` que despliega un contenedor scrollable vertical (`SingleChildScrollView` con scrollbar).
+- **Desplazamiento Lateral**: Navegación horizontal fluida (`PageView` lateral) entre **For You**, **Discovery** y **Favoritos**, además de un carrusel horizontal en Discovery.
+- **Persistencia de Likes y Vistas**: Almacena el número exacto de likes y vistas en `SharedPreferences` persistiendo al reiniciar la app.
+- **3 DataSources Externos**: Consumo de videos mediante **YouTube Data API v3**, **Pexels Videos API** y **Pixabay Video API** bajo principios de Clean Architecture.
+- **Filtrado de videos ilógicos**: Exclusión automática de videos donde `likes > views`.
 
 ---
 
@@ -32,11 +35,16 @@ Aplicación móvil desarrollada en Flutter inspirada en TikTok. Permite reproduc
 | Tecnología | Uso |
 |---|---|
 | Flutter / Dart | Framework móvil |
-| Material Design 3 | UI y sistema de temas |
-| `provider` ^6.1.5 | Gestión de estado |
-| `video_player` ^2.9.1 | Reproducción de video |
-| `animate_do` ^3.3.4 | Animación del ícono |
-| `intl` ^0.19.0 | Formato numérico compacto |
+| Material Design 3 | UI y sistema de temas dinámicos |
+| `provider` ^6.1.5 | Gestión de estado reactivo |
+| `video_player` ^2.9.1 | Reproductor de videos MP4 (local y red) |
+| `audioplayers` ^6.1.0 | Reproducción de audios estacionales en Splash |
+| `youtube_player_flutter` ^9.1.1 | Reproductor embebido de YouTube |
+| `dio` ^5.4.0 | Cliente HTTP para APIs de Pexels, Pixabay y YouTube |
+| `shared_preferences` ^2.3.2 | Persistencia de likes, vistas, favoritos y temporadas |
+| `cached_network_image` ^3.4.1 | Caché de miniaturas remotas |
+| `animate_do` ^3.3.4 | Animaciones fluidas |
+| `intl` ^0.19.0 | Formato numérico compacto (K, M) |
 
 ---
 

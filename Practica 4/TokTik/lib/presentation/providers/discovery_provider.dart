@@ -17,9 +17,13 @@ class DiscoveryProvider extends ChangeNotifier {
   Future<void> loadVideos() async {
     try {
       final result = await youtubeDataSource.getTrendingVideosByPage(1);
-      videos = result.map((v) => v.copyWith(
-            isLiked: LocalStorageService.isLiked(v.id),
-          )).toList();
+      videos = result.map((v) {
+        final savedLikes = LocalStorageService.getLikes(v.id);
+        return v.copyWith(
+          isLiked: LocalStorageService.isLiked(v.id),
+          likes: savedLikes ?? v.likes,
+        );
+      }).toList();
       errorMessage = null;
     } catch (e) {
       errorMessage = 'No se pudo cargar el contenido de YouTube.';
@@ -39,6 +43,7 @@ class DiscoveryProvider extends ChangeNotifier {
 
     videos[idx] = updated;
     await LocalStorageService.setLiked(video.id, isNowLiked);
+    await LocalStorageService.setLikes(video.id, newLikes);
 
     if (isNowLiked) {
       await LocalStorageService.addFavorite(updated);

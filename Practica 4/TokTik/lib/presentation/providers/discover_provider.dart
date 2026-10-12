@@ -32,12 +32,16 @@ class DiscoverProvider extends ChangeNotifier {
     // 2. Cargar videos de APIs externas (Pexels + Pixabay via repository)
     final apiVideos = await videosRepository.getTrendingVideosByPage(_currentPage);
 
-    // 3. Combinar y aplicar estado persistido (likes + vistas)
+    // 3. Combinar y aplicar estado persistido (likes, estado de like y vistas)
     final allNew = [...localVideos, ...apiVideos];
-    final processed = allNew.map((v) => v.copyWith(
-          isLiked: LocalStorageService.isLiked(v.id),
-          views: v.views + LocalStorageService.getViews(v.id),
-        )).toList();
+    final processed = allNew.map((v) {
+      final savedLikes = LocalStorageService.getLikes(v.id);
+      return v.copyWith(
+        isLiked: LocalStorageService.isLiked(v.id),
+        likes: savedLikes ?? v.likes,
+        views: v.views + LocalStorageService.getViews(v.id),
+      );
+    }).toList();
 
     videos.addAll(processed);
     initialLoading = false;
@@ -61,7 +65,9 @@ class DiscoverProvider extends ChangeNotifier {
     final updated = video.copyWith(isLiked: isNowLiked, likes: newLikes);
     videos[idx] = updated;
 
+    // Persistencia en LocalStorage del estado de like y del número de likes
     await LocalStorageService.setLiked(video.id, isNowLiked);
+    await LocalStorageService.setLikes(video.id, newLikes);
 
     if (isNowLiked) {
       await LocalStorageService.addFavorite(updated);

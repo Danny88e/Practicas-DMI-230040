@@ -23,6 +23,14 @@
 13. [Paquetes Utilizados](#13-paquetes-utilizados)
 14. [Configuración de APIs](#14-configuración-de-apis)
 15. [Pruebas](#15-pruebas)
+16. [Splash Screen Estacional](#16-splash-screen-estacional)
+17. [Botón de Mute en Columna Lateral](#17-botón-de-mute-en-columna-lateral)
+18. [Botón Play/Pause en el Centro de la Pantalla](#18-botón-playpause-en-el-centro-de-la-pantalla)
+19. [Mecanismo de Prueba de Temporadas (LocalStorage & San Valentín)](#19-mecanismo-de-prueba-de-temporadas-localstorage--san-valentín)
+20. [Persistencia del Conteo de Likes en Local Storage](#20-persistencia-del-conteo-de-likes-en-local-storage)
+21. [Descripción Extensa con Desplazamiento Vertical](#21-descripción-extensa-con-desplazamiento-vertical)
+22. [Desplazamiento Lateral entre Secciones y Carrusel](#22-desplazamiento-lateral-entre-secciones-y-carrusel)
+23. [Diagramas de Arquitectura (Provider Local vs Repositorio y DataSources)](#23-diagramas-de-arquitectura-provider-local-vs-repositorio-y-datasources)
 
 ---
 
@@ -614,19 +622,58 @@ class ApiKeys {
 2. Crea un proyecto nuevo.
 3. Habilita la API: **YouTube Data API v3**.
 4. Ve a Credenciales → Crear credencial → Clave de API.
-5. Copia la clave y reemplaza `TU_YOUTUBE_API_KEY_AQUI`.
+5. Copia la clave y reemplaza `TU_YOUTUBE_API_KEY_AQUI`. (AIzaSyBhAGHFy1ClhV9jZ1ZpgDoE-QFA2WN2Qhg)
 
 #### Pexels API
 1. Ve a: https://www.pexels.com/api/
 2. Crea una cuenta gratuita.
 3. Solicita acceso a la API (se aprueba en segundos).
 4. Copia tu API Key del panel y reemplaza `TU_PEXELS_API_KEY_AQUI`.
+Solicitar acceso a la API
+La emisión de nuevas claves API está actualmente suspendida.
 
 #### Pixabay API
 1. Ve a: https://pixabay.com/api/docs/
 2. Crea una cuenta gratuita.
 3. Tu API Key aparece automáticamente en la documentación cuando estás logueado.
 4. Reemplaza `TU_PIXABAY_API_KEY_AQUI`.
+Buscar vídeos
+CONSEGUIRhttps://pixabay.com/api/videos/
+Parámetros
+clave (obligatoria)	str	Tu clave API:57999227-8d67580ec5c316c2a7fa08016 Girar
+q	str	Un término de búsqueda codificado en URL. Si se omite, se mostrarán todos los vídeos . Este valor no puede exceder los 100 caracteres.
+Ejemplo: "yellow+flower"
+idioma	str	Código de idioma del idioma en el que se realizará la búsqueda.
+Valores aceptados: cs, da, de, en, es, fr, id, it, hu, nl, no, pl, pt, ro, sk, fi, sv, tr, vi, th, bg, ru, el, ja, ko, zh. Valor
+predeterminado: "en".
+identificación	str	Recuperar vídeos individuales por ID.
+tipo_de_video	str	Filtra los resultados por tipo de vídeo.
+Valores aceptados: "all", "film", "animation".
+Valor predeterminado: "all".
+categoría	str	Filtra los resultados por categoría.
+Valores aceptados: antecedentes, moda, naturaleza, ciencia, educación, sentimientos, salud, personas, religión, lugares, animales, industria, informática, comida, deportes, transporte, viajes, edificios, negocios, música
+ancho_mínimo	entero	Ancho mínimo de vídeo.
+Valor predeterminado: "0"
+altura_mínima	entero	Altura mínima del vídeo.
+Valor predeterminado: "0"
+elección_de_los_editores	booleano	Seleccione los vídeos que hayan recibido el premio "Elección del editor ".
+Valores aceptados: "verdadero", "falso".
+Valor predeterminado: "falso".
+búsqueda segura	booleano	Un indicador que especifica que solo se deben devolver vídeos aptos para todas las edades.
+Valores aceptados: "true", "false".
+Valor predeterminado: "false".
+orden	str	Cómo deben ordenarse los resultados.
+Valores aceptados: "popular", "latest".
+Valor predeterminado: "popular".
+página	entero	Los resultados de la búsqueda se muestran paginados. Utilice este parámetro para seleccionar el número de página.
+Valor predeterminado: 1
+por página	entero	Determina el número de resultados por página.
+Valores aceptados: 3 - 200.
+Valor predeterminado: 20.
+llamar de vuelta	cadena	Nombre de la función de devolución de llamada JSONP
+bonito	booleano	Sangrar la salida JSON. Esta opción no debe usarse en producción.
+Valores aceptados: "true", "false".
+Valor predeterminado: "false".
 
 ### Cómo ejecutar el proyecto
 ```bash
@@ -703,3 +750,308 @@ La pestaña For You mostrará solo los videos locales. Discovery mostrará un es
 1. Descarga los 14 videos de Drive (ver `assets/videos/README.txt`).
 2. La app siempre muestra los videos locales válidos (los 3 ilógicos se filtran).
 3. Los videos locales funcionan sin conexión a Internet.
+
+---
+
+## 16. Splash Screen Estacional
+
+### ¿Qué se implementó?
+Una pantalla de bienvenida que se muestra durante **3 segundos** al iniciar la app. Muestra el logo de la temporada activa y reproduce un sonido correspondiente.
+
+### Archivo con la lógica
+`lib/presentation/screens/splash/splash_screen.dart`
+
+### Detección de temporada
+La temporada se obtiene de `AppTheme.currentSeason` que compara el mes actual del dispositivo:
+
+| Mes      | Temporada  | Logo                          | Sonido                  |
+|----------|------------|-------------------------------|-------------------------|
+| Octubre  | Halloween  | `Logo_TokTik_Octubre.jfif`    | `OctubreP4.mpeg`        |
+| Diciembre| Navidad    | `Logo_TokTik_Diciembre.jfif`  | `DiciembreP4.mpeg`      |
+| Resto    | Normal     | `Logo_TokTik.jfif`            | (ninguno)               |
+
+### ¿Cómo funciona?
+
+```dart
+// En main.dart: home apunta a SplashScreen
+home: const SplashScreen(),
+
+// SplashScreen en initState():
+Future.delayed(const Duration(seconds: 3), _navigateToHome);
+_playSeasonalSound();  // Reproduce el audio de assets/sounds/
+
+// Navegación con transición fade
+Navigator.of(context).pushReplacement(
+  PageRouteBuilder(
+    pageBuilder: (_, __, ___) => const HomeScreen(),
+    transitionsBuilder: (_, anim, __, child) =>
+        FadeTransition(opacity: anim, child: child),
+  ),
+);
+```
+
+### Animaciones del Splash
+- **Fade-in + Scale**: El logo y el texto aparecen con animación elástica.
+- **Barra de progreso**: `LinearProgressIndicator` con color temático.
+- **Fondo degradado**: Radial/Linear según la temporada.
+- **Partículas de fondo**: Para Halloween, se pintan destellos naranjas con `CustomPainter`.
+
+### Paquete de Audio
+Se usa el paquete `audioplayers` para reproducir los archivos `.mpeg` de `assets/sounds/`:
+
+```dart
+await _audioPlayer.play(AssetSource('sounds/OctubreP4.mpeg'));
+```
+
+---
+
+## 17. Botón de Mute en Columna Lateral
+
+### ¿Qué se implementó?
+El botón de silenciar/activar sonido se movió de la esquina superior del video a la **columna lateral de botones** (junto al corazón y las vistas), cumpliendo el requisito del profesor.
+
+### Archivo con la lógica
+`lib/presentation/widgets/shared/video_buttons.dart` → clase `_MuteButton`
+
+### Arquitectura con ValueNotifier
+
+```
+VideoScrollableView
+├── ValueNotifier<bool> _isMutedNotifier (estado compartido)
+├── ValueNotifier<bool> _isPlayingNotifier
+├── FullScreenPlayer(isMutedNotifier: _isMutedNotifier, ...)
+│     └── Escucha _isMutedNotifier → setVolume()
+└── VideoButtons(isMutedNotifier: _isMutedNotifier)
+      └── _MuteButton → al tocar, cambia _isMutedNotifier.value
+```
+
+El `ValueNotifier` garantiza que el cambio de mute se propaga reactivamente al reproductor **sin rebuild innecesario de toda la pantalla**.
+
+### Estados del botón
+| Estado    | Ícono          | Texto   | Color fondo |
+|-----------|----------------|---------|-------------|
+| Muteado   | `volume_off`   | "Mudo"  | `white24`   |
+| Con sonido| `volume_up`    | "Sonido"| `white10`   |
+
+---
+
+## 18. Botón Play/Pause en el Centro de la Pantalla
+
+### ¿Qué se implementó?
+Un botón circular en el centro exacto del video que se muestra al pausar y desaparece al reproducir. Comparte estado con `FullScreenPlayer` mediante `ValueNotifier<bool>`.
+
+### Archivo con la lógica
+`lib/presentation/widgets/shared/video_scrollable_view.dart` (overlay en el `Stack`)
+
+### ¿Cómo funciona?
+
+```dart
+// En VideoScrollableView:
+Center(
+  child: ValueListenableBuilder<bool>(
+    valueListenable: _isPlayingNotifier,
+    builder: (_, isPlaying, __) {
+      return GestureDetector(
+        onTap: () => _isPlayingNotifier.value = !_isPlayingNotifier.value,
+        child: AnimatedOpacity(
+          opacity: isPlaying ? 0.0 : 1.0,  // Solo visible al pausar
+          duration: Duration(milliseconds: 300),
+          child: Container(
+            width: 80, height: 80,
+            decoration: BoxDecoration(color: Colors.black45, shape: BoxShape.circle),
+            child: Icon(isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded, ...),
+          ),
+        ),
+      );
+    },
+  ),
+),
+```
+
+### Comportamiento
+- Al tocar el **video** → alterna play/pause (GestureDetector en FullScreenPlayer).
+- Al tocar el **botón central** → también alterna (GestureDetector del overlay).
+- Ambos comparten el mismo `_isPlayingNotifier` → siempre sincronizados.
+- Al cambiar de video con scroll → `_isPlayingNotifier.value = true` (reinicia a play).
+
+---
+
+## 19. Mecanismo de Prueba de Temporadas (LocalStorage & San Valentín)
+
+### ¿Qué se implementó?
+Un mecanismo interactivo de pruebas integrado en la UI que permite al profesor y al desarrollador forzar en cualquier momento cualquiera de las temporadas:
+- 🎃 **Halloween** (Octubre): Naranja calabaza, morado oscuro, audio espeluznante.
+- 🎄 **Navidad** (Diciembre): Rojo navideño, verde pino, dorado, villancico.
+- 💝 **San Valentín / Valentine's Day** (Febrero): Rosa intenso, carmesí y amor.
+- 📱 **Normal**: Modo oscuro estándar con acentos verdes.
+- 🗓️ **Automático**: Lee la fecha del sistema (`DateTime.now().month`).
+
+La selección se guarda de forma persistente en `SharedPreferences` mediante la clave `season_override`.
+
+### Acceso en la aplicación
+1. En la pestaña **For You**, se pulsa el botón de paleta (🎨) en el AppBar superior derecho.
+2. Se abre el diálogo interactivo `SeasonSelectorDialog`.
+3. Al seleccionar una temporada, la app actualiza reactivamente su paleta de colores, ícono y textos sin necesidad de reiniciar la app (vía `ThemeProvider`).
+4. El diálogo incluye un botón directo **"Probar Splash Screen (3s)"** para previsualizar inmediatamente la pantalla de bienvenida y el audio estacional de la temporada elegida.
+
+---
+
+## 20. Persistencia del Conteo de Likes en Local Storage
+
+### ¿Qué se implementó?
+Para cumplir con el requerimiento de que el número de *Me Gusta* persista parcialmente tras cerrar la app:
+1. `LocalStorageService.setLikes(videoId, count)` guarda el total entero de likes bajo la clave `likes_count_{videoId}`.
+2. Cuando el usuario da like, se incrementa en 1 y se guarda en `LocalStorageService`.
+3. Cuando el usuario desmarca el like, se resta 1 y se actualiza en `LocalStorageService`.
+4. Al cargar los videos (locales o remotos), `DiscoverProvider` y `DiscoveryProvider` consultan `LocalStorageService.getLikes(v.id)` y sobreescriben el valor base si existe uno almacenado.
+
+---
+
+## 21. Descripción Extensa con Desplazamiento Vertical
+
+### ¿Qué se implementó?
+En `lib/presentation/widgets/video/video_description.dart`:
+- Cuando la descripción excede los 80 caracteres, se muestra truncada con el botón interactivo **"... más"**.
+- Al presionar **"... más"**, la descripción se expande dentro de un contenedor acotado (`ConstrainedBox` con altura máxima de 130 px).
+- La sección cuenta con **desplazamiento vertical** (`SingleChildScrollView` con física `BouncingScrollPhysics()` y barra de scroll `RawScrollbar` visible), permitiendo leer descripciones completas (incluso las más largas de YouTube) sin desbordar la pantalla del video.
+- Al presionar **"Ver menos"**, se contrae de nuevo a su estado compacto.
+
+---
+
+## 22. Desplazamiento Lateral entre Secciones y Carrusel
+
+### ¿Qué se implementó?
+1. **Desplazamiento lateral en HomeScreen**:
+   La pantalla principal implementa un `PageView` horizontal (`scrollDirection: Axis.horizontal`) conectado con `PageController` al `NavigationBar`.
+   El usuario puede deslizar con el dedo lateralmente (swipe horizontal) para navegar de forma natural entre:
+   - **For You** (desplazamiento vertical de videos TikTok)
+   - **Discovery** (videos de YouTube)
+   - **Favoritos** (videos con ❤️ guardados)
+2. **Carrusel lateral de tendencias en Discovery**:
+   En la pestaña Discovery se agregó una sección superior con desplazamiento lateral horizontal (`ListView.builder` con `Axis.horizontal`), permitiendo explorar miniaturas de tendencias de YouTube deslizando de izquierda a derecha.
+
+---
+
+## 23. Diagramas de Arquitectura (Provider Local vs Repositorio y DataSources)
+
+Como requisito fundamental de evaluación de la práctica, se presentan los dos diagramas de arquitectura que contrastan el consumo local directo frente a la arquitectura desacoplada con Repositorio y múltiples DataSources.
+
+### Diagrama 1: Arquitectura con Provider Local
+
+Este diagrama modela el flujo directo donde el Provider interactúa con la fuente de datos local (assets empaquetados en la aplicación) y el almacenamiento en disco (`SharedPreferences`):
+
+```mermaid
+graph TD
+    subgraph UI ["Capa de Presentación (UI)"]
+        V[DiscoverScreen / VideoScrollableView]
+        VB[VideoButtons - Likes y Vistas]
+    end
+
+    subgraph ProviderLayer ["Gestor de Estado"]
+        DP[DiscoverProvider]
+    end
+
+    subgraph LocalDatasourceLayer ["Capa de Datos Local"]
+        LDS[LocalVideoDatasource]
+        LVM[LocalVideoModel Mapper]
+    end
+
+    subgraph Persistence ["Persistencia Local"]
+        LSS[LocalStorageService]
+        SP[(SharedPreferences)]
+    end
+
+    subgraph LocalAssets ["Recursos Locales"]
+        LVP[local_video_posts.dart]
+        VIDS[(assets/videos/*.mp4)]
+    end
+
+    V -->|Lee videos y estado| DP
+    VB -->|Incrementa vistas / Alterna like| DP
+    DP -->|Carga videos locales iniciales| LDS
+    LDS -->|Lee lista de videos| LVP
+    LDS -->|Carga video URLs| VIDS
+    LVP -->|Mapea a entidad| LVM
+    LVM -->|Genera instancias| DP
+    DP -->|Persiste vistas y likes| LSS
+    LSS -->|Guarda / Lee| SP
+```
+
+**Características del Provider Local:**
+- **Sin conexión requerida**: Los 14 videos locales funcionan offline directamente desde los assets.
+- **Filtrado de inconsistencias**: `DiscoverProvider` evalúa el getter `video.isValid` y descarta los 3 videos ilógicos (`likes > views`).
+- **Persistencia inmediata**: Guarda y lee likes, vistas y estado directamente vía `LocalStorageService`.
+
+---
+
+### Diagrama 2: Arquitectura con Provider a través de Repositorio y Diferentes DataSources
+
+Este diagrama modela la **Arquitectura Limpia (Clean Architecture)** implementando el principio de Inversión de Dependencias (DIP) del estándar SOLID. El Provider no conoce la procedencia específica ni los detalles HTTP de cada API; se comunica únicamente a través de la interfaz abstracta del repositorio:
+
+```mermaid
+graph TD
+    subgraph UI ["Capa de Presentación"]
+        DS_UI[DiscoverScreen - For You]
+        DY_UI[DiscoveryScreen - YouTube]
+    end
+
+    subgraph Providers ["Capa de Providers"]
+        DP[DiscoverProvider]
+        DYP[DiscoveryProvider]
+    end
+
+    subgraph Domain ["Capa de Dominio (Clean Code)"]
+        REPO_INTERFACE["VideoPostRepository (Abstract Interface)"]
+        ENTITY["VideoPost Entity"]
+    end
+
+    subgraph Infrastructure ["Capa de Infraestructura"]
+        REPO_IMPL["VideoPostsRepositoryImpl"]
+        PEX_DS["PexelsDataSourceImpl"]
+        PIX_DS["PixabayDataSourceImpl"]
+        YOUTUBE_DS["YoutubeDataSourceImpl"]
+    end
+
+    subgraph ModelsMappers ["Modelos y Mappers"]
+        PEX_MODEL["PexelsVideoModel"]
+        PIX_MODEL["PixabayVideoModel"]
+        YOU_MODEL["YoutubeVideoModel"]
+    end
+
+    subgraph ExternalAPIs ["APIs Externas REST (HTTP/Dio)"]
+        API_PEX[("Pexels Video API\napi.pexels.com")]
+        API_PIX[("Pixabay Video API\npixabay.com")]
+        API_YOU[("YouTube Data API v3\ngoogleapis.com")]
+    end
+
+    DS_UI -->|Observa videos| DP
+    DY_UI -->|Observa videos| DYP
+    
+    DP -->|Consume mediante interfaz| REPO_INTERFACE
+    DYP -->|Consume datasource YouTube| YOUTUBE_DS
+    
+    REPO_INTERFACE -.->|Implementado por| REPO_IMPL
+    REPO_IMPL -->|Orquesta llamada| PEX_DS
+    REPO_IMPL -->|Orquesta llamada| PIX_DS
+
+    PEX_DS -->|GET /videos/search| API_PEX
+    PIX_DS -->|GET /api/videos| API_PIX
+    YOUTUBE_DS -->|GET /videos?chart=mostPopular| API_YOU
+
+    API_PEX -->|JSON Response| PEX_MODEL
+    API_PIX -->|JSON Response| PIX_MODEL
+    API_YOU -->|JSON Response| YOU_MODEL
+
+    PEX_MODEL -->|toVideoPostEntity()| ENTITY
+    PIX_MODEL -->|toVideoPostEntity()| ENTITY
+    YOU_MODEL -->|toVideoPostEntity()| ENTITY
+
+    ENTITY -->|Entrega a| REPO_IMPL
+    REPO_IMPL -->|Entrega List<VideoPost>| DP
+```
+
+**Ventajas clave de este diseño:**
+1. **Desacoplamiento total**: Si la API de Pexels o Pixabay cambia sus nombres de campos JSON, solo se actualiza su modelo/mapper (`PexelsVideoModel`), sin alterar ni una sola línea de la UI ni de los Providers.
+2. **Escalabilidad**: Se pueden agregar nuevos datasources (por ejemplo, DailyMotion, Vimeo o Twitch) simplemente implementando `VideoPostDatasource` y registrándolos en `VideoPostsRepositoryImpl`.
+3. **Sustituibilidad (Principio de Liskov)**: El Provider solo depende de `VideoPostRepository`, permitiendo inyectar fuentes reales o mocks en pruebas unitarias.
+
