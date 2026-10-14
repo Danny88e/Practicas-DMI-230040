@@ -1,384 +1,1413 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>TokTik — Diagramas de Arquitectura (Práctica 04)</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TokTik — Diagramas de Arquitectura de Software (Archfy Style)</title>
+  
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
   <style>
+    /* ==========================================================================
+       ARCHFY CORE DESIGN SYSTEM — VARIABLES & RESET
+       ========================================================================== */
+    :root {
+      --bg-main: #070a13;
+      --bg-surface: #0d1322;
+      --bg-card: rgba(16, 24, 43, 0.82);
+      --bg-card-hover: rgba(24, 36, 64, 0.95);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      
+      /* Neon Theme 1: Emerald & Cyan Matrix (Videos Locales) */
+      --local-primary: #10b981;
+      --local-glow: rgba(16, 185, 129, 0.35);
+      --local-secondary: #06b6d4;
+      --local-accent: #34d399;
+      --local-border: rgba(16, 185, 129, 0.3);
+
+      /* Neon Theme 2: Sunset Violet, Rose & Amber (APIs Externas / Clean Arch) */
+      --api-primary: #8b5cf6;
+      --api-glow: rgba(139, 92, 246, 0.35);
+      --api-secondary: #f43f5e;
+      --api-accent: #f59e0b;
+      --api-cyan: #38bdf8;
+      --api-border: rgba(139, 92, 246, 0.35);
+
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-full: 9999px;
+      
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'Fira Code', monospace;
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    
     body {
-      background: #0a0e17;
-      color: #e2e8f0;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      font-family: var(--font-sans);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(16, 185, 129, 0.06) 0%, transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(139, 92, 246, 0.07) 0%, transparent 40%),
+        linear-gradient(to right, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 36px 36px, 36px 36px;
     }
+
+    /* ==========================================================================
+       HEADER & NAVIGATION BAR
+       ========================================================================== */
     header {
-      background: #111827;
-      border-bottom: 1px solid #1f2937;
-      padding: 16px 24px;
+      background: rgba(13, 19, 34, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-subtle);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 14px 28px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 16px;
     }
-    .logo-group {
+
+    .brand {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 14px;
     }
-    .logo-badge {
-      background: linear-gradient(135deg, #ff0050, #00f2fe);
+
+    .brand-logo {
+      background: linear-gradient(135deg, #ff0050 0%, #00f2fe 100%);
       color: #fff;
       font-weight: 900;
-      font-size: 16px;
-      padding: 6px 12px;
-      border-radius: 8px;
-      letter-spacing: 1px;
+      font-size: 15px;
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
+      letter-spacing: 1.2px;
+      box-shadow: 0 4px 14px rgba(255, 0, 80, 0.35);
+      text-transform: uppercase;
     }
-    h1 { font-size: 20px; font-weight: 700; color: #f8fafc; }
-    .subtitle { font-size: 13px; color: #94a3b8; }
-    .tabs {
+
+    .brand-info h1 {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #fff;
       display: flex;
+      align-items: center;
       gap: 8px;
-      background: #1e293b;
-      padding: 4px;
-      border-radius: 10px;
     }
+
+    .brand-info h1 .badge-archfy {
+      font-size: 10px;
+      font-weight: 700;
+      background: rgba(56, 189, 248, 0.15);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      padding: 2px 7px;
+      border-radius: var(--radius-full);
+      letter-spacing: 0.5px;
+    }
+
+    .brand-info p {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* Tabs Controller */
+    .tab-container {
+      display: flex;
+      background: rgba(2, 6, 23, 0.8);
+      border: 1px solid var(--border-subtle);
+      padding: 4px;
+      border-radius: var(--radius-md);
+      gap: 6px;
+    }
+
     .tab-btn {
       background: transparent;
       border: none;
-      color: #94a3b8;
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-weight: 600;
+      color: var(--text-muted);
+      padding: 8px 18px;
       font-size: 13px;
+      font-weight: 600;
+      font-family: var(--font-sans);
+      border-radius: var(--radius-sm);
       cursor: pointer;
-      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .tab-btn:hover { color: #fff; }
-    .tab-btn.active {
-      background: #3b82f6;
+
+    .tab-btn:hover {
       color: #fff;
-      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+      background: rgba(255, 255, 255, 0.05);
     }
+
+    .tab-btn.active-local {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(6, 182, 212, 0.2));
+      color: #6ee7b7;
+      border: 1px solid rgba(16, 185, 129, 0.45);
+      box-shadow: 0 4px 16px rgba(16, 185, 129, 0.25);
+    }
+
+    .tab-btn.active-api {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(244, 63, 94, 0.2));
+      color: #c4b5fd;
+      border: 1px solid rgba(139, 92, 246, 0.5);
+      box-shadow: 0 4px 16px rgba(139, 92, 246, 0.25);
+    }
+
+    /* Quick Links Bar */
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .action-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      padding: 7px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 500;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .action-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    /* ==========================================================================
+       MAIN CONTAINER & PANELS
+       ========================================================================== */
     main {
       flex: 1;
-      padding: 24px;
-      max-width: 1280px;
-      margin: 0 auto;
+      max-width: 1380px;
       width: 100%;
+      margin: 0 auto;
+      padding: 28px 24px 60px 24px;
     }
-    .diagram-panel {
+
+    .panel {
       display: none;
-      background: #111827;
-      border: 1px solid #1f2937;
-      border-radius: 16px;
-      padding: 24px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      animation: fadeIn 0.35s ease-out forwards;
     }
-    .diagram-panel.active { display: block; }
-    .panel-header {
-      margin-bottom: 20px;
-      border-bottom: 1px solid #1f2937;
-      padding-bottom: 16px;
+
+    .panel.active {
+      display: block;
     }
-    .panel-header h2 { font-size: 18px; color: #60a5fa; margin-bottom: 6px; }
-    .panel-header p { font-size: 14px; color: #94a3b8; line-height: 1.5; }
-    
-    .diagram-container {
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Banner de Encabezado de Diagrama */
+    .diagram-hero {
+      border-radius: var(--radius-lg);
+      padding: 24px 28px;
+      margin-bottom: 28px;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid;
+    }
+
+    .theme-local .diagram-hero {
+      background: radial-gradient(circle at 10% 50%, rgba(16, 185, 129, 0.15) 0%, rgba(13, 19, 34, 0.95) 70%);
+      border-color: rgba(16, 185, 129, 0.3);
+      box-shadow: 0 8px 32px rgba(16, 185, 129, 0.1);
+    }
+
+    .theme-api .diagram-hero {
+      background: radial-gradient(circle at 10% 50%, rgba(139, 92, 246, 0.18) 0%, rgba(13, 19, 34, 0.95) 70%);
+      border-color: rgba(139, 92, 246, 0.35);
+      box-shadow: 0 8px 32px rgba(139, 92, 246, 0.12);
+    }
+
+    .diagram-tag {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+      margin-bottom: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .theme-local .diagram-tag { color: var(--local-accent); }
+    .theme-api .diagram-tag { color: #f472b6; }
+
+    .diagram-hero h2 {
+      font-size: 24px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+
+    .diagram-hero p {
+      font-size: 14px;
+      color: var(--text-muted);
+      max-width: 900px;
+      line-height: 1.6;
+    }
+
+    .diagram-stats {
+      display: flex;
+      gap: 16px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    .stat-pill {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 6px 12px;
+      border-radius: var(--radius-full);
+      font-size: 12px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #e2e8f0;
+    }
+
+    /* ==========================================================================
+       ARCHFY FLOW PIPELINE & LAYERS
+       ========================================================================== */
+    .flow-pipeline {
       display: flex;
       flex-direction: column;
       gap: 20px;
       position: relative;
     }
 
-    .arch-layer {
-      background: #182234;
-      border: 1px solid #23354d;
-      border-radius: 12px;
-      padding: 16px;
+    .layer-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 20px 24px;
+      transition: all 0.3s ease;
+      position: relative;
     }
-    .layer-title {
-      font-size: 12px;
+
+    .theme-local .layer-card:hover {
+      border-color: rgba(16, 185, 129, 0.25);
+      box-shadow: 0 10px 30px rgba(16, 185, 129, 0.07);
+    }
+
+    .theme-api .layer-card:hover {
+      border-color: rgba(139, 92, 246, 0.3);
+      box-shadow: 0 10px 30px rgba(139, 92, 246, 0.08);
+    }
+
+    .layer-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .layer-badge-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
       font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 1.2px;
-      color: #38bdf8;
+      letter-spacing: 1px;
+    }
+
+    .layer-num {
+      width: 24px;
+      height: 24px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .theme-local .layer-num {
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+    }
+
+    .theme-api .layer-num {
+      background: rgba(139, 92, 246, 0.2);
+      color: #c084fc;
+      border: 1px solid rgba(139, 92, 246, 0.4);
+    }
+
+    .layer-desc {
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+
+    /* Grid de Nodos */
+    .nodes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .node {
+      background: rgba(8, 12, 22, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .node::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+
+    .theme-local .node:hover {
+      border-color: var(--local-primary);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px var(--local-glow);
+    }
+
+    .theme-local .node:hover::before {
+      background: linear-gradient(90deg, var(--local-primary), var(--local-secondary));
+      opacity: 1;
+    }
+
+    .theme-api .node:hover {
+      border-color: var(--api-primary);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px var(--api-glow);
+    }
+
+    .theme-api .node:hover::before {
+      background: linear-gradient(90deg, var(--api-secondary), var(--api-primary));
+      opacity: 1;
+    }
+
+    .node-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .node-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .node-type-tag {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: var(--radius-full);
+      white-space: nowrap;
+    }
+
+    .type-ui { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); }
+    .type-provider { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+    .type-domain { background: rgba(236, 72, 153, 0.15); color: #f472b6; border: 1px solid rgba(236, 72, 153, 0.3); }
+    .type-infra { background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); }
+    .type-cloud { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+    .type-storage { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+
+    .node-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.5;
       margin-bottom: 12px;
+    }
+
+    .node-code-badge {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-dim);
+      background: rgba(0, 0, 0, 0.35);
+      padding: 4px 8px;
+      border-radius: 6px;
+      display: inline-block;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    /* Conectores y Flechas Animadas */
+    .pipe-connector {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px 0;
+      position: relative;
+    }
+
+    .pipe-line {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(13, 19, 34, 0.9);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-full);
+      padding: 4px 16px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    .pulse-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      animation: pulse 1.6s infinite;
+    }
+
+    .theme-local .pulse-dot { background: var(--local-primary); box-shadow: 0 0 8px var(--local-primary); }
+    .theme-api .pulse-dot { background: var(--api-secondary); box-shadow: 0 0 8px var(--api-secondary); }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.3; transform: scale(0.85); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    /* Gateway de Validación (Filtro isValid) */
+    .validation-gateway {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(15, 23, 42, 0.95));
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      margin: 10px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .gateway-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .gateway-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      background: rgba(245, 158, 11, 0.2);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      color: #fbbf24;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .gateway-text h4 {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fef08a;
+      margin-bottom: 2px;
+    }
+
+    .gateway-text p {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .gateway-branches {
+      display: flex;
+      gap: 12px;
+    }
+
+    .branch-pill {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .branch-pass {
+      background: rgba(16, 185, 129, 0.2);
+      color: #6ee7b7;
+      border: 1px solid rgba(16, 185, 129, 0.35);
+    }
+
+    .branch-drop {
+      background: rgba(239, 68, 68, 0.2);
+      color: #fca5a5;
+      border: 1px solid rgba(239, 68, 68, 0.35);
+    }
+
+    /* Key Insights Footer */
+    .key-insights {
+      margin-top: 32px;
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+    }
+
+    .key-insights h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 14px;
       display: flex;
       align-items: center;
       gap: 8px;
     }
-    .node-grid {
+
+    .insights-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 12px;
-    }
-    .node-card {
-      background: #0f172a;
-      border: 1px solid #334155;
-      border-radius: 10px;
-      padding: 14px;
-      transition: transform 0.2s, border-color 0.2s;
-      cursor: pointer;
-    }
-    .node-card:hover {
-      transform: translateY(-3px);
-      border-color: #38bdf8;
-      box-shadow: 0 6px 16px rgba(56, 189, 248, 0.15);
-    }
-    .node-name { font-size: 14px; font-weight: 700; color: #f1f5f9; margin-bottom: 4px; }
-    .node-desc { font-size: 12px; color: #94a3b8; line-height: 1.4; }
-    .node-badge {
-      display: inline-block;
-      font-size: 10px;
-      font-weight: 700;
-      padding: 2px 6px;
-      border-radius: 4px;
-      margin-top: 8px;
-      text-transform: uppercase;
-    }
-    .badge-ui { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
-    .badge-provider { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
-    .badge-domain { background: rgba(236, 72, 153, 0.2); color: #f472b6; }
-    .badge-infra { background: rgba(168, 85, 247, 0.2); color: #c084fc; }
-    .badge-data { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
-
-    .arrow-divider {
-      text-align: center;
-      color: #64748b;
-      font-size: 18px;
-      font-weight: bold;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
     }
 
-    .key-points {
-      margin-top: 24px;
-      background: #0f172a;
-      border: 1px solid #1e293b;
-      border-radius: 12px;
+    .insight-card {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: var(--radius-md);
       padding: 16px;
     }
-    .key-points h3 { font-size: 14px; color: #f8fafc; margin-bottom: 10px; }
-    .key-points ul { list-style: inside disc; font-size: 13px; color: #94a3b8; line-height: 1.6; }
-    .key-points li strong { color: #e2e8f0; }
+
+    .insight-card h5 {
+      font-size: 13px;
+      font-weight: 700;
+      color: #e2e8f0;
+      margin-bottom: 6px;
+    }
+
+    .insight-card p {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* ==========================================================================
+       INTERACTIVE NODE INSPECTOR MODAL
+       ========================================================================== */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(3, 7, 18, 0.85);
+      backdrop-filter: blur(10px);
+      z-index: 999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    .modal-content {
+      background: #0d1527;
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7), 0 0 40px rgba(56, 189, 248, 0.15);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 640px;
+      overflow: hidden;
+      animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(20px) scale(0.96); opacity: 0; }
+      to { transform: translateY(0) scale(1); opacity: 1; }
+    }
+
+    .modal-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(2, 6, 23, 0.5);
+    }
+
+    .modal-title-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .modal-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .modal-close {
+      background: transparent;
+      border: none;
+      color: var(--text-dim);
+      font-size: 20px;
+      cursor: pointer;
+      padding: 4px;
+      transition: color 0.2s;
+    }
+
+    .modal-close:hover { color: #fff; }
+
+    .modal-body {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .detail-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .detail-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-dim);
+    }
+
+    .detail-val {
+      font-size: 13px;
+      color: #e2e8f0;
+      line-height: 1.5;
+    }
+
+    .modal-code-box {
+      background: #020617;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: #38bdf8;
+      overflow-x: auto;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border-subtle);
+      padding: 20px 28px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-dim);
+      background: var(--bg-surface);
+    }
+
+    footer a {
+      color: #38bdf8;
+      text-decoration: none;
+    }
+
+    footer a:hover { text-decoration: underline; }
+
+    @media (max-width: 768px) {
+      header { padding: 12px 16px; }
+      .brand-info h1 { font-size: 15px; }
+      .tab-btn { padding: 6px 12px; font-size: 12px; }
+      main { padding: 16px; }
+      .nodes-grid { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
 
+  <!-- ==========================================================================
+       HEADER & NAVIGATION
+       ========================================================================== -->
   <header>
-    <div class="logo-group">
-      <div class="logo-badge">TokTik</div>
-      <div>
-        <h1>Arquitectura y Diagramas de Flujo</h1>
-        <div class="subtitle">Práctica 04: Reproductor de Videos Verticales — DMI 230040</div>
+    <div class="brand">
+      <div class="brand-logo">TokTik</div>
+      <div class="brand-info">
+        <h1>Arquitectura y Diagramas de Flujo <span class="badge-archfy">ARCHFY SPEC</span></h1>
+        <p>Práctica 04: Videos Verticales con Flutter — Matrícula: 230040</p>
       </div>
     </div>
-    <div class="tabs">
-      <button class="tab-btn active" onclick="switchTab('local')">1. Provider Local</button>
-      <button class="tab-btn" onclick="switchTab('repo')">2. Provider con Repositorio & DataSources</button>
+
+    <!-- Tab Selector -->
+    <div class="tab-container">
+      <button id="btn-local" class="tab-btn active-local" onclick="switchTab('local')">
+        <span>💾</span> 1. Provider Local (Assets & SharedPreferences)
+      </button>
+      <button id="btn-api" class="tab-btn" onclick="switchTab('api')">
+        <span>☁️</span> 2. Clean Arch & Multi-DataSources (APIs)
+      </button>
+    </div>
+
+    <div class="header-actions">
+      <a href="README.md" class="action-btn">
+        <span>📖</span> Volver al README
+      </a>
     </div>
   </header>
 
+  <!-- ==========================================================================
+       MAIN CONTENT AREA
+       ========================================================================== -->
   <main>
-    <!-- TAB 1: Provider Local -->
-    <section id="panel-local" class="diagram-panel active">
-      <div class="panel-header">
-        <h2>Diagrama 1: Arquitectura con Provider Local</h2>
-        <p>Modelo de consumo local donde el gestor de estado (DiscoverProvider) interactúa con los recursos empaquetados en la aplicación (assets) y la persistencia en disco (SharedPreferences) sin conexión a internet.</p>
+
+    <!-- ========================================================================
+         TAB 1: DIAGRAMA DE VIDEOS LOCALES
+         ======================================================================== -->
+    <section id="panel-local" class="panel theme-local active">
+      
+      <!-- Hero Banner -->
+      <div class="diagram-hero">
+        <div class="diagram-tag"><span>●</span> MÓDULO OFFLINE / FIRST-CLASS LOCAL DATA</div>
+        <h2>Diagrama 1: Flujo de Videos Locales (Provider Directo)</h2>
+        <p>
+          Modelado de la arquitectura de consumo directo donde <code>DiscoverProvider</code> inicializa y sirve los 14 videos locales empaquetados en los assets de la aplicación. Aplica el filtro lógico <code>isValid</code> para descartar inconsistencias de negocio y persiste el estado de vistas y likes mediante <code>LocalStorageService</code> sobre <code>SharedPreferences</code> sin requerir conexión a internet.
+        </p>
+        <div class="diagram-stats">
+          <div class="stat-pill"><span>📁</span> 14 Videos Locales en Assets</div>
+          <div class="stat-pill"><span>🛡️</span> Filtro Lógico: isValid (likes &le; views)</div>
+          <div class="stat-pill"><span>💾</span> Persistencia SharedPreferences</div>
+          <div class="stat-pill"><span>⚡</span> ValueNotifier para Mute & Play/Pause</div>
+        </div>
       </div>
 
-      <div class="diagram-container">
-        <!-- Layer 1: Presentación -->
-        <div class="arch-layer">
-          <div class="layer-title">🎨 Capa de Presentación (UI)</div>
-          <div class="node-grid">
-            <div class="node-card">
-              <div class="node-name">DiscoverScreen</div>
-              <div class="node-desc">Pantalla "For You" con AppBar temático y VideoScrollableView.</div>
-              <span class="node-badge badge-ui">Widget</span>
+      <!-- Flow Pipeline -->
+      <div class="flow-pipeline">
+
+        <!-- Capa 1: UI -->
+        <div class="layer-card">
+          <div class="layer-header">
+            <div class="layer-badge-title">
+              <span class="layer-num">1</span>
+              <span>Capa de Presentación (UI & Widgets)</span>
             </div>
-            <div class="node-card">
-              <div class="node-name">FullScreenPlayer</div>
-              <div class="node-desc">Reproduce archivos MP4 locales vía VideoPlayerController.asset().</div>
-              <span class="node-badge badge-ui">Player</span>
+            <div class="layer-desc">Interacción táctil, scroll vertical infinito y controles multimedia</div>
+          </div>
+          <div class="nodes-grid">
+            
+            <div class="node" onclick="inspectNode('DiscoverScreen', 'Widget (Screen)', 'lib/presentation/screens/discover/discover_screen.dart', 'Pantalla principal de la pestaña For You. Aloja el AppBar con selector de temporadas estacionales y el feed VideoScrollableView.', 'Consumer<DiscoverProvider>')">
+              <div class="node-top">
+                <span class="node-name">DiscoverScreen</span>
+                <span class="node-type-tag type-ui">UI Screen</span>
+              </div>
+              <p class="node-desc">Feed vertical a pantalla completa. Responde reactivamente a los cambios de tema y estado de carga.</p>
+              <span class="node-code-badge">discover_screen.dart</span>
             </div>
-            <div class="node-card">
-              <div class="node-name">VideoButtons</div>
-              <div class="node-desc">Columna derecha con botón de mute, likes y contador de vistas.</div>
-              <span class="node-badge badge-ui">Interacción</span>
+
+            <div class="node" onclick="inspectNode('VideoScrollableView', 'StatefulWidget (Feed)', 'lib/presentation/widgets/shared/video_scrollable_view.dart', 'PageView vertical con BouncingScrollPhysics. Administra el estado de reproducción y sonido mediante ValueNotifier compartido con FullScreenPlayer.', 'PageView.builder(scrollDirection: Axis.vertical)')">
+              <div class="node-top">
+                <span class="node-name">VideoScrollableView</span>
+                <span class="node-type-tag type-ui">Widget Feed</span>
+              </div>
+              <p class="node-desc">Contenedor vertical scrollable. Dispara onViewIncrement al deslizar y aloja el botón central Play/Pause.</p>
+              <span class="node-code-badge">video_scrollable_view.dart</span>
+            </div>
+
+            <div class="node" onclick="inspectNode('FullScreenPlayer', 'StatefulWidget (Player)', 'lib/presentation/widgets/video/fullscreen_player.dart', 'Crea y gestiona la instancia de VideoPlayerController.asset() para reproducir los archivos MP4 locales en bucle.', 'VideoPlayerController.asset(url)')">
+              <div class="node-top">
+                <span class="node-name">FullScreenPlayer</span>
+                <span class="node-type-tag type-ui">Player Local</span>
+              </div>
+              <p class="node-desc">Reproduce archivos MP4 de assets sin conexión. Escucha isMutedNotifier e isPlayingNotifier reactivamente.</p>
+              <span class="node-code-badge">fullscreen_player.dart</span>
+            </div>
+
+            <div class="node" onclick="inspectNode('VideoButtons', 'StatefulWidget (Overlay)', 'lib/presentation/widgets/shared/video_buttons.dart', 'Columna lateral de interacción: botón de like con animación de corazón, botón de mute/unmute y contador de vistas.', 'onLikeToggle, isMutedNotifier')">
+              <div class="node-top">
+                <span class="node-name">VideoButtons</span>
+                <span class="node-type-tag type-ui">Overlay</span>
+              </div>
+              <p class="node-desc">Columna derecha interactiva: Likes persistidos, vistas humanas formateadas (K, M) y control de volumen.</p>
+              <span class="node-code-badge">video_buttons.dart</span>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Pipe Connector 1-2 -->
+        <div class="pipe-connector">
+          <div class="pipe-line">
+            <span class="pulse-dot"></span>
+            <span>context.watch / read &middot; Eventos de Like, Vistas y Scroll</span>
+            <span>⬇</span>
+          </div>
+        </div>
+
+        <!-- Capa 2: Provider / State Management -->
+        <div class="layer-card">
+          <div class="layer-header">
+            <div class="layer-badge-title">
+              <span class="layer-num">2</span>
+              <span>Capa de Estado (State Management con Provider)</span>
+            </div>
+            <div class="layer-desc">Gestor de estado ChangeNotifier y orquestador de ciclo de vida</div>
+          </div>
+          <div class="nodes-grid">
+            
+            <div class="node" onclick="inspectNode('DiscoverProvider', 'ChangeNotifier', 'lib/presentation/providers/discover_provider.dart', 'Orquesta la carga inicial de videos locales, aplica el filtro isValid para descartar inconsistencias, hidrata likes y vistas guardadas, y notifica a los listeners.', 'class DiscoverProvider extends ChangeNotifier')">
+              <div class="node-top">
+                <span class="node-name">DiscoverProvider</span>
+                <span class="node-type-tag type-provider">Provider</span>
+              </div>
+              <p class="node-desc">Mantiene la lista activa de VideoPost, sincroniza likes con LocalStorageService y Favoritos, e incrementa vistas.</p>
+              <span class="node-code-badge">discover_provider.dart</span>
+            </div>
+
+            <div class="node" onclick="inspectNode('FavoritesProvider', 'ChangeNotifier', 'lib/presentation/providers/favorites_provider.dart', 'Gestiona la colección de videos con ❤️ del usuario, sincronizado de manera bidireccional con SharedPreferences.', 'class FavoritesProvider extends ChangeNotifier')">
+              <div class="node-top">
+                <span class="node-name">FavoritesProvider</span>
+                <span class="node-type-tag type-provider">Provider</span>
+              </div>
+              <p class="node-desc">Carga y expone la lista de favoritos guardados. Si el usuario desmarca el corazón, se sincroniza en caliente.</p>
+              <span class="node-code-badge">favorites_provider.dart</span>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Gateway de Validación Lógica -->
+        <div class="validation-gateway">
+          <div class="gateway-info">
+            <div class="gateway-icon">⚖️</div>
+            <div class="gateway-text">
+              <h4>Filtro de Validación Lógica de Negocio: VideoPost.isValid</h4>
+              <p>Condición: <code>video.likes &le; video.views</code>. Es imposible que un video tenga más likes que visualizaciones.</p>
+            </div>
+          </div>
+          <div class="gateway-branches">
+            <div class="branch-pill branch-pass">
+              <span>✅</span> 11 Videos Válidos (Pasan al Feed)
+            </div>
+            <div class="branch-pill branch-drop">
+              <span>❌</span> 3 Videos Ilógicos (Descartados)
             </div>
           </div>
         </div>
 
-        <div class="arrow-divider">⬇ Consumer / Provider Listener ⬇</div>
-
-        <!-- Layer 2: Estado -->
-        <div class="arch-layer">
-          <div class="layer-title">⚡ Gestor de Estado (Provider)</div>
-          <div class="node-grid">
-            <div class="node-card">
-              <div class="node-name">DiscoverProvider</div>
-              <div class="node-desc">Carga inicial de videos locales, aplica el filtro video.isValid (descarta likes > views) y notifica cambios a la UI.</div>
-              <span class="node-badge badge-provider">ChangeNotifier</span>
-            </div>
+        <!-- Pipe Connector 2-3 -->
+        <div class="pipe-connector">
+          <div class="pipe-line">
+            <span class="pulse-dot"></span>
+            <span>Mapeo a Entidades de Dominio &middot; Lectura y Escritura Local</span>
+            <span>⬇</span>
           </div>
         </div>
 
-        <div class="arrow-divider">⬇ Llamadas directas ⬇</div>
+        <!-- Capa 3: Capa de Datos Local & Persistencia -->
+        <div class="layer-card">
+          <div class="layer-header">
+            <div class="layer-badge-title">
+              <span class="layer-num">3</span>
+              <span>Capa de Datos Local & Persistencia en Disco</span>
+            </div>
+            <div class="layer-desc">Acceso a recursos empaquetados y persistencia clave-valor</div>
+          </div>
+          <div class="nodes-grid">
+            
+            <div class="node" onclick="inspectNode('LocalVideoDatasource', 'Datasource Local', 'lib/infrastructure/datasources/local_video_datasource_impl.dart', 'Lee la lista estática de videos de local_video_posts.dart y los transforma a entidades de dominio mediante LocalVideoModel.', 'class LocalVideoDatasource implements VideoPostDatasource')">
+              <div class="node-top">
+                <span class="node-name">LocalVideoDatasource</span>
+                <span class="node-type-tag type-storage">Datasource</span>
+              </div>
+              <p class="node-desc">Implementación del origen de datos local. Itera los registros y aplica mapeo seguro a modelos de datos.</p>
+              <span class="node-code-badge">local_video_datasource_impl.dart</span>
+            </div>
 
-        <!-- Layer 3: Datos Locales & Persistencia -->
-        <div class="arch-layer">
-          <div class="layer-title">💾 Capa de Datos Local y Persistencia</div>
-          <div class="node-grid">
-            <div class="node-card">
-              <div class="node-name">LocalVideoDatasource</div>
-              <div class="node-desc">Carga la lista de 14 videos locales y los mapea usando LocalVideoModel.</div>
-              <span class="node-badge badge-data">DataSource Local</span>
+            <div class="node" onclick="inspectNode('LocalStorageService', 'Static Service', 'lib/services/local_storage_service.dart', 'Wrapper estático sobre SharedPreferences para almacenar de forma persistente likes_count, liked, views y favorites.', 'SharedPreferences.getInstance()')">
+              <div class="node-top">
+                <span class="node-name">LocalStorageService</span>
+                <span class="node-type-tag type-storage">Persistencia</span>
+              </div>
+              <p class="node-desc">Guarda los contadores de likes, vistas e identificadores de favoritos en disco persistiendo entre reinicios de la app.</p>
+              <span class="node-code-badge">local_storage_service.dart</span>
             </div>
-            <div class="node-card">
-              <div class="node-name">LocalStorageService</div>
-              <div class="node-desc">Servicio estático sobre SharedPreferences para persistir vistas, likes, favoritos y override de temporada.</div>
-              <span class="node-badge badge-data">Persistencia</span>
+
+            <div class="node" onclick="inspectNode('local_video_posts.dart', 'Static Asset Data', 'lib/shared/data/local_video_posts.dart', 'Array de 14 mapas con los datos iniciales de los videos locales: name, videoUrl, likes y views.', 'const videoPosts = [...]')">
+              <div class="node-top">
+                <span class="node-name">local_video_posts.dart</span>
+                <span class="node-type-tag type-storage">Static Data</span>
+              </div>
+              <p class="node-desc">Estructura cruda empaquetada en el código fuente con metadatos y rutas relativas a los videos locales.</p>
+              <span class="node-code-badge">local_video_posts.dart</span>
             </div>
-            <div class="node-card">
-              <div class="node-name">local_video_posts.dart</div>
-              <div class="node-desc">Colección de datos crudos (JSON local) con rutas a assets/videos/*.mp4.</div>
-              <span class="node-badge badge-data">Assets</span>
+
+            <div class="node" onclick="inspectNode('Archivos MP4 Locales', 'Binary Assets', 'assets/videos/*.mp4', '14 archivos de video MP4 locales empaquetados en el bundle de la aplicación (1.mp4 a 14.mp4).', 'assets/videos/1.mp4 ... 14.mp4')">
+              <div class="node-top">
+                <span class="node-name">Assets MP4 (1.mp4 ... 14.mp4)</span>
+                <span class="node-type-tag type-storage">Media Bundle</span>
+              </div>
+              <p class="node-desc">Archivos de video almacenados en el almacenamiento del dispositivo. Disponibles 100% offline.</p>
+              <span class="node-code-badge">assets/videos/*.mp4</span>
             </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Insights de Evaluación -->
+      <div class="key-insights">
+        <h3><span>💡</span> Aspectos de Evaluación Cubiertos en el Flujo Local</h3>
+        <div class="insights-grid">
+          <div class="insight-card">
+            <h5>Garantía de Funcionamiento Offline</h5>
+            <p>La aplicación garantiza reproducción fluida incluso sin conectividad o ante fallos de red en las máquinas de prueba de la universidad.</p>
+          </div>
+          <div class="insight-card">
+            <h5>Regla de Negocio (likes &le; views)</h5>
+            <p>Se implementa en la entidad VideoPost.isValid. DiscoverProvider filtra automáticamente los videos ilógicos antes de construir el PageView.</p>
+          </div>
+          <div class="insight-card">
+            <h5>Persistencia Parcial de Me Gusta</h5>
+            <p>El conteo exacto de likes y el estado del corazón sobreviven al cierre de la app gracias a SharedPreferences gestionado en LocalStorageService.</p>
           </div>
         </div>
       </div>
 
-      <div class="key-points">
-        <h3>Aspectos Evaluados en este Diagrama:</h3>
-        <ul>
-          <li><strong>Funcionamiento Offline:</strong> Garantiza la reproducción de videos sin depender de disponibilidad de APIs o red Wi-Fi.</li>
-          <li><strong>Regla de Negocio (isValid):</strong> Se descartan 3 videos con inconsistencias numéricas directamente en el provider.</li>
-          <li><strong>Persistencia Local Parcial:</strong> El número de likes y vistas se recupera de SharedPreferences al iniciar la aplicación.</li>
-        </ul>
-      </div>
     </section>
 
-    <!-- TAB 2: Provider con Repositorio y DataSources -->
-    <section id="panel-repo" class="diagram-panel">
-      <div class="panel-header">
-        <h2>Diagrama 2: Arquitectura con Repositorio y Múltiples DataSources</h2>
-        <p>Implementación estricta de Clean Architecture e Inversión de Dependencias (SOLID DIP). Los Providers consumen interfaces abstractas del dominio sin acoplarse a las APIs externas.</p>
-      </div>
 
-      <div class="diagram-container">
-        <!-- Layer 1: Presentación -->
-        <div class="arch-layer">
-          <div class="layer-title">🎨 Capa de Presentación (UI)</div>
-          <div class="node-grid">
-            <div class="node-card">
-              <div class="node-name">DiscoverScreen (For You)</div>
-              <div class="node-desc">Feed vertical con videos locales + Pexels + Pixabay.</div>
-              <span class="node-badge badge-ui">Screen</span>
-            </div>
-            <div class="node-card">
-              <div class="node-name">DiscoveryScreen (YouTube)</div>
-              <div class="node-desc">Carrusel lateral de tendencias y feed con YoutubePlayerWidget.</div>
-              <span class="node-badge badge-ui">Screen</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="arrow-divider">⬇ context.watch / read ⬇</div>
-
-        <!-- Layer 2: Providers -->
-        <div class="arch-layer">
-          <div class="layer-title">⚡ Capa de Providers</div>
-          <div class="node-grid">
-            <div class="node-card">
-              <div class="node-name">DiscoverProvider</div>
-              <div class="node-desc">Depende únicamente de VideoPostRepository para cargar videos paginados de red.</div>
-              <span class="node-badge badge-provider">Provider</span>
-            </div>
-            <div class="node-card">
-              <div class="node-name">DiscoveryProvider</div>
-              <div class="node-desc">Gestiona la carga y likes de videos de YouTube Data API.</div>
-              <span class="node-badge badge-provider">Provider</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="arrow-divider">⬇ Inversión de Dependencias (DIP) ⬇</div>
-
-        <!-- Layer 3: Dominio -->
-        <div class="arch-layer">
-          <div class="layer-title">🏛️ Capa de Dominio (Clean Architecture)</div>
-          <div class="node-grid">
-            <div class="node-card">
-              <div class="node-name">VideoPostRepository</div>
-              <div class="node-desc">Contrato abstracto: getTrendingVideosByPage(int page). No conoce detalles de implementación.</div>
-              <span class="node-badge badge-domain">Contrato / Abstract</span>
-            </div>
-            <div class="node-card">
-              <div class="node-name">VideoPost (Entity)</div>
-              <div class="node-desc">Entidad pura con id, caption, videoUrl, likes, views y fuente.</div>
-              <span class="node-badge badge-domain">Entidad Central</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="arrow-divider">⬇ Implementación e Infraestructura ⬇</div>
-
-        <!-- Layer 4: Infraestructura y DataSources -->
-        <div class="arch-layer">
-          <div class="layer-title">🔧 Capa de Infraestructura (DataSources)</div>
-          <div class="node-grid">
-            <div class="node-card">
-              <div class="node-name">VideoPostsRepositoryImpl</div>
-              <div class="node-desc">Orquesta llamadas a múltiples DataSources y retorna List&lt;VideoPost&gt;.</div>
-              <span class="node-badge badge-infra">Repository Impl</span>
-            </div>
-            <div class="node-card">
-              <div class="node-name">PexelsDataSourceImpl</div>
-              <div class="node-desc">Peticiones HTTP con Dio a Pexels API + PexelsVideoModel mapper.</div>
-              <span class="node-badge badge-infra">DataSource 1</span>
-            </div>
-            <div class="node-card">
-              <div class="node-name">PixabayDataSourceImpl</div>
-              <div class="node-desc">Peticiones HTTP con Dio a Pixabay API + PixabayVideoModel mapper.</div>
-              <span class="node-badge badge-infra">DataSource 2</span>
-            </div>
-            <div class="node-card">
-              <div class="node-name">YoutubeDataSourceImpl</div>
-              <div class="node-desc">Peticiones HTTP con Dio a YouTube Data API v3 + YoutubeVideoModel mapper.</div>
-              <span class="node-badge badge-infra">DataSource 3</span>
-            </div>
-          </div>
+    <!-- ========================================================================
+         TAB 2: DIAGRAMA DE REPOSITORIO Y MULTI-DATASOURCES (APIs EXTERNAS)
+         ======================================================================== -->
+    <section id="panel-api" class="panel theme-api">
+      
+      <!-- Hero Banner -->
+      <div class="diagram-hero">
+        <div class="diagram-tag"><span>●</span> CLEAN ARCHITECTURE / SOLID INVERSION OF CONTROL</div>
+        <h2>Diagrama 2: Provider con Repositorio y DataSources Externos</h2>
+        <p>
+          Modelado de la Arquitectura Limpia (Clean Architecture) implementando el principio de Inversión de Dependencias (SOLID DIP). Los Providers interactúan únicamente a través de contratos abstractos en el Dominio (<code>VideoPostRepository</code>), desacoplados totalmente de los detalles de red HTTP (<code>Dio</code>) y de las APIs de YouTube, Pexels y Pixabay.
+        </p>
+        <div class="diagram-stats">
+          <div class="stat-pill"><span>🏛️</span> Clean Architecture (DIP & SRP)</div>
+          <div class="stat-pill"><span>🌐</span> 3 APIs Externas (YouTube, Pixabay, Pexels)</div>
+          <div class="stat-pill"><span>🔄</span> Multi-Datasource Aggregator con Fail-Safe</div>
+          <div class="stat-pill"><span>🎬</span> Reproductores Polimórficos (MP4 Directo vs YouTube)</div>
         </div>
       </div>
 
-      <div class="key-points">
-        <h3>Aspectos Evaluados en este Diagrama:</h3>
-        <ul>
-          <li><strong>Principio de Responsabilidad Única (SRP):</strong> Cada DataSource se encarga exclusivamente de interactuar con su API REST correspondiente.</li>
-          <li><strong>Independencia de Frameworks y UI:</strong> La UI nunca realiza llamadas HTTP directamente; cualquier cambio en los endpoints de Pexels, Pixabay o YouTube se aísla en su DataSource.</li>
-          <li><strong>Polimorfismo:</strong> Todos los modelos externos se mapean al mismo formato estándar VideoPost.</li>
-        </ul>
+      <!-- Flow Pipeline -->
+      <div class="flow-pipeline">
+
+        <!-- Capa 1: UI -->
+        <div class="layer-card">
+          <div class="layer-header">
+            <div class="layer-badge-title">
+              <span class="layer-num">1</span>
+              <span>Capa de Presentación (UI Consumidora)</span>
+            </div>
+            <div class="layer-desc">Vistas especializadas para videos verticales y videos de YouTube</div>
+          </div>
+          <div class="nodes-grid">
+            
+            <div class="node" onclick="inspectNode('DiscoverScreen (For You)', 'UI Screen', 'lib/presentation/screens/discover/discover_screen.dart', 'Feed principal que combina videos locales con videos remotos de Pixabay y Pexels en un solo flujo continuo.', 'VideoScrollableView(videos: discoverProvider.videos)')">
+              <div class="node-top">
+                <span class="node-name">DiscoverScreen (For You)</span>
+                <span class="node-type-tag type-ui">Feed Mixto</span>
+              </div>
+              <p class="node-desc">Desplazamiento vertical fluido que reproduce videos MP4 locales y remotos (Pixabay/Pexels) de forma idéntica.</p>
+              <span class="node-code-badge">discover_screen.dart</span>
+            </div>
+
+            <div class="node" onclick="inspectNode('DiscoveryScreen (YouTube)', 'UI Screen', 'lib/presentation/screens/discovery/discovery_screen.dart', 'Pestaña dedicada a YouTube: carrusel lateral horizontal de tendencias y feed vertical con miniaturas y botón de like.', 'CustomScrollView + SliverList')">
+              <div class="node-top">
+                <span class="node-name">DiscoveryScreen (YouTube)</span>
+                <span class="node-type-tag type-ui">Feed YouTube</span>
+              </div>
+              <p class="node-desc">Muestra tendencias de YouTube obtenidas vía YouTube Data API v3 con opción de reintentar si no hay conexión.</p>
+              <span class="node-code-badge">discovery_screen.dart</span>
+            </div>
+
+            <div class="node" onclick="inspectNode('YoutubePlayerScreen', 'UI Screen', 'lib/presentation/screens/discovery/youtube_player_screen.dart', 'Reproductor embebido que usa youtube_player_flutter para reproducir IDs de YouTube en streaming con botón de like.', 'YoutubePlayerWidget(videoId: video.videoUrl)')">
+              <div class="node-top">
+                <span class="node-name">YoutubePlayerScreen</span>
+                <span class="node-type-tag type-ui">YT Player</span>
+              </div>
+              <p class="node-desc">Reproduce videos de YouTube mediante su reproductor oficial embebido, con soporte para descripciones largas expandibles.</p>
+              <span class="node-code-badge">youtube_player_screen.dart</span>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Pipe Connector 1-2 -->
+        <div class="pipe-connector">
+          <div class="pipe-line">
+            <span class="pulse-dot"></span>
+            <span>Escucha Reactiva de Cambios de Estado</span>
+            <span>⬇</span>
+          </div>
+        </div>
+
+        <!-- Capa 2: Providers -->
+        <div class="layer-card">
+          <div class="layer-header">
+            <div class="layer-badge-title">
+              <span class="layer-num">2</span>
+              <span>Capa de Providers (Gestión de Estado)</span>
+            </div>
+            <div class="layer-desc">Consumen exclusivamente abstracciones del dominio</div>
+          </div>
+          <div class="nodes-grid">
+            
+            <div class="node" onclick="inspectNode('DiscoverProvider', 'Provider', 'lib/presentation/providers/discover_provider.dart', 'Inyectado con VideoPostRepository mediante su constructor. No conoce nada sobre HTTP, Dio o JSON.', 'DiscoverProvider({required this.videosRepository})')">
+              <div class="node-top">
+                <span class="node-name">DiscoverProvider</span>
+                <span class="node-type-tag type-provider">State Layer</span>
+              </div>
+              <p class="node-desc">Consume videosRepository.getTrendingVideosByPage(page) sin conocer si los datos vienen de Pexels, Pixabay o mocks.</p>
+              <span class="node-code-badge">discover_provider.dart</span>
+            </div>
+
+            <div class="node" onclick="inspectNode('DiscoveryProvider', 'Provider', 'lib/presentation/providers/discovery_provider.dart', 'Gestiona el ciclo de vida de los videos de YouTube, manejo de estados de carga, reintentos y likes sincronizados.', 'DiscoveryProvider({required this.youtubeDataSource})')">
+              <div class="node-top">
+                <span class="node-name">DiscoveryProvider</span>
+                <span class="node-type-tag type-provider">State Layer</span>
+              </div>
+              <p class="node-desc">Consume la abstracción de YouTube DataSource y expone loadVideos() con manejo robusto de excepciones de red.</p>
+              <span class="node-code-badge">discovery_provider.dart</span>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Pipe Connector 2-3 -->
+        <div class="pipe-connector">
+          <div class="pipe-line">
+            <span class="pulse-dot"></span>
+            <span>Inversión de Dependencias (SOLID DIP) &middot; Contratos Abstractos</span>
+            <span>⬇</span>
+          </div>
+        </div>
+
+        <!-- Capa 3: Dominio -->
+        <div class="layer-card">
+          <div class="layer-header">
+            <div class="layer-badge-title">
+              <span class="layer-num">3</span>
+              <span>Capa de Dominio (Núcleo de Negocio & Contratos SOLID)</span>
+            </div>
+            <div class="layer-desc">Código puro en Dart sin dependencias externas ni paquetes de terceros</div>
+          </div>
+          <div class="nodes-grid">
+            
+            <div class="node" onclick="inspectNode('VideoPostRepository (Abstract)', 'Domain Contract', 'lib/domain/repositories/video_posts_repository.dart', 'Interfaz abstracta que define el contrato de obtención de videos. Cumple el Principio de Segregación de Interfaces e Inversión de Dependencias.', 'abstract class VideoPostRepository')">
+              <div class="node-top">
+                <span class="node-name">VideoPostRepository</span>
+                <span class="node-type-tag type-domain">Abstract Contract</span>
+              </div>
+              <p class="node-desc">Define Future&lt;List&lt;VideoPost&gt;&gt; getTrendingVideosByPage(int page). El proveedor solo depende de esta interfaz.</p>
+              <span class="node-code-badge">video_posts_repository.dart</span>
+            </div>
+
+            <div class="node" onclick="inspectNode('VideoPost (Entity)', 'Domain Entity', 'lib/domain/entities/video_post.dart', 'Entidad inmutable que modela un video: id, caption, description, videoUrl, thumbnailUrl, likes, views y fuente.', 'class VideoPost { ... }')">
+              <div class="node-top">
+                <span class="node-name">VideoPost (Entity)</span>
+                <span class="node-type-tag type-domain">Pure Entity</span>
+              </div>
+              <p class="node-desc">Estructura unificada de datos del sistema. Cualquier API externa debe convertirse obligatoriamente a esta entidad.</p>
+              <span class="node-code-badge">video_post.dart</span>
+            </div>
+
+            <div class="node" onclick="inspectNode('VideoPostDatasource (Abstract)', 'Domain Contract', 'lib/domain/datasources/video_post_datasource.dart', 'Contrato base que cada fuente de datos (Pexels, Pixabay, YouTube, Local) debe implementar obligatoriamente.', 'abstract class VideoPostDatasource')">
+              <div class="node-top">
+                <span class="node-name">VideoPostDatasource</span>
+                <span class="node-type-tag type-domain">Datasource Interface</span>
+              </div>
+              <p class="node-desc">Permite sustituir o añadir cualquier nueva fuente de videos (ej. Vimeo o DailyMotion) sin modificar el repositorio.</p>
+              <span class="node-code-badge">video_post_datasource.dart</span>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Pipe Connector 3-4 -->
+        <div class="pipe-connector">
+          <div class="pipe-line">
+            <span class="pulse-dot"></span>
+            <span>Implementación Concreta &middot; Agregación Multifuente con Fail-Safe</span>
+            <span>⬇</span>
+          </div>
+        </div>
+
+        <!-- Capa 4: Infraestructura -->
+        <div class="layer-card">
+          <div class="layer-header">
+            <div class="layer-badge-title">
+              <span class="layer-num">4</span>
+              <span>Capa de Infraestructura (Implementaciones & DataSources)</span>
+            </div>
+            <div class="layer-desc">Consumo HTTP con Dio, orquestación concurrente y mappers de DTO a entidad</div>
+          </div>
+          <div class="nodes-grid">
+            
+            <div class="node" onclick="inspectNode('VideoPostsRepositoryImpl', 'Repository Impl', 'lib/infrastructure/repositories/video_posts_repository_impl.dart', 'Implementa VideoPostRepository. Agrega múltiples DataSources en paralelo (Future.wait), maneja fallos individuales (catchError) y mezcla los resultados (shuffle).', 'class VideoPostsRepositoryImpl implements VideoPostRepository')">
+              <div class="node-top">
+                <span class="node-name">VideoPostsRepositoryImpl</span>
+                <span class="node-type-tag type-infra">Repository Impl</span>
+              </div>
+              <p class="node-desc">Agregador de múltiples fuentes. Ejecuta llamadas en paralelo a Pexels y Pixabay; si una falla, la otra continúa.</p>
+              <span class="node-code-badge">video_posts_repository_impl.dart</span>
+            </div>
+
+            <div class="node" onclick="inspectNode('PixabayDataSource', 'Datasource Impl', 'lib/infrastructure/datasources/pixabay_datasource_impl.dart', 'Petición GET a https://pixabay.com/api/videos/ con la API key del proyecto. Retorna URLs directas de MP4.', 'Dio.get(pixabay.com/api/videos/)')">
+              <div class="node-top">
+                <span class="node-name">PixabayDataSource</span>
+                <span class="node-type-tag type-infra">API 1: Pixabay</span>
+              </div>
+              <p class="node-desc">API Key: <code>57999227-...</code>. Obtiene videos MP4 directos en calidad medium/small listos para reproducción de red.</p>
+              <span class="node-code-badge">pixabay_datasource_impl.dart</span>
+            </div>
+
+            <div class="node" onclick="inspectNode('YoutubeDataSource', 'Datasource Impl', 'lib/infrastructure/datasources/youtube_datasource_impl.dart', 'Petición GET a https://www.googleapis.com/youtube/v3/videos con chart=mostPopular. Retorna videos populares de YouTube.', 'Dio.get(googleapis.com/youtube/v3/videos)')">
+              <div class="node-top">
+                <span class="node-name">YoutubeDataSource</span>
+                <span class="node-type-tag type-infra">API 2: YouTube</span>
+              </div>
+              <p class="node-desc">API Key: <code>AIzaSyBhAGH...</code>. Extrae snippet, títulos, estadísticas de vistas/likes y miniaturas de alta definición.</p>
+              <span class="node-code-badge">youtube_datasource_impl.dart</span>
+            </div>
+
+            <div class="node" onclick="inspectNode('PexelsDataSource', 'Datasource Impl', 'lib/infrastructure/datasources/pexels_datasource_impl.dart', 'Petición GET a https://api.pexels.com/videos/search con header Authorization. Retorna videos verticales HD/SD.', 'Dio.get(api.pexels.com/videos/search)')">
+              <div class="node-top">
+                <span class="node-name">PexelsDataSource</span>
+                <span class="node-type-tag type-infra">API 3: Pexels</span>
+              </div>
+              <p class="node-desc">Preparado para videos verticales (orientation=portrait). Detecta si la clave está suspendida y retorna lista vacía segura.</p>
+              <span class="node-code-badge">pexels_datasource_impl.dart</span>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Pipe Connector 4-5 -->
+        <div class="pipe-connector">
+          <div class="pipe-line">
+            <span class="pulse-dot"></span>
+            <span>Peticiones HTTPS REST sobre Internet</span>
+            <span>⬇</span>
+          </div>
+        </div>
+
+        <!-- Capa 5: APIs Externas Nube -->
+        <div class="layer-card">
+          <div class="layer-header">
+            <div class="layer-badge-title">
+              <span class="layer-num">5</span>
+              <span>Servidores Externos & APIs en la Nube</span>
+            </div>
+            <div class="layer-desc">Endpoints REST con autenticación por API Key</div>
+          </div>
+          <div class="nodes-grid">
+            
+            <div class="node" onclick="inspectNode('YouTube Data API v3', 'Cloud REST API', 'https://www.googleapis.com/youtube/v3/videos', 'API oficial de Google Cloud para consultar videos populares, estadísticas de likes/vistas y miniaturas.', 'GET /videos?part=snippet,statistics&chart=mostPopular')">
+              <div class="node-top">
+                <span class="node-name">Google YouTube Data API</span>
+                <span class="node-type-tag type-cloud">Google Cloud</span>
+              </div>
+              <p class="node-desc">googleapis.com/youtube/v3 &middot; Requiere API Key activa y cuota diaria asignada en Google Cloud Console.</p>
+              <span class="node-code-badge">REST v3 JSON</span>
+            </div>
+
+            <div class="node" onclick="inspectNode('Pixabay Video API', 'Cloud REST API', 'https://pixabay.com/api/videos/', 'Servicio de videos de alta calidad con licencia libre. Provee enlaces directos a archivos .mp4 almacenados en su CDN.', 'GET /api/videos/?key=...&q=nature')">
+              <div class="node-top">
+                <span class="node-name">Pixabay Video API</span>
+                <span class="node-type-tag type-cloud">Pixabay CDN</span>
+              </div>
+              <p class="node-desc">pixabay.com/api/videos &middot; URLs directas a streaming MP4 sin compresión compleja, ideal para VideoPlayerController.</p>
+              <span class="node-code-badge">REST CDN JSON</span>
+            </div>
+
+            <div class="node" onclick="inspectNode('Pexels Videos API', 'Cloud REST API', 'https://api.pexels.com/videos/search', 'Catálogo de videos de stock en formato vertical. Autenticación mediante header Authorization.', 'GET /videos/search?orientation=portrait')">
+              <div class="node-top">
+                <span class="node-name">Pexels Videos API</span>
+                <span class="node-type-tag type-cloud">Pexels Service</span>
+              </div>
+              <p class="node-desc">api.pexels.com/videos &middot; Suspendida temporalmente para nuevas claves; manejada con fail-safe en el código.</p>
+              <span class="node-code-badge">REST Auth Header</span>
+            </div>
+
+          </div>
+        </div>
+
       </div>
+
+      <!-- Insights de Evaluación -->
+      <div class="key-insights">
+        <h3><span>💡</span> Ventajas Arquitecturales de este Diseño (Principios SOLID)</h3>
+        <div class="insights-grid">
+          <div class="insight-card">
+            <h5>Inversión de Dependencias (DIP)</h5>
+            <p>El Provider de UI no sabe ni le importa de dónde vienen los videos (YouTube, Pexels o Pixabay). Solo conoce la interfaz abstracta <code>VideoPostRepository</code>.</p>
+          </div>
+          <div class="insight-card">
+            <h5>Responsabilidad Única (SRP)</h5>
+            <p>Cada DataSource tiene una única responsabilidad: consumir su endpoint específico y convertir su JSON al modelo estándar mediante su propio Mapper DTO.</p>
+          </div>
+          <div class="insight-card">
+            <h5>Tolerancia a Fallos y Concurrencia</h5>
+            <p><code>VideoPostsRepositoryImpl</code> consume múltiples fuentes concurrentemente con <code>Future.wait</code>. Si una API falla o agota su cuota, el feed continúa con las demás.</p>
+          </div>
+        </div>
+      </div>
+
     </section>
+
   </main>
 
+  <!-- ==========================================================================
+       MODAL INSPECTOR
+       ========================================================================== -->
+  <div id="inspector-modal" class="modal-overlay" onclick="closeInspector(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <span id="modal-type-badge" class="node-type-tag type-ui">WIDGET</span>
+          <h3 id="modal-title" class="modal-title">Nombre del Componente</h3>
+        </div>
+        <button class="modal-close" onclick="closeInspector()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="detail-row">
+          <span class="detail-label">Ubicación en el Proyecto</span>
+          <span id="modal-path" class="detail-val" style="font-family: var(--font-mono); color: #38bdf8;">lib/...</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Responsabilidad Arquitectural</span>
+          <p id="modal-desc" class="detail-val">Descripción de la responsabilidad...</p>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Fragmento de Código / Firma Relevante</span>
+          <div id="modal-code" class="modal-code-box">// Código...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       FOOTER
+       ========================================================================== -->
+  <footer>
+    <p>
+      Desarrollo Móvil Integral — Práctica 04: TokTik &middot; Alumno: Luis Daniel Suarez Escamilla (230040)
+    </p>
+    <p style="margin-top: 6px;">
+      Generado conforme a la especificación oficial de arquitectura de software y evaluación en GitHub Pages.
+    </p>
+  </footer>
+
+  <!-- ==========================================================================
+       TAB CONTROLLER & MODAL LOGIC
+       ========================================================================== -->
   <script>
     function switchTab(tab) {
-      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-      document.querySelectorAll('.diagram-panel').forEach(panel => panel.classList.remove('active'));
+      const btnLocal = document.getElementById('btn-local');
+      const btnApi = document.getElementById('btn-api');
+      const panelLocal = document.getElementById('panel-local');
+      const panelApi = document.getElementById('panel-api');
 
       if (tab === 'local') {
-        document.querySelector('.tab-btn:nth-child(1)').classList.add('active');
-        document.getElementById('panel-local').classList.add('active');
+        btnLocal.className = 'tab-btn active-local';
+        btnApi.className = 'tab-btn';
+        panelLocal.className = 'panel theme-local active';
+        panelApi.className = 'panel theme-api';
+        history.replaceState(null, null, '#local');
       } else {
-        document.querySelector('.tab-btn:nth-child(2)').classList.add('active');
-        document.getElementById('panel-repo').classList.add('active');
+        btnLocal.className = 'tab-btn';
+        btnApi.className = 'tab-btn active-api';
+        panelLocal.className = 'panel theme-local';
+        panelApi.className = 'panel theme-api active';
+        history.replaceState(null, null, '#api');
       }
     }
+
+    // Hash navigation on load
+    window.addEventListener('DOMContentLoaded', () => {
+      const hash = window.location.hash;
+      if (hash === '#api' || hash === '#repo') {
+        switchTab('api');
+      } else {
+        switchTab('local');
+      }
+    });
+
+    // Node Inspector
+    function inspectNode(name, type, path, desc, code) {
+      document.getElementById('modal-title').innerText = name;
+      document.getElementById('modal-path').innerText = path;
+      document.getElementById('modal-desc').innerText = desc;
+      document.getElementById('modal-code').innerText = code;
+      
+      const badge = document.getElementById('modal-type-badge');
+      badge.innerText = type;
+
+      const modal = document.getElementById('inspector-modal');
+      modal.classList.add('active');
+    }
+
+    function closeInspector(e) {
+      const modal = document.getElementById('inspector-modal');
+      modal.classList.remove('active');
+    }
+
+    // Keyboard ESC to close modal
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeInspector();
+    });
   </script>
+
 </body>
 </html>

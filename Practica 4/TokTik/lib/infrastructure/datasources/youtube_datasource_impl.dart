@@ -28,18 +28,26 @@ class YoutubeDataSource implements VideoPostDatasource {
         queryParameters: {
           'part': 'snippet,statistics',
           'chart': 'mostPopular',
-          'maxResults': 10,
-          'videoDuration': 'short',
+          'maxResults': 12,
           'regionCode': 'MX',
           'key': ApiKeys.youtubeApiKey,
         },
-      ).timeout(const Duration(seconds: 10));
+      ).timeout(const Duration(seconds: 12));
 
       final List items = response.data['items'] ?? [];
       return items
-          .map((item) =>
-              YoutubeVideoModel.fromJson(Map<String, dynamic>.from(item))
-                  .toVideoPost())
+          .map((item) {
+            try {
+              final map = item is Map<String, dynamic>
+                  ? item
+                  : Map<String, dynamic>.from(item as Map);
+              return YoutubeVideoModel.fromJson(map).toVideoPost();
+            } catch (e) {
+              print('[YoutubeDataSource] Error parseando item: $e');
+              return null;
+            }
+          })
+          .whereType<VideoPost>()
           .where((v) => v.videoUrl.isNotEmpty)
           .toList();
     } on DioException catch (e) {

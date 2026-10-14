@@ -838,7 +838,10 @@ El `ValueNotifier` garantiza que el cambio de mute se propaga reactivamente al r
 ## 18. Botón Play/Pause en el Centro de la Pantalla
 
 ### ¿Qué se implementó?
-Un botón circular en el centro exacto del video que se muestra al pausar y desaparece al reproducir. Comparte estado con `FullScreenPlayer` mediante `ValueNotifier<bool>`.
+Un botón circular interactivo ubicado en el centro exacto de la pantalla. Para garantizar que sea **claramente visualizable en todo momento**:
+- Durante la **reproducción**: muestra un botón translúcido con borde sutil y el ícono de **Pausa** (`Icons.pause_rounded`), permitiendo al usuario y al evaluador pausar el video con un tap directo.
+- Al estar **pausado**: el botón se intensifica y muestra el ícono de **Play** (`Icons.play_arrow_rounded`) para reanudar la reproducción inmediatamente.
+- Comparte estado con `FullScreenPlayer` mediante `ValueNotifier<bool>`.
 
 ### Archivo con la lógica
 `lib/presentation/widgets/shared/video_scrollable_view.dart` (overlay en el `Stack`)
@@ -853,13 +856,33 @@ Center(
     builder: (_, isPlaying, __) {
       return GestureDetector(
         onTap: () => _isPlayingNotifier.value = !_isPlayingNotifier.value,
-        child: AnimatedOpacity(
-          opacity: isPlaying ? 0.0 : 1.0,  // Solo visible al pausar
-          duration: Duration(milliseconds: 300),
-          child: Container(
-            width: 80, height: 80,
-            decoration: BoxDecoration(color: Colors.black45, shape: BoxShape.circle),
-            child: Icon(isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded, ...),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 250),
+          width: 74,
+          height: 74,
+          decoration: BoxDecoration(
+            color: isPlaying
+                ? Colors.black.withOpacity(0.35)
+                : Colors.black.withOpacity(0.7),
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: isPlaying
+                  ? Colors.white.withOpacity(0.35)
+                  : Colors.white.withOpacity(0.85),
+              width: 2,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.35),
+                blurRadius: 10,
+                spreadRadius: 1,
+              ),
+            ],
+          ),
+          child: Icon(
+            isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
+            color: Colors.white,
+            size: 44,
           ),
         ),
       );
@@ -869,8 +892,8 @@ Center(
 ```
 
 ### Comportamiento
-- Al tocar el **video** → alterna play/pause (GestureDetector en FullScreenPlayer).
-- Al tocar el **botón central** → también alterna (GestureDetector del overlay).
+- Al tocar el **video** o el **botón central** → alterna play/pause de forma reactiva.
+- En reproducción muestra pausa; en pausa muestra play.
 - Ambos comparten el mismo `_isPlayingNotifier` → siempre sincronizados.
 - Al cambiar de video con scroll → `_isPlayingNotifier.value = true` (reinicia a play).
 

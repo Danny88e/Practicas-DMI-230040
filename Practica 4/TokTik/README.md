@@ -10,6 +10,16 @@
 
 Aplicación móvil desarrollada en Flutter inspirada en TikTok. Permite reproducir videos de forma automática en pantalla completa con desplazamiento vertical. Incluye sistema de temas estacionales que adapta colores e ícono de la app dependiendo del mes del año, y un filtro lógico que excluye videos con datos inconsistentes (más likes que visualizaciones).
 
+### 📊 Diagramas de Arquitectura Interactivos (GitHub Pages)
+
+Accede a la visualización interactiva de arquitectura con especificación **Archfy**, inspector de nodos y estilos diferenciados:
+
+- 🟢 **[Diagrama 1: Flujo de Videos Locales (Provider Directo)](https://danny88e.github.io/Practicas-DMI-230040/Practica%204/TokTik/architecture-diagram.html#local)**  
+  *Modo offline, 14 assets locales, filtro lógico `isValid` (likes &le; views) y persistencia en `SharedPreferences`.*
+- 🟣 **[Diagrama 2: Flujo con APIs Externas (Clean Architecture & DataSources)](https://danny88e.github.io/Practicas-DMI-230040/Practica%204/TokTik/architecture-diagram.html#api)**  
+  *Inversión de dependencias (SOLID DIP), orquestador multi-fuente (`Dio`), YouTube Data API v3, Pixabay Video API y Pexels.*
+- 🌐 **[Abrir Visor de Arquitectura Completo (HTML Local)](./architecture-diagram.html)**
+
 ---
 
 ## Funcionalidades
@@ -21,7 +31,7 @@ Aplicación móvil desarrollada en Flutter inspirada en TikTok. Permite reproduc
   - 📱 **Resto del año**: Logo estándar TokTik.
 - **Mecanismo de Prueba de Temporadas**: Botón interactivo en el AppBar que permite forzar cualquier temporada y la persiste en `SharedPreferences`.
 - **Botón de Silenciar/Activar Sonido (Mute/Unmute)**: Ubicado en la columna lateral derecha de interacción del video con `ValueNotifier`.
-- **Botón Central Play/Pause**: Ícono central animado que aparece al pausar el video y permite alternar la reproducción.
+- **Botón Central Play/Pause Visible**: Botón circular interactivo con fondo translúcido y borde que muestra claramente el ícono de Pausa durante la reproducción y de Play al estar pausado, permitiendo alternar la reproducción con un tap.
 - **Descripción Extensa con Desplazamiento Vertical**: Botón `... más` que despliega un contenedor scrollable vertical (`SingleChildScrollView` con scrollbar).
 - **Desplazamiento Lateral**: Navegación horizontal fluida (`PageView` lateral) entre **For You**, **Discovery** y **Favoritos**, además de un carrusel horizontal en Discovery.
 - **Persistencia de Likes y Vistas**: Almacena el número exacto de likes y vistas en `SharedPreferences` persistiendo al reiniciar la app.

@@ -18,6 +18,14 @@ class FavoritesProvider extends ChangeNotifier {
   /// Actualiza la lista (alias de loadFavorites para clarity).
   void refresh() => loadFavorites();
 
+  /// Agrega un video a favoritos y persiste en storage.
+  Future<void> addFavorite(VideoPost video) async {
+    await LocalStorageService.addFavorite(video);
+    await LocalStorageService.setLiked(video.id, true);
+    await LocalStorageService.setLikes(video.id, video.likes);
+    loadFavorites();
+  }
+
   /// Elimina un video de favoritos y actualiza like en storage.
   Future<void> removeFavorite(String videoId) async {
     await LocalStorageService.removeFavorite(videoId);
@@ -27,5 +35,5 @@ class FavoritesProvider extends ChangeNotifier {
   }
 
   bool isFavorite(String videoId) =>
-      favorites.any((v) => v.id == videoId);
+      LocalStorageService.isLiked(videoId) || favorites.any((v) => v.id == videoId);
 }

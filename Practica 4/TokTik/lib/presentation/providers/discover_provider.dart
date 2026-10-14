@@ -55,12 +55,16 @@ class DiscoverProvider extends ChangeNotifier {
   // ──────────────────────────────────────────────────────────────────────
 
   /// Alterna el like de un video. Sincroniza con SharedPreferences y Favoritos.
+  ///
+  /// [video] debe llegar con el estado de like **ya actualizado** desde la UI
+  /// (VideoButtons lo envía con copyWith aplicado).
   Future<void> toggleLike(VideoPost video) async {
     final idx = videos.indexWhere((v) => v.id == video.id);
     if (idx == -1) return;
 
-    final isNowLiked = !video.isLiked;
-    final newLikes = isNowLiked ? video.likes + 1 : (video.likes - 1).clamp(0, 999999999);
+    // El video recibido ya tiene isLiked actualizado (la UI lo toggleó)
+    final isNowLiked = video.isLiked;
+    final newLikes = video.likes;
 
     final updated = video.copyWith(isLiked: isNowLiked, likes: newLikes);
     videos[idx] = updated;

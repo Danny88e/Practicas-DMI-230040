@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:toktik/domain/entities/video_post.dart';
 import 'package:toktik/presentation/providers/discover_provider.dart';
+import 'package:toktik/presentation/providers/discovery_provider.dart';
 import 'package:toktik/presentation/providers/favorites_provider.dart';
 import 'package:toktik/presentation/screens/discovery/youtube_player_screen.dart';
 import 'package:toktik/presentation/widgets/video/fullscreen_player.dart';
@@ -32,20 +33,32 @@ class FavoritesScreen extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      body: favorites.isEmpty
-          ? _EmptyFavorites()
-          : ListView.builder(
-              padding: const EdgeInsets.only(top: 8, bottom: 20),
-              itemCount: favorites.length,
-              itemBuilder: (context, index) {
-                final video = favorites[index];
-                return _FavoriteCard(
-                  video: video,
-                  onTap: () => _openVideo(context, video),
-                  onRemove: () => _removeFavorite(context, video.id),
-                );
-              },
-            ),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          context.read<FavoritesProvider>().loadFavorites();
+        },
+        child: favorites.isEmpty
+            ? SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.7,
+                  child: _EmptyFavorites(),
+                ),
+              )
+            : ListView.builder(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.only(top: 8, bottom: 20),
+                itemCount: favorites.length,
+                itemBuilder: (context, index) {
+                  final video = favorites[index];
+                  return _FavoriteCard(
+                    video: video,
+                    onTap: () => _openVideo(context, video),
+                    onRemove: () => _removeFavorite(context, video.id),
+                  );
+                },
+              ),
+      ),
     );
   }
 
@@ -67,8 +80,9 @@ class FavoritesScreen extends StatelessWidget {
 
   void _removeFavorite(BuildContext context, String videoId) {
     context.read<FavoritesProvider>().removeFavorite(videoId);
-    // Sincroniza el estado del like en el feed principal
+    // Sincroniza el estado del like tanto en For You (local/Pexels/Pixabay) como en Discovery (YouTube)
     context.read<DiscoverProvider>().syncLikeFromExternal(videoId, false);
+    context.read<DiscoveryProvider>().syncLikeFromExternal(videoId, false);
   }
 }
 
@@ -307,7 +321,7 @@ class _FullscreenFavoritePlayerState extends State<_FullscreenFavoritePlayer> {
             isMutedNotifier: _isMutedNotifier,
             isPlayingNotifier: _isPlayingNotifier,
           ),
-          // Boton Play/Pause central
+          // Botón Play/Pause central
           Center(
             child: ValueListenableBuilder<bool>(
               valueListenable: _isPlayingNotifier,
@@ -315,23 +329,35 @@ class _FullscreenFavoritePlayerState extends State<_FullscreenFavoritePlayer> {
                 return GestureDetector(
                   onTap: () =>
                       _isPlayingNotifier.value = !_isPlayingNotifier.value,
-                  child: AnimatedOpacity(
-                    opacity: isPlaying ? 0.0 : 1.0,
-                    duration: const Duration(milliseconds: 300),
-                    child: Container(
-                      width: 80,
-                      height: 80,
-                      decoration: const BoxDecoration(
-                        color: Colors.black45,
-                        shape: BoxShape.circle,
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 250),
+                    width: 74,
+                    height: 74,
+                    decoration: BoxDecoration(
+                      color: isPlaying
+                          ? Colors.black.withOpacity(0.35)
+                          : Colors.black.withOpacity(0.7),
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: isPlaying
+                            ? Colors.white.withOpacity(0.35)
+                            : Colors.white.withOpacity(0.85),
+                        width: 2,
                       ),
-                      child: Icon(
-                        isPlaying
-                            ? Icons.pause_rounded
-                            : Icons.play_arrow_rounded,
-                        color: Colors.white,
-                        size: 50,
-                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.35),
+                          blurRadius: 10,
+                          spreadRadius: 1,
+                        ),
+                      ],
+                    ),
+                    child: Icon(
+                      isPlaying
+                          ? Icons.pause_rounded
+                          : Icons.play_arrow_rounded,
+                      color: Colors.white,
+                      size: 44,
                     ),
                   ),
                 );

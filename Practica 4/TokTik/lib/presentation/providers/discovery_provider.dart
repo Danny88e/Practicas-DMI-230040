@@ -15,18 +15,27 @@ class DiscoveryProvider extends ChangeNotifier {
   DiscoveryProvider({required this.youtubeDataSource});
 
   Future<void> loadVideos() async {
+    initialLoading = true;
+    errorMessage = null;
+    notifyListeners();
+
     try {
       final result = await youtubeDataSource.getTrendingVideosByPage(1);
-      videos = result.map((v) {
-        final savedLikes = LocalStorageService.getLikes(v.id);
-        return v.copyWith(
-          isLiked: LocalStorageService.isLiked(v.id),
-          likes: savedLikes ?? v.likes,
-        );
-      }).toList();
-      errorMessage = null;
+      if (result.isEmpty) {
+        errorMessage = 'No se obtuvieron videos de YouTube. Comprueba tu conexión a internet o la cuota de la API.';
+        videos = [];
+      } else {
+        videos = result.map((v) {
+          final savedLikes = LocalStorageService.getLikes(v.id);
+          return v.copyWith(
+            isLiked: LocalStorageService.isLiked(v.id),
+            likes: savedLikes ?? v.likes,
+          );
+        }).toList();
+        errorMessage = null;
+      }
     } catch (e) {
-      errorMessage = 'No se pudo cargar el contenido de YouTube.';
+      errorMessage = 'Error al conectar con YouTube: $e';
       videos = [];
     }
     initialLoading = false;
@@ -51,6 +60,16 @@ class DiscoveryProvider extends ChangeNotifier {
       await LocalStorageService.removeFavorite(video.id);
     }
 
+    notifyListeners();
+  }
+
+  /// Sincroniza el estado de un like desde otra pantalla (ej: pestaña Favoritos).
+  void syncLikeFromExternal(String videoId, bool isLiked) {
+    final idx = videos.indexWhere((v) => v.id == videoId);
+    if (idx == -1) return;
+    final v = videos[idx];
+    final newLikes = isLiked ? v.likes + 1 : (v.likes - 1).clamp(0, 999999999);
+    videos[idx] = v.copyWith(isLiked: isLiked, likes: newLikes);
     notifyListeners();
   }
 }

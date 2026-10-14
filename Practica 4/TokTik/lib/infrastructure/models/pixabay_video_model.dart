@@ -26,12 +26,11 @@ class PixabayVideoModel {
   });
 
   factory PixabayVideoModel.fromJson(Map<String, dynamic> json) {
-    final videos = json['videos'] as Map<String, dynamic>? ?? {};
-    // Preferimos 'medium' para móvil, luego 'small', luego 'large'
-    final medium = videos['medium'] as Map<String, dynamic>? ?? {};
-    final small = videos['small'] as Map<String, dynamic>? ?? {};
-    final large = videos['large'] as Map<String, dynamic>? ?? {};
-    final tiny = videos['tiny'] as Map<String, dynamic>? ?? {};
+    final videos = (json['videos'] as Map?)?.cast<String, dynamic>() ?? {};
+    final medium = (videos['medium'] as Map?)?.cast<String, dynamic>() ?? {};
+    final small = (videos['small'] as Map?)?.cast<String, dynamic>() ?? {};
+    final large = (videos['large'] as Map?)?.cast<String, dynamic>() ?? {};
+    final tiny = (videos['tiny'] as Map?)?.cast<String, dynamic>() ?? {};
 
     final best = medium.isNotEmpty
         ? medium
@@ -41,15 +40,24 @@ class PixabayVideoModel {
                 ? large
                 : tiny;
 
+    String thumbUrl = best['thumbnail']?.toString() ?? '';
+    final pictureId = json['picture_id']?.toString() ?? '';
+    if (thumbUrl.isEmpty && pictureId.isNotEmpty) {
+      thumbUrl = 'https://i.vimeocdn.com/video/${pictureId}_640x360.jpg';
+    }
+    if (thumbUrl.isEmpty) {
+      thumbUrl = json['userImageURL']?.toString() ?? '';
+    }
+
     return PixabayVideoModel(
-      id: json['id'] ?? 0,
-      tags: json['tags'] ?? '',
-      user: json['user'] ?? 'Pixabay',
-      videoUrl: best['url'] ?? '',
-      thumbnailUrl: best['thumbnail'] ?? '',
-      views: json['views'] ?? 0,
-      likes: json['likes'] ?? 0,
-      duration: json['duration'] ?? 0,
+      id: int.tryParse(json['id']?.toString() ?? '0') ?? 0,
+      tags: json['tags']?.toString() ?? '',
+      user: json['user']?.toString() ?? 'Pixabay',
+      videoUrl: best['url']?.toString() ?? '',
+      thumbnailUrl: thumbUrl,
+      views: int.tryParse(json['views']?.toString() ?? '0') ?? 0,
+      likes: int.tryParse(json['likes']?.toString() ?? '0') ?? 0,
+      duration: int.tryParse(json['duration']?.toString() ?? '0') ?? 0,
     );
   }
 

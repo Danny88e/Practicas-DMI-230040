@@ -23,21 +23,25 @@ class ApiKeys {
   ApiKeys._();
 
   // ─── YouTube Data API v3 ───────────────────────────────────────────────
-  static const String youtubeApiKey = 'TU_YOUTUBE_API_KEY_AQUI';
+  // Clave propia del proyecto DMI-230040
+  static const String youtubeApiKey = 'AIzaSyBhAGHFy1ClhV9jZ1ZpgDoE-QFA2WN2Qhg';
 
   // ─── Pexels API ────────────────────────────────────────────────────────
-  static const String pexelsApiKey = 'TU_PEXELS_API_KEY_AQUI';
+  // NOTA: La emisión de nuevas claves Pexels está suspendida temporalmente.
+  // Los videos de Pexels quedan desactivados hasta obtener clave válida.
+  static const String pexelsApiKey = '';
 
   // ─── Pixabay API ───────────────────────────────────────────────────────
-  static const String pixabayApiKey = 'TU_PIXABAY_API_KEY_AQUI';
+  // Clave propia del proyecto DMI-230040
+  static const String pixabayApiKey = '57999227-8d67580ec5c316c2a7fa08016';
 
   // ─── Verificadores de configuración ───────────────────────────────────
   static bool get isYoutubeConfigured =>
-      youtubeApiKey != 'TU_YOUTUBE_API_KEY_AQUI' && youtubeApiKey.isNotEmpty;
+      youtubeApiKey.isNotEmpty && youtubeApiKey.length > 10;
 
   static bool get isPexelsConfigured =>
-      pexelsApiKey != 'TU_PEXELS_API_KEY_AQUI' && pexelsApiKey.isNotEmpty;
+      pexelsApiKey.isNotEmpty && pexelsApiKey.length > 10;
 
   static bool get isPixabayConfigured =>
-      pixabayApiKey != 'TU_PIXABAY_API_KEY_AQUI' && pixabayApiKey.isNotEmpty;
+      pixabayApiKey.isNotEmpty && pixabayApiKey.length > 10;
 }

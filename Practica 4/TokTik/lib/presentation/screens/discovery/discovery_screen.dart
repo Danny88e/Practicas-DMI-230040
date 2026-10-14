@@ -140,7 +140,12 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
                     builder: (_) => YoutubePlayerScreen(video: video),
                   ),
                 ),
-                onLikeTap: () => context.read<DiscoveryProvider>().toggleLike(video),
+                onLikeTap: () async {
+                  await context.read<DiscoveryProvider>().toggleLike(video);
+                  if (context.mounted) {
+                    context.read<FavoritesProvider>().loadFavorites();
+                  }
+                },
               );
             },
             childCount: provider.videos.length,
@@ -399,9 +404,19 @@ class _EmptyDiscovery extends StatelessWidget {
                 style: const TextStyle(color: Colors.grey)),
             const SizedBox(height: 8),
             const Text(
-              'Configura tu YouTube API Key en lib/config/api_keys.dart',
+              'Asegúrate de tener conexión a internet activa para consultar YouTube Data API v3.',
               textAlign: TextAlign.center,
               style: TextStyle(color: Colors.grey, fontSize: 12),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton.icon(
+              onPressed: () => context.read<DiscoveryProvider>().loadVideos(),
+              icon: const Icon(Icons.refresh),
+              label: const Text('Reintentar conexión'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.redAccent,
+                foregroundColor: Colors.white,
+              ),
             ),
           ],
         ),

@@ -49,11 +49,20 @@ class PixabayDataSource implements VideoPostDatasource {
         ),
       );
 
-      final List hits = response.data['hits'] ?? [];
+      final List hits = response.data is Map ? (response.data['hits'] ?? []) : [];
       return hits
-          .map((h) => PixabayVideoModel.fromJson(
-                  Map<String, dynamic>.from(h))
-              .toVideoPost())
+          .map((h) {
+            try {
+              final map = h is Map<String, dynamic>
+                  ? h
+                  : Map<String, dynamic>.from(h as Map);
+              return PixabayVideoModel.fromJson(map).toVideoPost();
+            } catch (e) {
+              print('[PixabayDataSource] Error parseando hit: $e');
+              return null;
+            }
+          })
+          .whereType<VideoPost>()
           .where((v) => v.videoUrl.isNotEmpty)
           .toList();
     } on DioException catch (e) {

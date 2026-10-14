@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:toktik/config/theme/app_theme.dart';
 import 'package:toktik/presentation/providers/discover_provider.dart';
+import 'package:toktik/presentation/providers/favorites_provider.dart';
 import 'package:toktik/presentation/providers/theme_provider.dart';
 import 'package:toktik/presentation/widgets/shared/season_selector_dialog.dart';
 import 'package:toktik/presentation/widgets/shared/video_scrollable_view.dart';
@@ -68,7 +69,12 @@ class DiscoverScreen extends StatelessWidget {
                       style: TextStyle(color: Colors.white)))
               : VideoScrollableView(
                   videos: discoverProvider.videos,
-                  onLikeToggle: (video) => discoverProvider.toggleLike(video),
+                  onLikeToggle: (video) async {
+                    await discoverProvider.toggleLike(video);
+                    if (context.mounted) {
+                      context.read<FavoritesProvider>().loadFavorites();
+                    }
+                  },
                   onViewIncrement: (videoId) =>
                       discoverProvider.incrementViews(videoId),
                 ),

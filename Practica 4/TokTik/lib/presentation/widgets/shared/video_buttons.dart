@@ -1,7 +1,8 @@
-﻿import 'package:animate_do/animate_do.dart';
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:toktik/config/helpers/human_formats.dart';
 import 'package:toktik/domain/entities/video_post.dart';
+import 'package:toktik/services/local_storage_service.dart';
 
 /// Botones laterales de interaccion de cada video.
 ///
@@ -35,27 +36,30 @@ class _VideoButtonsState extends State<VideoButtons> {
   @override
   void initState() {
     super.initState();
-    _isLiked = widget.video.isLiked;
-    _likes = widget.video.likes;
+    _isLiked = LocalStorageService.isLiked(widget.video.id) || widget.video.isLiked;
+    _likes = LocalStorageService.getLikes(widget.video.id) ?? widget.video.likes;
   }
 
   @override
   void didUpdateWidget(VideoButtons oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.video.id != widget.video.id) {
-      _isLiked = widget.video.isLiked;
-      _likes = widget.video.likes;
+    if (oldWidget.video.id != widget.video.id ||
+        oldWidget.video.isLiked != widget.video.isLiked ||
+        oldWidget.video.likes != widget.video.likes) {
+      _isLiked = LocalStorageService.isLiked(widget.video.id) || widget.video.isLiked;
+      _likes = LocalStorageService.getLikes(widget.video.id) ?? widget.video.likes;
     }
   }
 
   Future<void> _handleLikeTap() async {
+    final nextLiked = !_isLiked;
+    final nextLikes = nextLiked ? _likes + 1 : (_likes - 1).clamp(0, 999999999);
     setState(() {
-      _isLiked = !_isLiked;
-      _likes = _isLiked ? _likes + 1 : (_likes - 1).clamp(0, 999999999);
+      _isLiked = nextLiked;
+      _likes = nextLikes;
     });
-    await widget.onLikeToggle?.call(
-      widget.video.copyWith(isLiked: _isLiked, likes: _likes),
-    );
+    final updatedVideo = widget.video.copyWith(isLiked: nextLiked, likes: nextLikes);
+    await widget.onLikeToggle?.call(updatedVideo);
   }
 
   @override

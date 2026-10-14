@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:toktik/domain/entities/video_post.dart';
 import 'package:toktik/presentation/widgets/shared/video_buttons.dart';
 import 'package:toktik/presentation/widgets/video/fullscreen_player.dart';
@@ -38,12 +38,42 @@ class _VideoScrollableViewState extends State<VideoScrollableView> {
   /// Estado de reproduccion del video actual.
   final ValueNotifier<bool> _isPlayingNotifier = ValueNotifier(true);
 
+  /// Controla si el botón central play/pause es visible.
+  /// Se muestra siempre al pausar, y se oculta 1.5s después de reanudar.
+  final ValueNotifier<bool> _showCenterButton = ValueNotifier(true);
+
+  @override
+  void initState() {
+    super.initState();
+    // Ocultar el botón central 1.5s después de que el video arranque
+    Future.delayed(const Duration(milliseconds: 1500), () {
+      if (mounted && _isPlayingNotifier.value) {
+        _showCenterButton.value = false;
+      }
+    });
+  }
+
   @override
   void dispose() {
     _pageController.dispose();
     _isMutedNotifier.dispose();
     _isPlayingNotifier.dispose();
+    _showCenterButton.dispose();
     super.dispose();
+  }
+
+  void _togglePlayPause() {
+    final newVal = !_isPlayingNotifier.value;
+    _isPlayingNotifier.value = newVal;
+    _showCenterButton.value = true;
+    if (newVal) {
+      // Si se reanuda, ocultar el botón después de 1.5s
+      Future.delayed(const Duration(milliseconds: 1500), () {
+        if (mounted && _isPlayingNotifier.value) {
+          _showCenterButton.value = false;
+        }
+      });
+    }
   }
 
   @override
@@ -59,6 +89,12 @@ class _VideoScrollableViewState extends State<VideoScrollableView> {
         widget.onViewIncrement?.call(video.id);
         // Reinicia play al cambiar de video
         _isPlayingNotifier.value = true;
+        _showCenterButton.value = true;
+        Future.delayed(const Duration(milliseconds: 1500), () {
+          if (mounted && _isPlayingNotifier.value) {
+            _showCenterButton.value = false;
+          }
+        });
       },
       itemBuilder: (context, index) {
         final videoPost = widget.videos[index];
@@ -66,42 +102,64 @@ class _VideoScrollableViewState extends State<VideoScrollableView> {
         return Stack(
           children: [
             // Reproductor de video a pantalla completa
-            SizedBox.expand(
-              child: FullScreenPlayer(
-                videoPost: videoPost,
-                isMutedNotifier: _isMutedNotifier,
-                isPlayingNotifier: _isPlayingNotifier,
+            // GestureDetector aquí maneja el tap en áreas fuera del botón central
+            GestureDetector(
+              onTap: _togglePlayPause,
+              child: SizedBox.expand(
+                child: FullScreenPlayer(
+                  videoPost: videoPost,
+                  isMutedNotifier: _isMutedNotifier,
+                  isPlayingNotifier: _isPlayingNotifier,
+                ),
               ),
             ),
 
-            // Boton Play/Pause central (PUNTO 1)
-            // Superpuesto sobre el video; visible solo al pausar
+            // Botón Play/Pause central (Punto 1 y Requisito del profesor)
+            // Se muestra siempre al pausar; se oculta 1.5s después de reanudar.
             Center(
               child: ValueListenableBuilder<bool>(
-                valueListenable: _isPlayingNotifier,
-                builder: (_, isPlaying, __) {
-                  return GestureDetector(
-                    onTap: () =>
-                        _isPlayingNotifier.value = !_isPlayingNotifier.value,
-                    child: AnimatedOpacity(
-                      opacity: isPlaying ? 0.0 : 1.0,
-                      duration: const Duration(milliseconds: 300),
-                      child: Container(
-                        width: 80,
-                        height: 80,
-                        decoration: const BoxDecoration(
-                          color: Colors.black45,
-                          shape: BoxShape.circle,
+                valueListenable: _showCenterButton,
+                builder: (_, showBtn, __) {
+                  return ValueListenableBuilder<bool>(
+                    valueListenable: _isPlayingNotifier,
+                    builder: (_, isPlaying, __) {
+                      return AnimatedOpacity(
+                        opacity: showBtn ? 1.0 : 0.0,
+                        duration: const Duration(milliseconds: 300),
+                        child: IgnorePointer(
+                          ignoring: !showBtn,
+                          child: GestureDetector(
+                            onTap: _togglePlayPause,
+                            child: Container(
+                              width: 74,
+                              height: 74,
+                              decoration: BoxDecoration(
+                                color: Colors.black.withOpacity(0.55),
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: Colors.white.withOpacity(0.85),
+                                  width: 2,
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.35),
+                                    blurRadius: 10,
+                                    spreadRadius: 1,
+                                  ),
+                                ],
+                              ),
+                              child: Icon(
+                                isPlaying
+                                    ? Icons.pause_rounded
+                                    : Icons.play_arrow_rounded,
+                                color: Colors.white,
+                                size: 44,
+                              ),
+                            ),
+                          ),
                         ),
-                        child: Icon(
-                          isPlaying
-                              ? Icons.pause_rounded
-                              : Icons.play_arrow_rounded,
-                          color: Colors.white,
-                          size: 50,
-                        ),
-                      ),
-                    ),
+                      );
+                    },
                   );
                 },
               ),
