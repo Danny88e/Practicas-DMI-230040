@@ -10,6 +10,9 @@ on:
       - '.github/workflows/build-apk.yml'
       - 'Practica 4/TokTik/**'
 
+permissions:
+  contents: write
+
 jobs:
   build:
     name: Build Release APK
@@ -49,3 +52,11 @@ jobs:
           path: 'Practica 4/TokTik/build/app/outputs/flutter-apk/app-release.apk'
           if-no-files-found: error
           retention-days: 14
+
+      - name: Publish to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.0-apk
+          name: "TokTik v1.0.0 Release APK"
+          body: "Descarga directa de APK de TokTik para Appetize.io y pruebas."
+          files: 'Practica 4/TokTik/build/app/outputs/flutter-apk/app-release.apk'
