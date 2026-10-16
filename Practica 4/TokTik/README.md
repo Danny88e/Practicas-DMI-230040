@@ -10,8 +10,8 @@
 
 Aplicación móvil desarrollada en Flutter inspirada en TikTok. Permite reproducir videos de forma automática en pantalla completa con desplazamiento vertical. Incluye sistema de temas estacionales que adapta colores e ícono de la app dependiendo del mes del año, y un filtro lógico que excluye videos con datos inconsistentes (más likes que visualizaciones).
 
-> 📱 **[Ver y Probar App en Appetize.io (Emulador en la Nube)](https://appetize.io/app/android/com.example.hello_world_app_230040?device=pixel9pro&osVersion=15.0&toolbar=true)**  
-> *Ejecución virtual interactiva de TokTik en Google Pixel 9 Pro con Android 15 directamente desde el navegador web.*
+> 📱 **[Ver y Probar App en Appetize.io (Emulador en la Nube)](https://appetize.io/app/b_zfiayvtvlc5z7luikybxifpw7e)**  
+> *Ejecución virtual interactiva de TokTik directamente desde el navegador web.*
 
 ---
 
@@ -406,13 +406,13 @@ La aplicación fue evaluada en dos configuraciones de dispositivos virtuales par
 ### 9. 🔗 Enlace de Demostración y Acceso a la Aplicación
  
 > 🌐 **Enlace público en Appetize.io:**  
-> 👉 **[Probar TokTik en Appetize.io (Google Pixel 9 Pro · Android 15)](https://appetize.io/app/android/com.example.hello_world_app_230040?device=pixel9pro&osVersion=15.0&toolbar=true)**  
+> 👉 **[Probar TokTik en Appetize.io (Emulador en la Nube)](https://appetize.io/app/b_zfiayvtvlc5z7luikybxifpw7e)**  
 > *(Acceso interactivo directo desde el navegador web sin necesidad de instalación física)*
 
 #### Código para inserción web (`<iframe>`):
 ```html
 <iframe 
-  src="https://appetize.io/embed/android/com.example.hello_world_app_230040?device=pixel9pro&osVersion=15.0&toolbar=true" 
+  src="https://appetize.io/embed/b_zfiayvtvlc5z7luikybxifpw7e" 
   width="378px" 
   height="800px" 
   frameborder="0" 
