@@ -26,16 +26,19 @@ Aplicación móvil desarrollada en Flutter inspirada en TikTok. Permite reproduc
 
 ---
 
-### 🌐 Diagramas de Arquitectura Interactivos (GitHub Pages)
+### 🌐 Visor de Diagramas de Arquitectura (GitHub Pages)
 
-Visualizador interactivo con **dos diagramas completos** (Videos Locales + APIs Externas), efectos hover con mouse, inspector de nodos interactivo, partículas animadas de fondo, leyendas y paleta de colores de alta fidelidad:
-
-- 🟢 **[Diagrama 1: Flujo de Videos Locales (Provider Directo)](https://danny88e.github.io/Practicas-DMI-230040/Practica%204/TokTik/architecture-diagram.html#local)**  
-  *Modo offline, 14 assets locales, filtro lógico `isValid` (likes &le; views) y persistencia en `SharedPreferences`.*
-- 🟣 **[Diagrama 2: Flujo con APIs Externas (Clean Architecture & DataSources)](https://danny88e.github.io/Practicas-DMI-230040/Practica%204/TokTik/architecture-diagram.html#api)**  
-  *Inversión de dependencias (SOLID DIP), orquestador multi-fuente (`Dio`), YouTube Data API v3, Pixabay Video API y Pexels.*
-- 🌐 **[Abrir Visor de Arquitectura Completo (HTML Interactivo)](https://danny88e.github.io/Practicas-DMI-230040/Practica%204/TokTik/architecture-diagram.html)**  
-  *Realizado por: **Luis Daniel Suarez Escamilla 230040** — 10A IDGS*
+> ### 🚀 **[🌐 Abrir Visor de Arquitectura Completo (HTML Interactivo)](https://danny88e.github.io/Practicas-DMI-230040/Practica%204/TokTik/architecture-diagram.html)**
+>
+> Aplicación web interactiva que fusiona en un solo visor ambos diagramas de arquitectura del proyecto, con partículas animadas de fondo, efectos hover en los nodos e inspector de código:
+>
+> - 🟢 **[Diagrama 1: Flujo de Videos Locales (Provider Directo)](https://danny88e.github.io/Practicas-DMI-230040/Practica%204/TokTik/architecture-diagram.html#local)**  
+>   *Modo offline, 14 assets locales, filtro lógico `isValid` (likes &le; views) y persistencia en `SharedPreferences`.*
+> - 🟣 **[Diagrama 2: Flujo con APIs Externas (Clean Architecture & DataSources)](https://danny88e.github.io/Practicas-DMI-230040/Practica%204/TokTik/architecture-diagram.html#api)**  
+>   *Inversión de dependencias (SOLID DIP), orquestador multi-fuente (`Dio`), YouTube Data API v3, Pixabay Video API y Pexels.*
+> - 🌐 **[Abrir Visor de Arquitectura Completo (HTML Interactivo)](https://danny88e.github.io/Practicas-DMI-230040/Practica%204/TokTik/architecture-diagram.html)**  
+>
+> *Realizado por: **Luis Daniel Suarez Escamilla 230040** — 10A IDGS*
 
 ---
 

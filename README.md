@@ -29,13 +29,13 @@ Cada práctica tiene su propio README con el objetivo, descripción y, cuando co
 | 01 | [Metodología de evaluación](Practica%201/README.md) | Revisión de los criterios y fechas de evaluación de la asignatura. | 5 firmas | 🟢 Completada |
 | 02 | [Mi primera aplicación móvil con Flutter](Practica%202/hello_world_app_230040/README.md) | Aplicación de contador con controles para incrementar, decrementar y reiniciar, con color dinámico según el valor. | 20 firmas | 🟢 Completada |
 | 03 | [Yes, No, Maybe](Practica%203/yes_no_app/README.md) | Interfaz de chat en Flutter con mensajes, estado administrado con Provider e imágenes remotas. | 30 firmas | 🟢 Completada |
-| 04 | [TokTik: Video App](Practica%204/TokTik/README.md) | Reproducción de videos con gestos y transiciones suaves | ?? firmas | 🟡 Pendiente |
+| 04 | [TokTik: Video App](Practica%204/TokTik/README.md) | Reproducción de videos verticales, splash estacional con audio, APIs externas (YouTube/Pixabay/Pexels) y [Diagramas en GitHub Pages](https://danny88e.github.io/Practicas-DMI-230040/Practica%204/TokTik/architecture-diagram.html) | 30 firmas | 🟢 Completada |
 
 ## Tecnologías
 
 - [Flutter](https://flutter.dev/) y [Dart](https://dart.dev/)
 - Material Design 3
-- Provider para gestión de estado en la práctica 03
+- Provider para gestión de estado en las prácticas 03 y 04
 - Git y GitHub
 
 ## Estructura del repositorio
@@ -45,6 +45,8 @@ Cada práctica tiene su propio README con el objetivo, descripción y, cuando co
 ├── Practica 1/               # README de la práctica 01
 ├── Practica 2/
 │   └── hello_world_app_230040/  # Aplicación de contador y diagrama
-└── Practica 3/
-	└── yes_no_app/          # Aplicación de chat
+├── Practica 3/
+│   └── yes_no_app/          # Aplicación de chat
+└── Practica 4/
+    └── TokTik/              # Aplicación de videos y visor de diagramas de arquitectura
 ```
