@@ -1,0 +1,36 @@
+name: toktik
+description: "TokTik - App de videos cortos con temas estacionales, APIs externas y persistencia local."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.13.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+  provider: ^6.1.5+1
+  video_player: ^2.9.1
+  animate_do: ^3.3.4
+  intl: ^0.19.0
+  dio: ^5.4.0
+  shared_preferences: ^2.3.2
+  youtube_player_flutter: ^10.0.1
+  cached_network_image: ^3.4.1
+  audioplayers: ^6.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/videos/
+    - assets/icons/
+    - assets/sounds/
