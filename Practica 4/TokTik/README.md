@@ -10,15 +10,32 @@
 
 Aplicación móvil desarrollada en Flutter inspirada en TikTok. Permite reproducir videos de forma automática en pantalla completa con desplazamiento vertical. Incluye sistema de temas estacionales que adapta colores e ícono de la app dependiendo del mes del año, y un filtro lógico que excluye videos con datos inconsistentes (más likes que visualizaciones).
 
-### 📊 Diagramas de Arquitectura Interactivos (GitHub Pages)
+---
 
-Accede a la visualización interactiva de arquitectura con especificación **Archfy**, inspector de nodos y estilos diferenciados:
+## 📸 Evidencia de Funcionalidades
+
+> Las siguientes capturas muestran las funcionalidades implementadas corriendo en el dispositivo.
+
+| Captura | Funcionalidad demostrada |
+|:---:|---|
+| ![Splash Halloween](Evidencia/SplashOctubre.png) | **Splash Screen — Octubre (Halloween)** · Pantalla de bienvenida de 3 segundos con logo temático de Halloween, resplandor naranja-morado, texto `¡Feliz Halloween!` y barra de progreso. Se reproduce el audio `OctubreP4.mpeg` al iniciar. |
+| ![Splash Navidad](Evidencia/SplashDiciembre.png) | **Splash Screen — Diciembre (Navidad)** · Splash navideño con logo temático, fondo rojo oscuro, resplandor dorado y texto `¡Feliz Navidad!`. Se reproduce el audio `DiciembreP4.mpeg` al iniciar. |
+| ![Botón Play/Pause](Evidencia/BotonPausaPlay.png) | **Botón Central Play/Pause + Ícono Estacional** · Botón circular visible en el centro de la pantalla con icono de pausa/play. Se muestra al tocar el video y se oculta automáticamente (1.5 s). El AppBar muestra el ícono de Halloween cuando `month == 10`. |
+| ![Favoritos](Evidencia/GuardarFavoritos.png) | **Guardar Favoritos con Like** · Al presionar ❤️ en cualquier video (local, Pixabay o YouTube), el video se almacena en `SharedPreferences` y aparece en la pestaña **Favoritos** con miniatura, fuente y descripción. |
+| ![Discovery YouTube](Evidencia/APIyoutube.png) | **Discovery — YouTube Data API v3** · Pestaña Discovery cargando videos reales de YouTube: carrusel horizontal de tendencias + feed vertical detallado. Cada tarjeta muestra miniatura, título, vistas, likes y botón de favorito. |
+
+---
+
+### 🌐 Diagramas de Arquitectura Interactivos (GitHub Pages)
+
+Visualizador interactivo con **dos diagramas completos** (Videos Locales + APIs Externas), efectos hover con mouse, inspector de nodos interactivo, partículas animadas de fondo, leyendas y paleta de colores de alta fidelidad:
 
 - 🟢 **[Diagrama 1: Flujo de Videos Locales (Provider Directo)](https://danny88e.github.io/Practicas-DMI-230040/Practica%204/TokTik/architecture-diagram.html#local)**  
   *Modo offline, 14 assets locales, filtro lógico `isValid` (likes &le; views) y persistencia en `SharedPreferences`.*
 - 🟣 **[Diagrama 2: Flujo con APIs Externas (Clean Architecture & DataSources)](https://danny88e.github.io/Practicas-DMI-230040/Practica%204/TokTik/architecture-diagram.html#api)**  
   *Inversión de dependencias (SOLID DIP), orquestador multi-fuente (`Dio`), YouTube Data API v3, Pixabay Video API y Pexels.*
-- 🌐 **[Abrir Visor de Arquitectura Completo (HTML Local)](./architecture-diagram.html)**
+- 🌐 **[Abrir Visor de Arquitectura Completo (HTML Interactivo)](https://danny88e.github.io/Practicas-DMI-230040/Practica%204/TokTik/architecture-diagram.html)**  
+  *Realizado por: **Luis Daniel Suarez Escamilla 230040** — 10A IDGS*
 
 ---
 
@@ -253,11 +270,33 @@ assets/
 
 ## Arquitectura del proyecto
 
-### Diagrama de arquitectura — práctica 04
+### 📐 Diagrama de Arquitectura — Práctica 04
 
-### Evidencia Diagrama de Arquitectura
+El proyecto implementa **Clean Architecture** con separación en capas: `domain`, `infrastructure`, `presentation` y `services`. Los diagramas interactivos muestran el flujo completo de datos para videos locales y para APIs externas.
+
+> 🌐 **[Ver Diagramas Interactivos en GitHub Pages](https://danny88e.github.io/Practicas-DMI-230040/Practica%204/TokTik/architecture-diagram.html)**  
+> Hover sobre los nodos para inspeccionar · Dos diagramas en un solo visor: **Local** y **APIs Externas**
+
+```
+UI (Presentation)
+  └── Provider (ChangeNotifier)
+        ├── DiscoverProvider  → DiscoverScreen  → VideoScrollableView
+        ├── DiscoveryProvider → DiscoveryScreen → YoutubePlayerScreen
+        └── FavoritesProvider → FavoritesScreen
+
+Infrastructure (DataSources)
+  ├── LocalVideoDatasource      (assets/videos/*.mp4)
+  ├── PixabayDataSource         (Pixabay Video API)
+  ├── PexelsDataSource          (Pexels Videos API)
+  └── YoutubeDataSource         (YouTube Data API v3)
+
+Services
+  └── LocalStorageService       (SharedPreferences)
+```
+
+---
 
 #### Realizado por
 
-**Luis Daniel Suarez Escamilla 230040**  
+**Luis Daniel Suarez Escamilla 230040 — 10A IDGS**  
 @[Danny88e](https://github.com/Danny88e)

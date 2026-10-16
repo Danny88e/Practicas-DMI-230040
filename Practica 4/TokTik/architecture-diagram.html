@@ -15,26 +15,26 @@
        ARCHFY CORE DESIGN SYSTEM — VARIABLES & RESET
        ========================================================================== */
     :root {
-      --bg-main: #070a13;
-      --bg-surface: #0d1322;
-      --bg-card: rgba(16, 24, 43, 0.82);
-      --bg-card-hover: rgba(24, 36, 64, 0.95);
-      --border-subtle: rgba(255, 255, 255, 0.08);
+      --bg-main: #060910;
+      --bg-surface: #0b1020;
+      --bg-card: rgba(14, 22, 40, 0.85);
+      --bg-card-hover: rgba(22, 36, 68, 0.97);
+      --border-subtle: rgba(255, 255, 255, 0.07);
       
       /* Neon Theme 1: Emerald & Cyan Matrix (Videos Locales) */
       --local-primary: #10b981;
-      --local-glow: rgba(16, 185, 129, 0.35);
+      --local-glow: rgba(16, 185, 129, 0.4);
       --local-secondary: #06b6d4;
       --local-accent: #34d399;
-      --local-border: rgba(16, 185, 129, 0.3);
+      --local-border: rgba(16, 185, 129, 0.35);
 
       /* Neon Theme 2: Sunset Violet, Rose & Amber (APIs Externas / Clean Arch) */
       --api-primary: #8b5cf6;
-      --api-glow: rgba(139, 92, 246, 0.35);
+      --api-glow: rgba(139, 92, 246, 0.4);
       --api-secondary: #f43f5e;
       --api-accent: #f59e0b;
       --api-cyan: #38bdf8;
-      --api-border: rgba(139, 92, 246, 0.35);
+      --api-border: rgba(139, 92, 246, 0.4);
 
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
@@ -59,31 +59,60 @@
       display: flex;
       flex-direction: column;
       overflow-x: hidden;
-      background-image: 
-        radial-gradient(circle at 15% 15%, rgba(16, 185, 129, 0.06) 0%, transparent 40%),
-        radial-gradient(circle at 85% 85%, rgba(139, 92, 246, 0.07) 0%, transparent 40%),
-        linear-gradient(to right, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
-      background-size: 100% 100%, 100% 100%, 36px 36px, 36px 36px;
     }
+
+    /* Fondo de partículas animado (canvas) */
+    #particle-canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.55;
+    }
+
+    /* Gradiente animado de fondo */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background:
+        radial-gradient(ellipse at 10% 20%, rgba(16, 185, 129, 0.12) 0%, transparent 55%),
+        radial-gradient(ellipse at 90% 80%, rgba(139, 92, 246, 0.14) 0%, transparent 55%),
+        radial-gradient(ellipse at 50% 50%, rgba(56, 189, 248, 0.05) 0%, transparent 70%),
+        linear-gradient(135deg, #060910 0%, #0a0f1e 50%, #060910 100%);
+      animation: bgShift 12s ease-in-out infinite alternate;
+      pointer-events: none;
+    }
+
+    @keyframes bgShift {
+      0%   { opacity: 1; }
+      50%  { opacity: 0.85; filter: hue-rotate(15deg); }
+      100% { opacity: 1; }
+    }
+
+    /* Todos los elementos de contenido sobre el canvas */
+    header, main, footer, .modal-overlay { position: relative; z-index: 1; }
 
     /* ==========================================================================
        HEADER & NAVIGATION BAR
        ========================================================================== */
     header {
-      background: rgba(13, 19, 34, 0.88);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border-subtle);
+      background: rgba(9, 14, 26, 0.93);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
       position: sticky;
       top: 0;
       z-index: 100;
-      padding: 14px 28px;
+      padding: 12px 28px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
-      gap: 16px;
+      gap: 14px;
+      box-shadow: 0 4px 32px rgba(0,0,0,0.5);
     }
 
     .brand {
@@ -100,8 +129,14 @@
       padding: 6px 14px;
       border-radius: var(--radius-sm);
       letter-spacing: 1.2px;
-      box-shadow: 0 4px 14px rgba(255, 0, 80, 0.35);
+      box-shadow: 0 4px 18px rgba(255, 0, 80, 0.45);
       text-transform: uppercase;
+      animation: logoPulse 3s ease-in-out infinite;
+    }
+
+    @keyframes logoPulse {
+      0%, 100% { box-shadow: 0 4px 18px rgba(255, 0, 80, 0.45); }
+      50% { box-shadow: 0 4px 30px rgba(0, 242, 254, 0.55), 0 0 60px rgba(255,0,80,0.2); }
     }
 
     .brand-info h1 {
@@ -408,24 +443,33 @@
 
     .theme-local .node:hover {
       border-color: var(--local-primary);
-      transform: translateY(-3px);
-      box-shadow: 0 8px 24px var(--local-glow);
+      transform: translateY(-4px) scale(1.01);
+      box-shadow: 0 0 0 1px var(--local-primary), 0 12px 32px var(--local-glow), 0 0 20px rgba(16,185,129,0.2);
     }
 
     .theme-local .node:hover::before {
-      background: linear-gradient(90deg, var(--local-primary), var(--local-secondary));
+      background: linear-gradient(90deg, var(--local-primary), var(--local-secondary), var(--local-primary));
+      background-size: 200% auto;
+      animation: shimmerBorder 1.5s linear infinite;
       opacity: 1;
     }
 
     .theme-api .node:hover {
       border-color: var(--api-primary);
-      transform: translateY(-3px);
-      box-shadow: 0 8px 24px var(--api-glow);
+      transform: translateY(-4px) scale(1.01);
+      box-shadow: 0 0 0 1px var(--api-primary), 0 12px 32px var(--api-glow), 0 0 20px rgba(139,92,246,0.2);
     }
 
     .theme-api .node:hover::before {
-      background: linear-gradient(90deg, var(--api-secondary), var(--api-primary));
+      background: linear-gradient(90deg, var(--api-secondary), var(--api-primary), var(--api-cyan), var(--api-secondary));
+      background-size: 200% auto;
+      animation: shimmerBorder 1.5s linear infinite;
       opacity: 1;
+    }
+
+    @keyframes shimmerBorder {
+      0% { background-position: 0% center; }
+      100% { background-position: 200% center; }
     }
 
     .node-top {
@@ -758,16 +802,124 @@
 
     footer a:hover { text-decoration: underline; }
 
+    /* Hover Tooltip */
+    .node-tooltip {
+      position: fixed;
+      background: rgba(10, 16, 32, 0.97);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.7), 0 0 20px rgba(56,189,248,0.15);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      max-width: 300px;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0;
+      transform: translateY(6px) scale(0.97);
+      transition: opacity 0.18s ease, transform 0.18s ease;
+    }
+
+    .node-tooltip.visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .node-tooltip .tt-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .node-tooltip .tt-path {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: #38bdf8;
+      margin-bottom: 6px;
+      word-break: break-all;
+    }
+
+    .node-tooltip .tt-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* Footer mejorado */
+    footer {
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding: 28px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-dim);
+      background: rgba(9, 14, 26, 0.95);
+    }
+
+    .footer-author-card {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      background: linear-gradient(135deg, rgba(16,185,129,0.08), rgba(139,92,246,0.1));
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius-md);
+      padding: 14px 24px;
+      margin-bottom: 14px;
+    }
+
+    .footer-avatar {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #10b981, #8b5cf6);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+      box-shadow: 0 0 16px rgba(16,185,129,0.4);
+    }
+
+    .footer-author-info {
+      text-align: left;
+    }
+
+    .footer-author-info strong {
+      font-size: 14px;
+      font-weight: 800;
+      color: #fff;
+      display: block;
+    }
+
+    .footer-author-info span {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    footer a {
+      color: #38bdf8;
+      text-decoration: none;
+    }
+
+    footer a:hover { text-decoration: underline; }
+
     @media (max-width: 768px) {
       header { padding: 12px 16px; }
-      .brand-info h1 { font-size: 15px; }
-      .tab-btn { padding: 6px 12px; font-size: 12px; }
+      .brand-info h1 { font-size: 14px; }
+      .tab-btn { padding: 6px 10px; font-size: 11px; }
       main { padding: 16px; }
       .nodes-grid { grid-template-columns: 1fr; }
+      .footer-author-card { flex-direction: column; text-align: center; }
+      .footer-author-info { text-align: center; }
     }
   </style>
 </head>
 <body>
+
+  <!-- Canvas de fondo para partículas dinámicas -->
+  <canvas id="particle-canvas"></canvas>
+
+  <!-- Tooltip flotante interactivo (Mouse hover) -->
+  <div id="node-tooltip" class="node-tooltip">
+    <div id="tt-name" class="tt-title"></div>
+    <div id="tt-path" class="tt-path"></div>
+    <div id="tt-desc" class="tt-desc"></div>
+  </div>
 
   <!-- ==========================================================================
        HEADER & NAVIGATION
@@ -1341,18 +1493,27 @@
        FOOTER
        ========================================================================== -->
   <footer>
+    <div class="footer-author-card">
+      <div class="footer-avatar">👨‍💻</div>
+      <div class="footer-author-info">
+        <strong>Luis Daniel Suarez Escamilla</strong>
+        <span>Matrícula: 230040 &mdash; 10A IDGS &mdash; Desarrollo Móvil Integral</span>
+      </div>
+    </div>
     <p>
-      Desarrollo Móvil Integral — Práctica 04: TokTik &middot; Alumno: Luis Daniel Suarez Escamilla (230040)
+      Práctica 04: TokTik &mdash; Diagramas de Arquitectura interactivos con especificación Archfy
     </p>
     <p style="margin-top: 6px;">
-      Generado conforme a la especificación oficial de arquitectura de software y evaluación en GitHub Pages.
+      <a href="https://github.com/Danny88e">@Danny88e</a> &mdash;
+      <a href="https://danny88e.github.io/Practicas-DMI-230040/Practica%204/TokTik/architecture-diagram.html">Ver en GitHub Pages</a>
     </p>
   </footer>
 
   <!-- ==========================================================================
-       TAB CONTROLLER & MODAL LOGIC
+       TAB CONTROLLER, MODAL LOGIC, PARTICLES & TOOLTIP
        ========================================================================== -->
   <script>
+    /* ── Tab Controller ─────────────────────────────────────────────────────── */
     function switchTab(tab) {
       const btnLocal = document.getElementById('btn-local');
       const btnApi = document.getElementById('btn-api');
@@ -1374,17 +1535,25 @@
       }
     }
 
-    // Hash navigation on load
-    window.addEventListener('DOMContentLoaded', () => {
+    // Hash navigation on load and change
+    function handleHashChange() {
       const hash = window.location.hash;
       if (hash === '#api' || hash === '#repo') {
         switchTab('api');
       } else {
         switchTab('local');
       }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      handleHashChange();
+      initParticles();
+      initNodeTooltips();
     });
 
-    // Node Inspector
+    window.addEventListener('hashchange', handleHashChange);
+
+    /* ── Node Inspector Modal ───────────────────────────────────────────────── */
     function inspectNode(name, type, path, desc, code) {
       document.getElementById('modal-title').innerText = name;
       document.getElementById('modal-path').innerText = path;
@@ -1407,6 +1576,122 @@
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') closeInspector();
     });
+
+    /* ── Mouse-over Tooltip on Nodes ────────────────────────────────────────── */
+    function initNodeTooltips() {
+      const tooltip = document.getElementById('node-tooltip');
+      if (!tooltip) return;
+      const ttName = document.getElementById('tt-name');
+      const ttPath = document.getElementById('tt-path');
+      const ttDesc = document.getElementById('tt-desc');
+
+      let tooltipTimer = null;
+
+      document.querySelectorAll('.node').forEach(node => {
+        const name = node.querySelector('.node-name')?.innerText || '';
+        const path = node.querySelector('.node-code-badge')?.innerText || '';
+        const desc = node.querySelector('.node-desc')?.innerText || '';
+
+        node.addEventListener('mouseenter', (e) => {
+          tooltipTimer = setTimeout(() => {
+            ttName.textContent = name;
+            ttPath.textContent = path;
+            ttDesc.textContent = desc;
+            tooltip.classList.add('visible');
+          }, 250);
+        });
+
+        node.addEventListener('mousemove', (e) => {
+          const x = e.clientX + 16;
+          const y = e.clientY + 16;
+          // Prevent going off-screen to the right
+          const maxX = window.innerWidth - 320;
+          tooltip.style.left = Math.min(x, maxX) + 'px';
+          tooltip.style.top = y + 'px';
+        });
+
+        node.addEventListener('mouseleave', () => {
+          clearTimeout(tooltipTimer);
+          tooltip.classList.remove('visible');
+        });
+      });
+    }
+
+    /* ── Particle Canvas Background ─────────────────────────────────────────── */
+    function initParticles() {
+      const canvas = document.getElementById('particle-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      resize();
+      window.addEventListener('resize', resize);
+
+      const colors = [
+        'rgba(16, 185, 129, VAL)',   // emerald
+        'rgba(56, 189, 248, VAL)',   // cyan
+        'rgba(139, 92, 246, VAL)',   // violet
+        'rgba(244, 63, 94, VAL)',    // rose
+        'rgba(245, 158, 11, VAL)',   // amber
+      ];
+
+      const particles = Array.from({ length: 70 }, () => ({
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        r: Math.random() * 2 + 0.5,
+        vx: (Math.random() - 0.5) * 0.35,
+        vy: (Math.random() - 0.5) * 0.35,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        alpha: Math.random() * 0.5 + 0.15,
+        pulse: Math.random() * Math.PI * 2,
+      }));
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        particles.forEach(p => {
+          p.pulse += 0.018;
+          const alpha = p.alpha * (0.7 + 0.3 * Math.sin(p.pulse));
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = p.color.replace('VAL', alpha.toFixed(2));
+          ctx.fill();
+
+          p.x += p.vx;
+          p.y += p.vy;
+
+          if (p.x < 0) p.x = canvas.width;
+          if (p.x > canvas.width) p.x = 0;
+          if (p.y < 0) p.y = canvas.height;
+          if (p.y > canvas.height) p.y = 0;
+        });
+
+        // Draw faint connecting lines between nearby particles
+        for (let i = 0; i < particles.length; i++) {
+          for (let j = i + 1; j < particles.length; j++) {
+            const dx = particles[i].x - particles[j].x;
+            const dy = particles[i].y - particles[j].y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 110) {
+              ctx.beginPath();
+              ctx.moveTo(particles[i].x, particles[i].y);
+              ctx.lineTo(particles[j].x, particles[j].y);
+              ctx.strokeStyle = `rgba(100, 116, 139, ${(0.12 * (1 - dist / 110)).toFixed(3)})`;
+              ctx.lineWidth = 0.5;
+              ctx.stroke();
+            }
+          }
+        }
+
+        requestAnimationFrame(animate);
+      }
+
+      animate();
+    }
   </script>
 
 </body>
