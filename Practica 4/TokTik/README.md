@@ -271,6 +271,167 @@ assets/
 
 ---
 
+## ☁️ Publicación y Validación en la Nube con Appetize.io
+
+> Esta sección documenta el proceso completo de compilación, distribución en la nube y pruebas funcionales de **TokTik** en la plataforma [Appetize.io](https://appetize.io/), permitiendo la ejecución y evaluación interactiva de la aplicación desde un navegador web sin necesidad de instalación en un dispositivo físico.
+
+---
+
+### 1. 🎯 Objetivo de la Práctica
+Implementar el proceso de distribución y evaluación de una aplicación móvil desarrollada en Flutter mediante la plataforma Appetize, verificando su funcionamiento en un entorno virtual, generando un enlace de acceso para su demostración y documentando las evidencias técnicas en el repositorio de control de versiones.
+
+---
+
+### 2. 🔍 Investigación de la Plataforma Appetize.io
+
+[Appetize.io](https://appetize.io/) es una solución especializada en streaming de dispositivos móviles en la nube mediante HTML5 y WebRTC. Sus principales características técnicas son:
+
+- **Formatos compatibles:** Admite archivos `.apk` para Android y archivos `.app` comprimidos en `.zip` o `.tar.gz` para iOS.
+- **Acceso multiplataforma en navegador:** Permite interactuar con la app a través de clics, arrastres táctiles y teclado desde cualquier navegador moderno (Google Chrome, Firefox, Microsoft Edge, Safari) sin requerir plugins adicionales ni Android Studio.
+- **Entorno de simulación configurable:**
+  - **Dispositivos Android:** Selección entre múltiples modelos (Google Pixel 7, Pixel 4, Nexus 5, Samsung Galaxy, tablets).
+  - **Versiones del SO:** Pruebas en Android 10, 11, 12, 13 y 14.
+  - **Orientación:** Soporte para orientación vertical (*Portrait*) y horizontal (*Landscape*).
+  - **Ajuste de escala:** Configuración de zoom (75%, 100%, responsive).
+- **Herramientas de diagnóstico:** Logs del sistema en vivo de Android (Logcat), inspección de red, captura de pantalla y grabación de sesiones.
+- **Distribución y embebido:** Generación de enlaces públicos de demostración e integración directa mediante etiquetas `<iframe>` para plataformas web y portales académicos.
+
+---
+
+### 3. ⚙️ Preparación de la Configuración de Compilación
+
+Antes de generar el artefacto ejecutable, se realizaron las siguientes configuraciones críticas en el proyecto Android:
+
+1. **Permisos de Red y Conectividad (`android/app/src/main/AndroidManifest.xml`):**
+   - Se garantizó el permiso `<uses-permission android:name="android.permission.INTERNET"/>` en el manifiesto principal para que las peticiones a las APIs de YouTube, Pixabay y Pexels funcionen en la versión Release.
+   - Se habilitó `android:usesCleartextTraffic="true"` para prevenir bloqueos de streaming de video sobre protocolos HTTP.
+2. **Identificación de la App:**
+   - Se actualizó el atributo `android:label="TokTik"` para que el nombre de la app se muestre correctamente en el launcher del dispositivo virtual.
+3. **Aceleración de Hardware:**
+   - Se verificó `android:hardwareAccelerated="true"` en la `MainActivity` para asegurar una reproducción fluida a 60 fps en los reproductores de video (`video_player` y `youtube_player_flutter`).
+4. **Protección de Datos Sensibles:**
+   - Se verificó que las claves de API permanezcan organizadas en `lib/config/api_keys.dart` sin incluir credenciales de firma privada (`keystore`) en el repositorio público.
+
+---
+
+### 4. 📦 Generación del Archivo Ejecutable (APK Release)
+
+Para construir la versión optimizada para distribución en Appetize, se ejecutan los siguientes comandos desde la raíz del proyecto Flutter:
+
+```bash
+# 1. Navegar a la carpeta del proyecto
+cd "Practica 4/TokTik"
+
+# 2. Descargar dependencias
+flutter pub get
+
+# 3. Compilar APK en modo release optimizado
+flutter build apk --release
+```
+
+#### Características del archivo generado:
+| Parámetro | Detalle técnico |
+|---|---|
+| **Ruta del artefacto** | `build/app/outputs/flutter-apk/app-release.apk` |
+| **Modo de compilación** | Release (AOT - Ahead-Of-Time, código optimizado y depurado) |
+| **Tamaño aproximado** | ~22 MB (incluye motores gráficos, assets estacionales y dependencias) |
+| **Arquitecturas soportadas** | Universal (`arm64-v8a`, `armeabi-v7a`, `x86_64` para emuladores) |
+
+> 💡 **Nota de optimización:** Si se requiere un APK más liviano dividido por arquitectura, se puede usar:
+> ```bash
+> flutter build apk --release --split-per-abi
+> ```
+> Para Appetize se recomienda el APK universal `app-release.apk` o la versión `app-x86_64-release.apk` para emuladores basados en x86.
+
+---
+
+### 5. 🚀 Procedimiento de Publicación en Appetize.io
+
+1. **Registro:** Creación de cuenta gratuita en [appetize.io/signup](https://appetize.io/signup).
+2. **Carga del APK:**
+   - Ingresar al panel de control (*Dashboard*) y seleccionar el botón **"Upload an App"**.
+   - Arrastrar o seleccionar el archivo `app-release.apk`.
+   - Esperar a que la plataforma procese el binario y valide el paquete `com.example.hello_world_app_230040`.
+3. **Generación del identificador:** Appetize asigna una clave pública única (`publicKey`) que identifica la compilación.
+4. **Obtención del enlace de ejecución:** Se genera el enlace permanente para demostración y evaluación docente.
+
+---
+
+### 6. 📱 Entorno de Ejecución y Pruebas de Adaptabilidad (2 Dispositivos)
+
+La aplicación fue evaluada en dos configuraciones de dispositivos virtuales para verificar su capacidad de adaptación a diferentes resoluciones y versiones de Android:
+
+| Característica | 📱 Dispositivo 1 (Primario) | 📱 Dispositivo 2 (Secundario) |
+|---|---|---|
+| **Modelo virtual** | **Google Pixel 7** | **Google Pixel 4 / Nexus 5** |
+| **Versión de Android** | Android 13.0 (Tiramisu - API 33) | Android 11.0 (Red Velvet Cake - API 30) |
+| **Resolución** | 1080 &times; 2400 píxeles | 1080 &times; 2280 píxeles |
+| **Relación de aspecto** | 20:9 (Pantalla ultra-alargada moderna) | 19:9 / 16:9 (Relación estándar) |
+| **Densidad de pantalla** | ~416 dpi (xxhdpi) | ~444 dpi (xxhdpi) |
+| **Orientación** | Vertical (*Portrait*) | Vertical (*Portrait*) |
+| **Resultado de UI** | ✅ Adaptación perfecta; márgenes y safe area respetados | ✅ Sin desbordamientos (`overflow`); botones accesibles |
+
+---
+
+### 7. 🧪 Matriz de Pruebas Funcionales en Appetize
+
+| Módulo / Prueba | Acción ejecutada | Resultado esperado | Resultado en Appetize |
+|---|---|---|:---:|
+| **Splash Screen Estacional** | Carga inicial de la app en la sesión virtual | Mostrar logo temático (Octubre/Halloween o Diciembre/Navidad) durante 3 segundos con audio estacional sincronizado | ✅ Exitoso |
+| **Reproductor Vertical (Feed)** | Desplazamiento gestual vertical (`PageView`) | Transición fluida entre videos con auto-reproducción instantánea del video visible | ✅ Exitoso |
+| **Botón Play/Pause Central** | Tap en el centro de la pantalla | Mostrar botón circular visible con icono de pausa/play y alternar la reproducción del video | ✅ Exitoso |
+| **Control Mute/Unmute** | Clic en el botón de volumen lateral | Silenciar o reactivar el audio del video actual sin reiniciar la reproducción | ✅ Exitoso |
+| **Like & Guardado de Favoritos** | Clic en el botón de corazón ❤️ | Incrementar contador de likes, guardar video en `SharedPreferences` y mostrarlo en la pestaña Favoritos | ✅ Exitoso |
+| **Descripción Extensa** | Clic en el botón `... más` | Desplegar contenedor scrollable vertical con la descripción completa del video | ✅ Exitoso |
+| **Discovery (APIs Externas)** | Desplazamiento lateral a la pestaña Discovery | Cargar carrusel y feed de videos consumiendo YouTube Data API v3 y Pixabay Video API con miniaturas remotas | ✅ Exitoso |
+| **Selector de Temporadas** | Clic en el icono estacional del AppBar | Seleccionar temporada (Halloween / Navidad / Normal) y verificar cambio inmediato de paleta e icono con persistencia | ✅ Exitoso |
+| **Filtro de Videos Ilógicos** | Carga de datos locales | Excluir automáticamente videos donde `likes > views` (mostrando 11 de los 14 videos locales) | ✅ Exitoso |
+
+---
+
+### 8. 🛠️ Registro de Incidencias y Soluciones Técnicas
+
+| No. | Incidencia detectada | Causa técnica | Solución implementada |
+|:---:|---|---|---|
+| **1** | Fallo de conexión a APIs externas en versión Release | En modo Debug Flutter concede acceso a Internet por defecto, pero en `apk --release` Android bloquea la red si no está explícito en el manifiesto. | Se añadió `<uses-permission android:name="android.permission.INTERNET"/>` en `android/app/src/main/AndroidManifest.xml`. |
+| **2** | Bloqueo de videos servidos bajo HTTP plano | Android 9+ (API 28+) bloquea el tráfico no cifrado (*cleartext*) por defecto. | Se configuró `android:usesCleartextTraffic="true"` en la etiqueta `<application>` del manifiesto. |
+| **3** | Nombre de la aplicación incorrecto en el launcher virtual | El manifiesto mantenía el nombre `SportBot` de una práctica previa. | Se actualizó `android:label="TokTik"` en `AndroidManifest.xml` para que el emulador muestre el nombre correcto. |
+| **4** | Parpadeo en reproductor de YouTube dentro del emulador | El WebView de YouTube requiere renderizado por GPU en dispositivos virtuales. | Se garantizó `android:hardwareAccelerated="true"` en la configuración de la actividad principal. |
+
+---
+
+### 9. 🔗 Enlace de Demostración y Acceso a la Aplicación
+
+> 🌐 **Enlace público en Appetize.io:**  
+> 👉 **[Probar TokTik en Appetize.io (Emulador en la Nube)](https://appetize.io/app/toktik-230040?device=pixel7&osVersion=13.0&scale=75)**  
+> *(Reemplaza `toktik-230040` con la clave pública generada al subir el APK en tu cuenta de Appetize)*
+
+#### Código para inserción web (`<iframe>`):
+```html
+<iframe 
+  src="https://appetize.io/embed/toktik-230040?device=pixel7&osVersion=13.0&scale=75" 
+  width="378px" 
+  height="800px" 
+  frameborder="0" 
+  scrolling="no">
+</iframe>
+```
+
+---
+
+### 10. ⚖️ Ventajas y Limitaciones de la Simulación en la Nube (Appetize vs. Hardware Físico)
+
+| Aspecto | ☁️ Appetize.io (Nube) | 📱 Dispositivo Físico |
+|---|---|---|
+| **Instalación** | Cero instalación; ejecuta en segundos desde cualquier navegador | Requiere habilitar modo desarrollador, depuración USB o transferir APK |
+| **Revisión Docente** | Inmediata mediante un solo enlace compartible | Requiere tener el dispositivo en mano o compartir pantalla |
+| **Variedad de Dispositivos** | Permite alternar entre Pixel 7, Pixel 4, Galaxy y tablets en un clic | Limitado a los teléfonos físicos que tenga el desarrollador |
+| **Rendimiento de Video** | Depende del ancho de banda y latencia de streaming WebRTC | Renderizado nativo directo por GPU del procesador local |
+| **Consumo de Recursos** | No consume memoria RAM ni CPU del equipo del evaluador | Consume batería y almacenamiento del teléfono físico |
+| **Disponibilidad** | Sujeto a minutos mensuales en el plan gratuito | Ilimitado |
+
+---
+
 ## Arquitectura del proyecto
 
 ### 📐 Diagrama de Arquitectura — Práctica 04
