@@ -10,6 +10,9 @@
 
 Aplicación móvil desarrollada en Flutter inspirada en TikTok. Permite reproducir videos de forma automática en pantalla completa con desplazamiento vertical. Incluye sistema de temas estacionales que adapta colores e ícono de la app dependiendo del mes del año, y un filtro lógico que excluye videos con datos inconsistentes (más likes que visualizaciones).
 
+> 📱 **[Ver y Probar App en Appetize.io (Emulador en la Nube)](https://appetize.io/app/android/com.example.hello_world_app_230040?device=pixel9pro&osVersion=15.0&toolbar=true)**  
+> *Ejecución virtual interactiva de TokTik en Google Pixel 9 Pro con Android 15 directamente desde el navegador web.*
+
 ---
 
 ## 📸 Evidencia de Funcionalidades
@@ -363,13 +366,13 @@ La aplicación fue evaluada en dos configuraciones de dispositivos virtuales par
 
 | Característica | 📱 Dispositivo 1 (Primario) | 📱 Dispositivo 2 (Secundario) |
 |---|---|---|
-| **Modelo virtual** | **Google Pixel 7** | **Google Pixel 4 / Nexus 5** |
-| **Versión de Android** | Android 13.0 (Tiramisu - API 33) | Android 11.0 (Red Velvet Cake - API 30) |
-| **Resolución** | 1080 &times; 2400 píxeles | 1080 &times; 2280 píxeles |
-| **Relación de aspecto** | 20:9 (Pantalla ultra-alargada moderna) | 19:9 / 16:9 (Relación estándar) |
-| **Densidad de pantalla** | ~416 dpi (xxhdpi) | ~444 dpi (xxhdpi) |
+| **Modelo virtual** | **Google Pixel 9 Pro** | **Google Pixel 7** |
+| **Versión de Android** | Android 15.0 (Vanilla Ice Cream - API 35) | Android 13.0 (Tiramisu - API 33) |
+| **Resolución** | 1280 &times; 2856 píxeles | 1080 &times; 2400 píxeles |
+| **Relación de aspecto** | 20:9 (Pantalla Flagship moderna) | 20:9 (Pantalla estándar moderna) |
+| **Densidad de pantalla** | ~495 dpi (xxxhdpi) | ~416 dpi (xxhdpi) |
 | **Orientación** | Vertical (*Portrait*) | Vertical (*Portrait*) |
-| **Resultado de UI** | ✅ Adaptación perfecta; márgenes y safe area respetados | ✅ Sin desbordamientos (`overflow`); botones accesibles |
+| **Resultado de UI** | ✅ Renderizado impecable en Android 15; gestos y barra de herramientas funcionales | ✅ Sin desbordamientos (`overflow`); botones y navegación fluidos |
 
 ---
 
@@ -401,15 +404,15 @@ La aplicación fue evaluada en dos configuraciones de dispositivos virtuales par
 ---
 
 ### 9. 🔗 Enlace de Demostración y Acceso a la Aplicación
-
+ 
 > 🌐 **Enlace público en Appetize.io:**  
-> 👉 **[Probar TokTik en Appetize.io (Emulador en la Nube)](https://appetize.io/app/toktik-230040?device=pixel7&osVersion=13.0&scale=75)**  
-> *(Reemplaza `toktik-230040` con la clave pública generada al subir el APK en tu cuenta de Appetize)*
+> 👉 **[Probar TokTik en Appetize.io (Google Pixel 9 Pro · Android 15)](https://appetize.io/app/android/com.example.hello_world_app_230040?device=pixel9pro&osVersion=15.0&toolbar=true)**  
+> *(Acceso interactivo directo desde el navegador web sin necesidad de instalación física)*
 
 #### Código para inserción web (`<iframe>`):
 ```html
 <iframe 
-  src="https://appetize.io/embed/toktik-230040?device=pixel7&osVersion=13.0&scale=75" 
+  src="https://appetize.io/embed/android/com.example.hello_world_app_230040?device=pixel9pro&osVersion=15.0&toolbar=true" 
   width="378px" 
   height="800px" 
   frameborder="0" 
