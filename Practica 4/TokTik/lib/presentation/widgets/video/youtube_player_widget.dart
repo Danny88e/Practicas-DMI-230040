@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
@@ -21,40 +23,57 @@ class YoutubePlayerWidget extends StatefulWidget {
 
 class _YoutubePlayerWidgetState extends State<YoutubePlayerWidget> {
   late YoutubePlayerController _controller;
+  bool _isMuted = false;
 
   @override
   void initState() {
     super.initState();
-    _controller = YoutubePlayerController(
-      initialVideoId: widget.videoId,
-      flags: YoutubePlayerFlags(
-        autoPlay: widget.autoPlay,
-        mute: false,
-        enableCaption: false,
-        hideControls: false,
-        controlsVisibleAtStart: true,
+    _controller = YoutubePlayerController.fromVideoId(
+      videoId: widget.videoId,
+      autoPlay: widget.autoPlay,
+      params: const YoutubePlayerParams(
+        showControls: true,
+        showFullscreenButton: true,
       ),
     );
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    unawaited(_controller.close());
     super.dispose();
+  }
+
+  Future<void> _toggleMute() async {
+    final isMuted = !_isMuted;
+    setState(() => _isMuted = isMuted);
+    if (isMuted) {
+      await _controller.mute();
+    } else {
+      await _controller.unMute();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return YoutubePlayerBuilder(
-      player: YoutubePlayer(
-        controller: _controller,
-        showVideoProgressIndicator: true,
-        progressColors: const ProgressBarColors(
-          playedColor: Colors.red,
-          handleColor: Colors.redAccent,
+    return Stack(
+      children: [
+        YoutubePlayer(controller: _controller, aspectRatio: 16 / 9),
+        Positioned(
+          top: 12,
+          right: 12,
+          child: Material(
+            color: Colors.black.withValues(alpha: 0.72),
+            shape: const CircleBorder(),
+            child: IconButton(
+              onPressed: _toggleMute,
+              tooltip: _isMuted ? 'Activar sonido' : 'Silenciar video',
+              color: Colors.white,
+              icon: Icon(_isMuted ? Icons.volume_off : Icons.volume_up),
+            ),
+          ),
         ),
-      ),
-      builder: (context, player) => player,
+      ],
     );
   }
 }

@@ -30,6 +30,7 @@ class VideoScrollableView extends StatefulWidget {
 
 class _VideoScrollableViewState extends State<VideoScrollableView> {
   final PageController _pageController = PageController();
+  int _currentIndex = 0;
 
   /// Estado de mute compartido entre todos los videos del feed.
   /// true = muteado (valor inicial).
@@ -84,6 +85,7 @@ class _VideoScrollableViewState extends State<VideoScrollableView> {
       physics: const BouncingScrollPhysics(),
       itemCount: widget.videos.length,
       onPageChanged: (index) {
+        setState(() => _currentIndex = index);
         // PUNTO 4: Incrementa vistas al ver un nuevo video
         final video = widget.videos[index];
         widget.onViewIncrement?.call(video.id);
@@ -110,6 +112,7 @@ class _VideoScrollableViewState extends State<VideoScrollableView> {
                   videoPost: videoPost,
                   isMutedNotifier: _isMutedNotifier,
                   isPlayingNotifier: _isPlayingNotifier,
+                  isActive: index == _currentIndex,
                 ),
               ),
             ),

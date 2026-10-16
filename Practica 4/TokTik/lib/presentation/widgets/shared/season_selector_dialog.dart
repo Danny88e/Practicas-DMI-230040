@@ -31,7 +31,11 @@ class SeasonSelectorDialog extends StatelessWidget {
           Expanded(
             child: Text(
               'Mecanismo de Prueba: Temporadas',
-              style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ],
@@ -89,7 +93,9 @@ class SeasonSelectorDialog extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Theme.of(context).colorScheme.primary,
                   foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
                 icon: const Icon(Icons.play_circle_fill, size: 20),
                 label: const Text('Probar Splash Screen (3s)'),
@@ -134,37 +140,55 @@ class _SeasonOption extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 4),
       decoration: BoxDecoration(
-        color: selected ? Colors.white.withValues(alpha: 0.12) : Colors.transparent,
+        color: selected
+            ? Colors.white.withValues(alpha: 0.12)
+            : Colors.transparent,
         borderRadius: BorderRadius.circular(10),
         border: Border.all(
-          color: selected ? Theme.of(context).colorScheme.primary : Colors.transparent,
+          color: selected
+              ? Theme.of(context).colorScheme.primary
+              : Colors.transparent,
           width: 1.5,
         ),
       ),
-      child: ListTile(
-        dense: true,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
-        leading: Icon(
-          icon,
-          color: selected ? Theme.of(context).colorScheme.primary : Colors.white60,
-          size: 22,
-        ),
-        title: Text(
-          title,
-          style: TextStyle(
-            color: selected ? Colors.white : Colors.white70,
-            fontWeight: selected ? FontWeight.bold : FontWeight.normal,
-            fontSize: 13,
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(10),
+        clipBehavior: Clip.antiAlias,
+        child: ListTile(
+          dense: true,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 10,
+            vertical: 2,
           ),
+          leading: Icon(
+            icon,
+            color: selected
+                ? Theme.of(context).colorScheme.primary
+                : Colors.white60,
+            size: 22,
+          ),
+          title: Text(
+            title,
+            style: TextStyle(
+              color: selected ? Colors.white : Colors.white70,
+              fontWeight: selected ? FontWeight.bold : FontWeight.normal,
+              fontSize: 13,
+            ),
+          ),
+          subtitle: Text(
+            subtitle,
+            style: TextStyle(color: Colors.grey[400], fontSize: 11),
+          ),
+          trailing: selected
+              ? Icon(
+                  Icons.check_circle,
+                  color: Theme.of(context).colorScheme.primary,
+                  size: 20,
+                )
+              : null,
+          onTap: onTap,
         ),
-        subtitle: Text(
-          subtitle,
-          style: TextStyle(color: Colors.grey[400], fontSize: 11),
-        ),
-        trailing: selected
-            ? Icon(Icons.check_circle, color: Theme.of(context).colorScheme.primary, size: 20)
-            : null,
-        onTap: onTap,
       ),
     );
   }

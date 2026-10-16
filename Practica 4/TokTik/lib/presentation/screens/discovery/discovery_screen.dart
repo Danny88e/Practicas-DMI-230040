@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:toktik/config/helpers/human_formats.dart';
 import 'package:toktik/domain/entities/video_post.dart';
 import 'package:toktik/presentation/providers/discovery_provider.dart';
+import 'package:toktik/presentation/providers/favorites_provider.dart';
 import 'package:toktik/presentation/screens/discovery/youtube_player_screen.dart';
 
 /// Pestaña "Discovery" — muestra videos de YouTube en formato de tarjetas.
@@ -192,7 +193,7 @@ class _YoutubeHorizontalCard extends StatelessWidget {
                       CachedNetworkImage(
                         imageUrl: video.thumbnailUrl!,
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => Container(
+                        errorWidget: (_, _, _) => Container(
                           color: Colors.grey[900],
                           child: const Icon(Icons.video_library, color: Colors.white38),
                         ),
@@ -262,13 +263,13 @@ class _YoutubeVideoCard extends StatelessWidget {
                     height: 200,
                     width: double.infinity,
                     fit: BoxFit.cover,
-                    placeholder: (_, __) => Container(
+                    placeholder: (_, _) => Container(
                       height: 200,
                       color: Colors.grey[900],
                       child: const Center(
                           child: CircularProgressIndicator(strokeWidth: 2)),
                     ),
-                    errorWidget: (_, __, ___) => Container(
+                    errorWidget: (_, _, _) => Container(
                       height: 200,
                       color: Colors.grey[850],
                       child: const Icon(Icons.video_library, size: 60),
@@ -397,7 +398,7 @@ class _EmptyDiscovery extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.video_off_outlined, size: 64, color: Colors.grey),
+            const Icon(Icons.videocam_off, size: 64, color: Colors.grey),
             const SizedBox(height: 16),
             Text(message,
                 textAlign: TextAlign.center,

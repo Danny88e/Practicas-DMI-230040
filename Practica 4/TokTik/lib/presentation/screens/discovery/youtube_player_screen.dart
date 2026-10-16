@@ -6,6 +6,8 @@ import 'package:toktik/presentation/providers/favorites_provider.dart';
 import 'package:toktik/presentation/widgets/video/youtube_player_widget.dart';
 import 'package:toktik/services/local_storage_service.dart';
 
+import 'dart:math' as math;
+
 /// Pantalla de reproducción completa de un video de YouTube.
 class YoutubePlayerScreen extends StatefulWidget {
   final VideoPost video;
@@ -22,7 +24,8 @@ class _YoutubePlayerScreenState extends State<YoutubePlayerScreen> {
   @override
   void initState() {
     super.initState();
-    _isLiked = LocalStorageService.isLiked(widget.video.id) || widget.video.isLiked;
+    _isLiked =
+        LocalStorageService.isLiked(widget.video.id) || widget.video.isLiked;
   }
 
   Future<void> _toggleLike() async {
@@ -64,52 +67,105 @@ class _YoutubePlayerScreenState extends State<YoutubePlayerScreen> {
           ),
         ],
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // ── Reproductor YouTube ─────────────────────────────────────
-          YoutubePlayerWidget(videoId: widget.video.videoUrl, autoPlay: true),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final playerMaxHeight = constraints.maxHeight * 0.68;
+          final playerWidth = math.min(
+            constraints.maxWidth,
+            playerMaxHeight * (16 / 9),
+          );
 
-          // ── Descripción expandible ──────────────────────────────────
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    widget.video.caption,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 16),
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Center(
+                child: SizedBox(
+                  width: playerWidth,
+                  child: AspectRatio(
+                    aspectRatio: 16 / 9,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: YoutubePlayerWidget(
+                        videoId: widget.video.videoUrl,
+                        autoPlay: true,
+                      ),
+                    ),
                   ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      const Icon(Icons.remove_red_eye_outlined,
-                          size: 16, color: Colors.grey),
-                      const SizedBox(width: 4),
-                      Text('${widget.video.views} vistas',
-                          style: const TextStyle(color: Colors.grey)),
-                      const SizedBox(width: 16),
-                      const Icon(Icons.favorite_border,
-                          size: 16, color: Colors.grey),
-                      const SizedBox(width: 4),
-                      Text('${widget.video.likes} likes',
-                          style: const TextStyle(color: Colors.grey)),
-                    ],
-                  ),
-                  if (widget.video.description.isNotEmpty) ...[
-                    const SizedBox(height: 12),
-                    const Divider(),
-                    const SizedBox(height: 8),
-                    Text(widget.video.description),
-                  ],
-                ],
+                ),
               ),
-            ),
-          ),
-        ],
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.fromLTRB(20, 18, 20, 24),
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 920),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.video.caption,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                              color: Colors.white,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          Wrap(
+                            spacing: 18,
+                            runSpacing: 8,
+                            children: [
+                              _VideoStat(
+                                icon: Icons.remove_red_eye_outlined,
+                                label: '${widget.video.views} vistas',
+                              ),
+                              _VideoStat(
+                                icon: Icons.favorite_border,
+                                label: '${widget.video.likes} likes',
+                              ),
+                            ],
+                          ),
+                          if (widget.video.description.isNotEmpty) ...[
+                            const SizedBox(height: 16),
+                            const Divider(color: Colors.white12),
+                            const SizedBox(height: 8),
+                            Text(
+                              widget.video.description,
+                              style: const TextStyle(
+                                color: Colors.white70,
+                                height: 1.45,
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
       ),
+    );
+  }
+}
+
+class _VideoStat extends StatelessWidget {
+  final IconData icon;
+  final String label;
+
+  const _VideoStat({required this.icon, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: 17, color: Colors.white60),
+        const SizedBox(width: 6),
+        Text(label, style: const TextStyle(color: Colors.white70)),
+      ],
     );
   }
 }
