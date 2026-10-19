@@ -44,13 +44,14 @@ class DiscoveryProvider extends ChangeNotifier {
 
   Future<void> toggleLike(VideoPost video) async {
     final idx = videos.indexWhere((v) => v.id == video.id);
-    if (idx == -1) return;
 
     final isNowLiked = !video.isLiked;
     final newLikes = isNowLiked ? video.likes + 1 : (video.likes - 1).clamp(0, 999999999);
     final updated = video.copyWith(isLiked: isNowLiked, likes: newLikes);
 
-    videos[idx] = updated;
+    if (idx != -1) {
+      videos[idx] = updated;
+    }
     await LocalStorageService.setLiked(video.id, isNowLiked);
     await LocalStorageService.setLikes(video.id, newLikes);
 
