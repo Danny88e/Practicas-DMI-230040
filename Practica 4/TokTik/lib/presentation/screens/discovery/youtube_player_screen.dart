@@ -42,49 +42,50 @@ class _YoutubePlayerScreenState extends State<YoutubePlayerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
+    return PopScope(
+      canPop: true,
+      child: Scaffold(
         backgroundColor: Colors.black,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Text(
-          widget.video.caption,
-          style: const TextStyle(color: Colors.white, fontSize: 14),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(
-              _isLiked ? Icons.favorite : Icons.favorite_border,
-              color: _isLiked ? Colors.redAccent : Colors.white,
-            ),
-            tooltip: _isLiked ? 'Quitar de favoritos' : 'Agregar a favoritos',
-            onPressed: _toggleLike,
+        appBar: AppBar(
+          backgroundColor: Colors.black,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () => Navigator.pop(context),
           ),
-        ],
-      ),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          final playerMaxHeight = constraints.maxHeight * 0.68;
-          final playerWidth = math.min(
-            constraints.maxWidth,
-            playerMaxHeight * (16 / 9),
-          );
+          title: Text(
+            widget.video.caption,
+            style: const TextStyle(color: Colors.white, fontSize: 14),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          actions: [
+            IconButton(
+              icon: Icon(
+                _isLiked ? Icons.favorite : Icons.favorite_border,
+                color: _isLiked ? Colors.redAccent : Colors.white,
+              ),
+              tooltip: _isLiked ? 'Quitar de favoritos' : 'Agregar a favoritos',
+              onPressed: _toggleLike,
+            ),
+          ],
+        ),
+        body: LayoutBuilder(
+          builder: (context, constraints) {
+            final playerMaxHeight = constraints.maxHeight * 0.68;
+            final playerWidth = math.min(
+              constraints.maxWidth,
+              playerMaxHeight * (16 / 9),
+            );
 
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Center(
-                child: SizedBox(
-                  width: playerWidth,
-                  child: AspectRatio(
-                    aspectRatio: 16 / 9,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Center(
+                  child: Container(
+                    width: playerWidth,
+                    color: Colors.black,
+                    child: AspectRatio(
+                      aspectRatio: 16 / 9,
                       child: YoutubePlayerWidget(
                         videoId: widget.video.videoUrl,
                         autoPlay: true,
@@ -92,60 +93,64 @@ class _YoutubePlayerScreenState extends State<YoutubePlayerScreen> {
                     ),
                   ),
                 ),
-              ),
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.fromLTRB(20, 18, 20, 24),
-                  child: Center(
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 920),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            widget.video.caption,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                              color: Colors.white,
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-                          Wrap(
-                            spacing: 18,
-                            runSpacing: 8,
-                            children: [
-                              _VideoStat(
-                                icon: Icons.remove_red_eye_outlined,
-                                label: '${widget.video.views} vistas',
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.fromLTRB(20, 18, 20, 24),
+                    child: Center(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 920),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              widget.video.caption,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                                color: Colors.white,
                               ),
-                              _VideoStat(
-                                icon: Icons.favorite_border,
-                                label: '${widget.video.likes} likes',
+                            ),
+                            const SizedBox(height: 12),
+                            Wrap(
+                              spacing: 18,
+                              runSpacing: 8,
+                              children: [
+                                _VideoStat(
+                                  icon: Icons.remove_red_eye_outlined,
+                                  label: '${widget.video.views} vistas',
+                                ),
+                                _VideoStat(
+                                  icon: Icons.favorite_border,
+                                  label: '${widget.video.likes} likes',
+                                ),
+                                const _VideoStat(
+                                  icon: Icons.ondemand_video,
+                                  label: 'YouTube Stream',
+                                ),
+                              ],
+                            ),
+                            if (widget.video.description.isNotEmpty) ...[
+                              const SizedBox(height: 16),
+                              const Divider(color: Colors.white12),
+                              const SizedBox(height: 8),
+                              Text(
+                                widget.video.description,
+                                style: const TextStyle(
+                                  color: Colors.white70,
+                                  height: 1.45,
+                                ),
                               ),
                             ],
-                          ),
-                          if (widget.video.description.isNotEmpty) ...[
-                            const SizedBox(height: 16),
-                            const Divider(color: Colors.white12),
-                            const SizedBox(height: 8),
-                            Text(
-                              widget.video.description,
-                              style: const TextStyle(
-                                color: Colors.white70,
-                                height: 1.45,
-                              ),
-                            ),
                           ],
-                        ],
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
-          );
-        },
+              ],
+            );
+          },
+        ),
       ),
     );
   }

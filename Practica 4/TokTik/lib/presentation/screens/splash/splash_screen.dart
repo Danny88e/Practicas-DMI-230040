@@ -48,19 +48,21 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   Future<void> _playSeasonalSound() async {
-    final String? soundAsset = _seasonSoundAsset;
-    if (soundAsset == null) return;
+    final String soundAsset = _seasonSoundAsset;
 
     try {
       await _audioPlayer.setVolume(1.0);
+      await _audioPlayer.setReleaseMode(ReleaseMode.stop);
       await _audioPlayer.play(AssetSource(soundAsset));
-    } catch (_) {
-      // Si el audio falla, la app continua sin problema
+    } catch (e) {
+      debugPrint('Aviso de audio splash: $e');
     }
   }
 
-  /// Devuelve la ruta relativa del asset de sonido segun la temporada.
-  String? get _seasonSoundAsset {
+  /// Devuelve la ruta relativa del asset de sonido según la temporada activa.
+  /// Si la temporada es normal o san valentín, reproduce el audio de bienvenida para garantizar
+  /// que la aplicación siempre tenga los 3 segundos de audio en el splash screen.
+  String get _seasonSoundAsset {
     switch (AppTheme.currentSeason) {
       case AppSeason.halloween:
         return 'sounds/OctubreP4.mpeg';
@@ -68,13 +70,15 @@ class _SplashScreenState extends State<SplashScreen>
         return 'sounds/DiciembreP4.mpeg';
       case AppSeason.valentines:
       case AppSeason.normal:
-        return null;
+        return 'sounds/OctubreP4.mpeg';
     }
   }
 
   void _navigateToHome() {
     if (!mounted) return;
-    _audioPlayer.stop();
+    try {
+      _audioPlayer.stop();
+    } catch (_) {}
     Navigator.of(context).pushReplacement(
       PageRouteBuilder(
         pageBuilder: (_, __, ___) => const HomeScreen(),
@@ -88,7 +92,10 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void dispose() {
     _animCtrl.dispose();
-    _audioPlayer.dispose();
+    try {
+      _audioPlayer.stop();
+      _audioPlayer.dispose();
+    } catch (_) {}
     super.dispose();
   }
 

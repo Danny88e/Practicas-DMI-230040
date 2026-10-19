@@ -33,8 +33,8 @@ class _VideoScrollableViewState extends State<VideoScrollableView> {
   int _currentIndex = 0;
 
   /// Estado de mute compartido entre todos los videos del feed.
-  /// true = muteado (valor inicial).
-  final ValueNotifier<bool> _isMutedNotifier = ValueNotifier(true);
+  /// false = con sonido activado por defecto para que los videos se escuchen.
+  final ValueNotifier<bool> _isMutedNotifier = ValueNotifier(false);
 
   /// Estado de reproduccion del video actual.
   final ValueNotifier<bool> _isPlayingNotifier = ValueNotifier(true);
