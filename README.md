@@ -31,6 +31,10 @@ Cada práctica tiene su propio README con el objetivo, descripción y, cuando co
 | 03 | [Yes, No, Maybe](Practica%203/yes_no_app/README.md) | Interfaz de chat en Flutter con mensajes, estado administrado con Provider e imágenes remotas. | 30 firmas | 🟢 Completada |
 | 04 | [TokTik: Video App](Practica%204/TokTik/README.md) | Reproducción de videos verticales, splash estacional con audio, APIs externas (YouTube/Pixabay/Pexels), [Diagramas en GitHub Pages](https://danny88e.github.io/Practicas-DMI-230040/Practica%204/TokTik/architecture-diagram.html) y [Demo en Appetize.io](https://appetize.io/app/b_zfiayvtvlc5z7luikybxifpw7e) | 30 firmas | 🟢 Completada |
 
+| Evaluación | Material | Descripción |
+| --- | --- | --- |
+| Examen Práctico U1 | [Manual de Instalación de Flutter](Manual_de_Instalacion/ManualDeInstalacion/) | Guía para instalar y configurar Flutter y las herramientas necesarias para el entorno de desarrollo. |
+
 ## Tecnologías
 
 - [Flutter](https://flutter.dev/) y [Dart](https://dart.dev/)
