@@ -5,7 +5,6 @@ import 'package:widgets_app/presentation/screens/screens.dart';
 final appRouter = GoRouter(
   initialLocation: '/',
   routes: [
-
     GoRoute(
       path: '/',
       name: HomeScreen.name,
@@ -60,6 +59,16 @@ final appRouter = GoRouter(
       builder: (context, state) => const InfiniteScrollScreen(),
     ),
 
+    GoRoute(
+      path: '/counter-river',
+      name: CounterScreen.name,
+      builder: (context, state) => const CounterScreen(),
+    ),
+
+    GoRoute(
+      path: '/theme-changer',
+      name: ThemeChangerScreen.name,
+      builder: (context, state) => const ThemeChangerScreen(),
+    ),
   ],
 );
-

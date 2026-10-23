@@ -6,12 +6,13 @@
 // tree, read text, and verify that the values of widget properties are correct.
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:widgets_app/main.dart';
 
 void main() {
   testWidgets('Home opens the cards screen', (WidgetTester tester) async {
-    await tester.pumpWidget(const MainApp());
+    await tester.pumpWidget(const ProviderScope(child: MainApp()));
     await tester.pumpAndSettle();
 
     expect(find.text('Flutter + Material 3'), findsOneWidget);
