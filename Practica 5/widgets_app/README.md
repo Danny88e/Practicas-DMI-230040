@@ -14,6 +14,22 @@
 
 ---
 
+## 📸 Capturas de Pantalla de la Aplicación
+
+| HomeScreen | SideMenu | ButtonsScreen | CardsScreen |
+| :---: | :---: | :---: | :---: |
+| ![HomeScreen](docs/screens/home.png) | ![SideMenu](docs/screens/side_menu.png) | ![Buttons](docs/screens/buttons.png) | ![Cards](docs/screens/cards.png) |
+
+| ProgressScreen | SnackbarScreen | AnimatedScreen | UiControlsScreen |
+| :---: | :---: | :---: | :---: |
+| ![Progress](docs/screens/progress.png) | ![Snackbars](docs/screens/snackbars.png) | ![Animated](docs/screens/animated.png) | ![UI Controls](docs/screens/ui_controls.png) |
+
+| AppTutorialScreen | InfiniteScrollScreen | CounterScreen | ThemeChangerScreen |
+| :---: | :---: | :---: | :---: |
+| ![Tutorial](docs/screens/tutorial.png) | ![Infinite Scroll](docs/screens/infinite.png) | ![Counter](docs/screens/counter.png) | ![Theme Changer](docs/screens/theme_changer.png) |
+
+---
+
 ## 📋 Descripción de la Práctica
 
 **Widgets App** es una aplicación Flutter multiplataforma que sirve como catálogo interactivo de los principales widgets y conceptos de Flutter + Material 3. La práctica cubre:
@@ -177,5 +193,3 @@ ThemeData getTheme() => ThemeData(
 Matrícula: **230040** | Universidad Tecnológica de Xicotepec de Juárez
 
 🔗 [Repositorio GitHub](https://github.com/Danny88e/Practicas-DMI-230040)
-luis Daniel Suarez Escamilla 230040 (Dany88e)
-
