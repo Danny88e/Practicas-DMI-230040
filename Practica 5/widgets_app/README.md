@@ -177,3 +177,5 @@ ThemeData getTheme() => ThemeData(
 Matrícula: **230040** | Universidad Tecnológica de Xicotepec de Juárez
 
 🔗 [Repositorio GitHub](https://github.com/Danny88e/Practicas-DMI-230040)
+luis Daniel Suarez Escamilla 230040 (Dany88e)
+
