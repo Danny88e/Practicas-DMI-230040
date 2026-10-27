@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Widgets App — Diagrama de Arquitectura</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ── RESET & BASE ─────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:           #0b0f1a;
+      --surface:      #111827;
+      --surface2:     #1a2236;
+      --border:       #2a3650;
+      --border-glow:  #4f8cff;
+
+      --blue:    #4f8cff;
+      --cyan:    #22d3ee;
+      --violet:  #a78bfa;
+      --emerald: #34d399;
+      --rose:    #fb7185;
+      --amber:   #fbbf24;
+      --sky:     #38bdf8;
+      --pink:    #f472b6;
+
+      --text:    #e2e8f0;
+      --muted:   #64748b;
+      --white:   #ffffff;
+
+      --radius:  12px;
+      --rad-sm:  8px;
+      --rad-lg:  18px;
+      --shadow:  0 4px 32px rgba(0,0,0,.55);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── ANIMATED BG GRID ─────────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(79,140,255,.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(79,140,255,.04) 1px, transparent 1px);
+      background-size: 44px 44px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── HEADER ───────────────────────────────────────────── */
+    header {
+      position: relative; z-index: 10;
+      padding: 3rem 2rem 2.5rem;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(79,140,255,.08) 0%, transparent 100%);
+    }
+
+    .badge {
+      display: inline-flex; align-items: center; gap: .4rem;
+      padding: .3rem .9rem;
+      border-radius: 999px;
+      font-size: .72rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+      background: rgba(79,140,255,.15);
+      border: 1px solid rgba(79,140,255,.35);
+      color: var(--blue);
+      margin-bottom: 1.2rem;
+    }
+
+    header h1 {
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      font-weight: 800;
+      line-height: 1.15;
+      background: linear-gradient(135deg, var(--blue) 0%, var(--cyan) 50%, var(--violet) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: .6rem;
+    }
+
+    header p {
+      color: var(--muted);
+      font-size: .95rem;
+      max-width: 560px;
+      margin: 0 auto;
+    }
+
+    /* ── TOOLBAR ──────────────────────────────────────────── */
+    .toolbar {
+      position: relative; z-index: 10;
+      display: flex; flex-wrap: wrap; gap: .6rem;
+      justify-content: center;
+      padding: 1.2rem 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .filter-btn {
+      padding: .4rem 1rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      font-size: .78rem; font-weight: 500; font-family: inherit;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .filter-btn:hover, .filter-btn.active {
+      background: rgba(79,140,255,.18);
+      border-color: var(--blue);
+      color: var(--blue);
+    }
+    .filter-btn.active { font-weight: 700; }
+
+    /* ── MAIN LAYOUT ──────────────────────────────────────── */
+    .diagram {
+      position: relative; z-index: 5;
+      max-width: 1280px;
+      margin: 2.5rem auto;
+      padding: 0 1.5rem;
+    }
+
+    /* ── LAYER SECTIONS ───────────────────────────────────── */
+    .layer {
+      margin-bottom: 2rem;
+      border: 1px solid var(--border);
+      border-radius: var(--rad-lg);
+      overflow: hidden;
+      transition: box-shadow .3s;
+    }
+    .layer:hover { box-shadow: 0 0 0 1px rgba(79,140,255,.25), var(--shadow); }
+
+    .layer-header {
+      display: flex; align-items: center; gap: .8rem;
+      padding: .85rem 1.4rem;
+      cursor: pointer;
+      user-select: none;
+      background: var(--surface);
+      transition: background .2s;
+    }
+    .layer-header:hover { background: var(--surface2); }
+
+    .layer-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .layer-label {
+      font-size: .82rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+      flex: 1;
+    }
+
+    .layer-desc { font-size: .78rem; color: var(--muted); }
+
+    .layer-chevron {
+      font-size: .8rem; color: var(--muted);
+      transition: transform .3s;
+    }
+    .layer.collapsed .layer-chevron { transform: rotate(-90deg); }
+
+    .layer-body {
+      padding: 1.2rem 1.4rem 1.4rem;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1rem;
+      transition: max-height .4s cubic-bezier(.4,0,.2,1), opacity .3s;
+      overflow: hidden;
+    }
+    .layer.collapsed .layer-body {
+      max-height: 0 !important;
+      padding: 0 1.4rem;
+      opacity: 0;
+      border-top-color: transparent;
+    }
+
+    /* ── CARDS ────────────────────────────────────────────── */
+    .card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.1rem;
+      cursor: pointer;
+      transition: transform .2s, box-shadow .2s, border-color .2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: var(--card-accent, var(--blue));
+      transform: scaleX(0);
+      transition: transform .25s;
+      transform-origin: left;
+    }
+    .card:hover::before, .card.active::before { transform: scaleX(1); }
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 32px rgba(0,0,0,.45), 0 0 0 1px var(--card-accent, var(--blue)) inset;
+      border-color: var(--card-accent, var(--blue));
+    }
+    .card.active {
+      border-color: var(--card-accent, var(--blue));
+      box-shadow: 0 0 0 2px var(--card-accent, var(--blue)), var(--shadow);
+    }
+    .card.dimmed { opacity: .28; pointer-events: none; }
+
+    .card-icon {
+      font-size: 1.4rem;
+      margin-bottom: .55rem;
+    }
+    .card-title {
+      font-size: .88rem; font-weight: 700;
+      color: var(--white);
+      margin-bottom: .3rem;
+    }
+    .card-sub {
+      font-size: .73rem; color: var(--muted);
+      line-height: 1.5;
+      margin-bottom: .6rem;
+    }
+    .card-tags { display: flex; flex-wrap: wrap; gap: .3rem; }
+    .tag {
+      font-size: .63rem; font-weight: 600; letter-spacing: .04em;
+      padding: .2rem .55rem;
+      border-radius: 4px;
+      background: rgba(255,255,255,.06);
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+
+    /* ── CONNECTIONS SVG ──────────────────────────────────── */
+    .connections-wrap {
+      position: absolute; inset: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .connections-wrap svg { width: 100%; height: 100%; overflow: visible; }
+    .conn-path {
+      fill: none;
+      stroke-width: 1.5;
+      stroke-dasharray: 6 4;
+      opacity: 0;
+      transition: opacity .35s;
+    }
+    .conn-path.visible { opacity: 1; }
+
+    /* ── DETAIL PANEL ─────────────────────────────────────── */
+    .panel {
+      position: fixed;
+      right: -440px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 420px;
+      max-height: 85vh;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--rad-lg);
+      padding: 2rem;
+      z-index: 100;
+      overflow-y: auto;
+      transition: right .4s cubic-bezier(.4,0,.2,1), box-shadow .4s;
+      box-shadow: var(--shadow);
+    }
+    .panel.open {
+      right: 1.5rem;
+      box-shadow: -4px 0 48px rgba(0,0,0,.6), 0 0 0 1px rgba(79,140,255,.2);
+    }
+
+    .panel-close {
+      position: absolute; top: 1rem; right: 1rem;
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      font-size: .9rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all .2s;
+    }
+    .panel-close:hover { background: var(--surface2); color: var(--white); }
+
+    .panel-accent-bar {
+      height: 3px;
+      border-radius: 2px;
+      margin-bottom: 1.2rem;
+    }
+    .panel h2 { font-size: 1.15rem; font-weight: 700; margin-bottom: .35rem; }
+    .panel .p-sub { font-size: .8rem; color: var(--muted); margin-bottom: 1.2rem; }
+    .panel h3 { font-size: .82rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); margin: 1.1rem 0 .5rem; }
+    .panel p { font-size: .84rem; color: var(--text); line-height: 1.7; }
+
+    .code-block {
+      background: #0d1117;
+      border: 1px solid var(--border);
+      border-radius: var(--rad-sm);
+      padding: .9rem 1rem;
+      font-family: 'Fira Code', monospace;
+      font-size: .77rem;
+      color: #e6edf3;
+      overflow-x: auto;
+      line-height: 1.65;
+    }
+
+    .dep-list { list-style: none; display: flex; flex-direction: column; gap: .4rem; }
+    .dep-list li {
+      display: flex; align-items: center; gap: .5rem;
+      font-size: .8rem;
+      padding: .4rem .7rem;
+      border-radius: var(--rad-sm);
+      background: var(--surface2);
+      border: 1px solid var(--border);
+    }
+    .dep-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+
+    /* ── FLOW DIAGRAM ─────────────────────────────────────── */
+    .flow-section {
+      position: relative; z-index: 5;
+      max-width: 1280px;
+      margin: 0 auto 3rem;
+      padding: 0 1.5rem;
+    }
+    .flow-title {
+      font-size: .82rem; font-weight: 700; letter-spacing: .08em;
+      text-transform: uppercase; color: var(--muted);
+      margin-bottom: 1.2rem;
+    }
+    .flow-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      overflow-x: auto;
+      padding-bottom: .5rem;
+    }
+    .flow-node {
+      flex-shrink: 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: .75rem 1.1rem;
+      font-size: .8rem; font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      position: relative;
+      transition: all .2s;
+    }
+    .flow-node:hover {
+      border-color: var(--blue);
+      color: var(--blue);
+      background: rgba(79,140,255,.1);
+    }
+    .flow-arrow {
+      flex-shrink: 0;
+      color: var(--border);
+      font-size: 1.1rem;
+      padding: 0 .4rem;
+    }
+
+    /* ── LEGEND ───────────────────────────────────────────── */
+    .legend {
+      position: relative; z-index: 5;
+      display: flex; flex-wrap: wrap; gap: 1rem;
+      justify-content: center;
+      padding: 1.5rem 2rem;
+      margin: 0 auto;
+      max-width: 860px;
+    }
+    .legend-item {
+      display: flex; align-items: center; gap: .5rem;
+      font-size: .78rem; color: var(--muted);
+    }
+    .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+    /* ── FOOTER ───────────────────────────────────────────── */
+    footer {
+      position: relative; z-index: 5;
+      text-align: center;
+      padding: 2rem;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: .78rem;
+    }
+    footer a { color: var(--blue); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* ── SCROLLBAR ────────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--surface); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+    /* ── PULSE ANIM ───────────────────────────────────────── */
+    @keyframes pulse-ring {
+      0%   { box-shadow: 0 0 0 0 rgba(79,140,255,.5); }
+      70%  { box-shadow: 0 0 0 10px rgba(79,140,255,0); }
+      100% { box-shadow: 0 0 0 0 rgba(79,140,255,0); }
+    }
+    .card.active { animation: pulse-ring 1.5s ease-out 1; }
+
+    /* ── THEME TOGGLE ─────────────────────────────────────── */
+    .theme-toggle {
+      position: fixed; top: 1.2rem; right: 1.4rem;
+      z-index: 200;
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--muted);
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all .2s;
+    }
+    .theme-toggle:hover { background: var(--surface2); color: var(--white); }
+
+    /* ── LIGHT THEME ──────────────────────────────────────── */
+    body.light {
+      --bg:      #f0f4fc;
+      --surface: #ffffff;
+      --surface2:#eef2fa;
+      --border:  #d1daf0;
+      --text:    #1e293b;
+      --muted:   #64748b;
+      --white:   #0f172a;
+    }
+    body.light::before {
+      background-image:
+        linear-gradient(rgba(79,140,255,.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(79,140,255,.07) 1px, transparent 1px);
+    }
+  </style>
+</head>
+<body>
+
+<button class="theme-toggle" id="themeBtn" title="Toggle theme">☀️</button>
+
+<!-- ── HEADER ─────────────────────────────────────────── -->
+<header>
+  <div class="badge">🏗 Práctica 5 · DMI 230040</div>
+  <h1>Widgets App<br/>Diagrama de Arquitectura</h1>
+  <p>Aplicación Flutter con Riverpod, GoRouter y Material 3 · Luis Daniel Suarez Escamilla</p>
+</header>
+
+<!-- ── TOOLBAR ────────────────────────────────────────── -->
+<nav class="toolbar">
+  <button class="filter-btn active" data-filter="all">Todas las capas</button>
+  <button class="filter-btn" data-filter="entry">Entrypoint</button>
+  <button class="filter-btn" data-filter="config">Config</button>
+  <button class="filter-btn" data-filter="providers">Providers</button>
+  <button class="filter-btn" data-filter="screens">Screens</button>
+  <button class="filter-btn" data-filter="widgets">Widgets</button>
+  <button class="filter-btn" data-filter="deps">Dependencias</button>
+</nav>
+
+<!-- ── NAVIGATION FLOW ────────────────────────────────── -->
+<section class="flow-section">
+  <p class="flow-title">⚡ Flujo de navegación GoRouter</p>
+  <div class="flow-wrap" id="flowWrap">
+    <div class="flow-node">main.dart<br/><span style="color:var(--muted);font-weight:400;font-size:.7rem">ProviderScope</span></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node">MainApp<br/><span style="color:var(--muted);font-weight:400;font-size:.7rem">MaterialApp.router</span></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node">GoRouter<br/><span style="color:var(--muted);font-weight:400;font-size:.7rem">appRouter</span></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node">HomeScreen<br/><span style="color:var(--muted);font-weight:400;font-size:.7rem">path: /</span></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node">Feature Screens<br/><span style="color:var(--muted);font-weight:400;font-size:.7rem">11 rutas</span></div>
+  </div>
+</section>
+
+<!-- ── DIAGRAM ────────────────────────────────────────── -->
+<main class="diagram" id="diagram">
+
+  <!-- LAYER 1 — ENTRYPOINT -->
+  <div class="layer" data-layer="entry" style="--layer-color: var(--blue);">
+    <div class="layer-header" onclick="toggleLayer(this)">
+      <span class="layer-dot" style="background:var(--blue);box-shadow:0 0 6px var(--blue)"></span>
+      <span class="layer-label" style="color:var(--blue)">Entrypoint</span>
+      <span class="layer-desc">Arranque de la app Flutter + Riverpod</span>
+      <span class="layer-chevron">▼</span>
+    </div>
+    <div class="layer-body" id="layer-entry">
+      <div class="card" style="--card-accent:var(--blue)" data-id="main" onclick="openPanel(this)">
+        <div class="card-icon">🚀</div>
+        <div class="card-title">main.dart</div>
+        <div class="card-sub">Envuelve la app con ProviderScope, activa gestión de estado global con Riverpod.</div>
+        <div class="card-tags">
+          <span class="tag">ProviderScope</span>
+          <span class="tag">runApp</span>
+        </div>
+      </div>
+      <div class="card" style="--card-accent:var(--blue)" data-id="mainapp" onclick="openPanel(this)">
+        <div class="card-icon">📱</div>
+        <div class="card-title">MainApp</div>
+        <div class="card-sub">ConsumerWidget raíz. Observa themeNotifierProvider y aplica el tema dinámicamente.</div>
+        <div class="card-tags">
+          <span class="tag">ConsumerWidget</span>
+          <span class="tag">MaterialApp.router</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LAYER 2 — CONFIG -->
+  <div class="layer" data-layer="config" style="--layer-color: var(--violet);">
+    <div class="layer-header" onclick="toggleLayer(this)">
+      <span class="layer-dot" style="background:var(--violet);box-shadow:0 0 6px var(--violet)"></span>
+      <span class="layer-label" style="color:var(--violet)">Config</span>
+      <span class="layer-desc">Router · Theme · Menu Items</span>
+      <span class="layer-chevron">▼</span>
+    </div>
+    <div class="layer-body" id="layer-config">
+      <div class="card" style="--card-accent:var(--violet)" data-id="router" onclick="openPanel(this)">
+        <div class="card-icon">🗺</div>
+        <div class="card-title">app_router.dart</div>
+        <div class="card-sub">Configura GoRouter con 11 rutas nombradas. Ruta inicial: HomeScreen (/).</div>
+        <div class="card-tags">
+          <span class="tag">GoRouter</span>
+          <span class="tag">11 rutas</span>
+          <span class="tag">GoRoute</span>
+        </div>
+      </div>
+      <div class="card" style="--card-accent:var(--violet)" data-id="theme" onclick="openPanel(this)">
+        <div class="card-icon">🎨</div>
+        <div class="card-title">app_theme.dart</div>
+        <div class="card-sub">Clase AppTheme con soporte para 9 colores y modo oscuro. Usa Material 3.</div>
+        <div class="card-tags">
+          <span class="tag">Material 3</span>
+          <span class="tag">9 colores</span>
+          <span class="tag">Dark/Light</span>
+        </div>
+      </div>
+      <div class="card" style="--card-accent:var(--violet)" data-id="menu" onclick="openPanel(this)">
+        <div class="card-icon">📋</div>
+        <div class="card-title">menu_items.dart</div>
+        <div class="card-sub">Lista inmutable de MenuItem con título, subtítulo, ícono y ruta de navegación.</div>
+        <div class="card-tags">
+          <span class="tag">MenuItem</span>
+          <span class="tag">const list</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LAYER 3 — PROVIDERS -->
+  <div class="layer" data-layer="providers" style="--layer-color: var(--emerald);">
+    <div class="layer-header" onclick="toggleLayer(this)">
+      <span class="layer-dot" style="background:var(--emerald);box-shadow:0 0 6px var(--emerald)"></span>
+      <span class="layer-label" style="color:var(--emerald)">Estado · Riverpod Providers</span>
+      <span class="layer-desc">Gestión de estado reactivo global</span>
+      <span class="layer-chevron">▼</span>
+    </div>
+    <div class="layer-body" id="layer-providers">
+      <div class="card" style="--card-accent:var(--emerald)" data-id="themeProvider" onclick="openPanel(this)">
+        <div class="card-icon">🌗</div>
+        <div class="card-title">theme_provider.dart</div>
+        <div class="card-sub">ThemeNotifier expone toggleDarkmode() y changeColorIndex(). StateNotifier de AppTheme.</div>
+        <div class="card-tags">
+          <span class="tag">StateNotifier</span>
+          <span class="tag">themeNotifierProvider</span>
+          <span class="tag">colorListProvider</span>
+        </div>
+      </div>
+      <div class="card" style="--card-accent:var(--emerald)" data-id="counterProvider" onclick="openPanel(this)">
+        <div class="card-icon">🔢</div>
+        <div class="card-title">counter_provider.dart</div>
+        <div class="card-sub">StateProvider&lt;int&gt; simple para el contador de ejemplo con valor inicial 5.</div>
+        <div class="card-tags">
+          <span class="tag">StateProvider</span>
+          <span class="tag">int state</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LAYER 4 — SCREENS -->
+  <div class="layer" data-layer="screens" style="--layer-color: var(--amber);">
+    <div class="layer-header" onclick="toggleLayer(this)">
+      <span class="layer-dot" style="background:var(--amber);box-shadow:0 0 6px var(--amber)"></span>
+      <span class="layer-label" style="color:var(--amber)">Presentation · Screens</span>
+      <span class="layer-desc">10 pantallas de demostración de widgets Flutter</span>
+      <span class="layer-chevron">▼</span>
+    </div>
+    <div class="layer-body" id="layer-screens" style="grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));">
+      <div class="card" style="--card-accent:var(--amber)" data-id="homeScreen" onclick="openPanel(this)">
+        <div class="card-icon">🏠</div>
+        <div class="card-title">HomeScreen</div>
+        <div class="card-sub">Lista del menú principal con drawer lateral y navegación a cada sección.</div>
+        <div class="card-tags"><span class="tag">/</span><span class="tag">Drawer</span></div>
+      </div>
+      <div class="card" style="--card-accent:var(--amber)" data-id="buttonsScreen" onclick="openPanel(this)">
+        <div class="card-icon">🔘</div>
+        <div class="card-title">ButtonsScreen</div>
+        <div class="card-sub">Muestra Elevated, Filled, Outlined, Text, Icon y Custom buttons.</div>
+        <div class="card-tags"><span class="tag">/buttons</span><span class="tag">Material 3</span></div>
+      </div>
+      <div class="card" style="--card-accent:var(--amber)" data-id="cardsScreen" onclick="openPanel(this)">
+        <div class="card-icon">🃏</div>
+        <div class="card-title">CardsScreen</div>
+        <div class="card-sub">Diferentes variantes de Cards como contenedores estilizados.</div>
+        <div class="card-tags"><span class="tag">/cards</span></div>
+      </div>
+      <div class="card" style="--card-accent:var(--amber)" data-id="progressScreen" onclick="openPanel(this)">
+        <div class="card-icon">⏳</div>
+        <div class="card-title">ProgressScreen</div>
+        <div class="card-sub">Indicadores de progreso generales y controlados (linear/circular).</div>
+        <div class="card-tags"><span class="tag">/progress</span><span class="tag">Indicators</span></div>
+      </div>
+      <div class="card" style="--card-accent:var(--amber)" data-id="snackbarScreen" onclick="openPanel(this)">
+        <div class="card-icon">💬</div>
+        <div class="card-title">SnackbarScreen</div>
+        <div class="card-sub">Snackbars customizadas, AlertDialog y showAboutDialog.</div>
+        <div class="card-tags"><span class="tag">/snackbars</span><span class="tag">Dialogs</span></div>
+      </div>
+      <div class="card" style="--card-accent:var(--amber)" data-id="animatedScreen" onclick="openPanel(this)">
+        <div class="card-icon">✨</div>
+        <div class="card-title">AnimatedScreen</div>
+        <div class="card-sub">AnimatedContainer con cambios aleatorios de tamaño, color y borde. Stateful.</div>
+        <div class="card-tags"><span class="tag">/animated</span><span class="tag">StatefulWidget</span></div>
+      </div>
+      <div class="card" style="--card-accent:var(--amber)" data-id="uiScreen" onclick="openPanel(this)">
+        <div class="card-icon">🎛</div>
+        <div class="card-title">UiControlsScreen</div>
+        <div class="card-sub">Switches, RadioButtons, Checkboxes, ListTiles y controles Material 3.</div>
+        <div class="card-tags"><span class="tag">/ui-controls</span></div>
+      </div>
+      <div class="card" style="--card-accent:var(--amber)" data-id="tutorialScreen" onclick="openPanel(this)">
+        <div class="card-icon">📖</div>
+        <div class="card-title">AppTutorialScreen</div>
+        <div class="card-sub">Tutorial onboarding con PageView, 3 slides y animaciones animate_do.</div>
+        <div class="card-tags"><span class="tag">/tutorial</span><span class="tag">PageView</span></div>
+      </div>
+      <div class="card" style="--card-accent:var(--amber)" data-id="infiniteScreen" onclick="openPanel(this)">
+        <div class="card-icon">♾</div>
+        <div class="card-title">InfiniteScrollScreen</div>
+        <div class="card-sub">Lista infinita con imágenes de Picsum, pull-to-refresh y lazy loading.</div>
+        <div class="card-tags"><span class="tag">/infinite</span><span class="tag">ScrollController</span></div>
+      </div>
+      <div class="card" style="--card-accent:var(--amber)" data-id="counterScreen" onclick="openPanel(this)">
+        <div class="card-icon">➕</div>
+        <div class="card-title">CounterScreen</div>
+        <div class="card-sub">Ejemplo de Riverpod StateProvider. Incrementa contador con FAB.</div>
+        <div class="card-tags"><span class="tag">/counter-river</span><span class="tag">Riverpod</span></div>
+      </div>
+      <div class="card" style="--card-accent:var(--amber)" data-id="themeChangerScreen" onclick="openPanel(this)">
+        <div class="card-icon">🌈</div>
+        <div class="card-title">ThemeChangerScreen</div>
+        <div class="card-sub">RadioListTile para seleccionar color de tema. Observa themeNotifierProvider.</div>
+        <div class="card-tags"><span class="tag">/theme-changer</span><span class="tag">Riverpod</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LAYER 5 — WIDGETS -->
+  <div class="layer" data-layer="widgets" style="--layer-color: var(--rose);">
+    <div class="layer-header" onclick="toggleLayer(this)">
+      <span class="layer-dot" style="background:var(--rose);box-shadow:0 0 6px var(--rose)"></span>
+      <span class="layer-label" style="color:var(--rose)">Presentation · Widgets</span>
+      <span class="layer-desc">Componentes reutilizables compartidos</span>
+      <span class="layer-chevron">▼</span>
+    </div>
+    <div class="layer-body" id="layer-widgets">
+      <div class="card" style="--card-accent:var(--rose)" data-id="sideMenu" onclick="openPanel(this)">
+        <div class="card-icon">📂</div>
+        <div class="card-title">SideMenu</div>
+        <div class="card-sub">NavigationDrawer con dos secciones (Main / More options). Navega usando GoRouter.</div>
+        <div class="card-tags">
+          <span class="tag">StatefulWidget</span>
+          <span class="tag">NavigationDrawer</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LAYER 6 — DEPS -->
+  <div class="layer" data-layer="deps" style="--layer-color: var(--cyan);">
+    <div class="layer-header" onclick="toggleLayer(this)">
+      <span class="layer-dot" style="background:var(--cyan);box-shadow:0 0 6px var(--cyan)"></span>
+      <span class="layer-label" style="color:var(--cyan)">Dependencias Externas</span>
+      <span class="layer-desc">Paquetes de pub.dev utilizados</span>
+      <span class="layer-chevron">▼</span>
+    </div>
+    <div class="layer-body" id="layer-deps">
+      <div class="card" style="--card-accent:var(--cyan)" data-id="depFlutter" onclick="openPanel(this)">
+        <div class="card-icon">💙</div>
+        <div class="card-title">Flutter SDK</div>
+        <div class="card-sub">Framework base con Material 3, widgets, rendering engine y más.</div>
+        <div class="card-tags"><span class="tag">SDK</span></div>
+      </div>
+      <div class="card" style="--card-accent:var(--cyan)" data-id="depRiverpod" onclick="openPanel(this)">
+        <div class="card-icon">🌊</div>
+        <div class="card-title">flutter_riverpod</div>
+        <div class="card-sub">Gestión de estado reactivo. Versión ^3.4.3. StateProvider, StateNotifier.</div>
+        <div class="card-tags"><span class="tag">^3.4.3</span><span class="tag">State mgmt</span></div>
+      </div>
+      <div class="card" style="--card-accent:var(--cyan)" data-id="depGoRouter" onclick="openPanel(this)">
+        <div class="card-icon">🛣</div>
+        <div class="card-title">go_router</div>
+        <div class="card-sub">Navegación declarativa para Flutter. Versión ^17.5.0. Soporta deep linking.</div>
+        <div class="card-tags"><span class="tag">^17.5.0</span><span class="tag">Navigation</span></div>
+      </div>
+      <div class="card" style="--card-accent:var(--cyan)" data-id="depAnimateDo" onclick="openPanel(this)">
+        <div class="card-icon">🎭</div>
+        <div class="card-title">animate_do</div>
+        <div class="card-sub">Animaciones preconstruidas (FadeIn, SpinPerfect, FadeInRight…). Versión ^5.1.0.</div>
+        <div class="card-tags"><span class="tag">^5.1.0</span><span class="tag">Animations</span></div>
+      </div>
+      <div class="card" style="--card-accent:var(--cyan)" data-id="depCupertino" onclick="openPanel(this)">
+        <div class="card-icon">🍎</div>
+        <div class="card-title">cupertino_icons</div>
+        <div class="card-sub">Íconos estilo iOS de Cupertino para Flutter. Versión ^1.0.8.</div>
+        <div class="card-tags"><span class="tag">^1.0.8</span><span class="tag">Icons</span></div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ── LEGEND ─────────────────────────────────────────── -->
+<div class="legend">
+  <div class="legend-item"><span class="legend-dot" style="background:var(--blue)"></span> Entrypoint</div>
+  <div class="legend-item"><span class="legend-dot" style="background:var(--violet)"></span> Config</div>
+  <div class="legend-item"><span class="legend-dot" style="background:var(--emerald)"></span> State / Riverpod</div>
+  <div class="legend-item"><span class="legend-dot" style="background:var(--amber)"></span> Screens</div>
+  <div class="legend-item"><span class="legend-dot" style="background:var(--rose)"></span> Shared Widgets</div>
+  <div class="legend-item"><span class="legend-dot" style="background:var(--cyan)"></span> Dependencies</div>
+</div>
+
+<!-- ── DETAIL PANEL ────────────────────────────────────── -->
+<div class="panel" id="detailPanel">
+  <button class="panel-close" onclick="closePanel()">✕</button>
+  <div class="panel-accent-bar" id="panelAccent"></div>
+  <h2 id="panelTitle">—</h2>
+  <p class="p-sub" id="panelSub">—</p>
+  <div id="panelBody"></div>
+</div>
+
+<!-- ── FOOTER ─────────────────────────────────────────── -->
+<footer>
+  <p>Widgets App · Práctica 5 · DMI · Luis Daniel Suarez Escamilla (230040)</p>
+  <p style="margin-top:.4rem">
+    <a href="https://github.com/Danny88e/Practicas-DMI-230040" target="_blank">GitHub Repository</a>
+    &nbsp;·&nbsp; Flutter ^3.10 · Dart ^3.10
+  </p>
+</footer>
+
+<script>
+/* ── DATA ─────────────────────────────────────────────── */
+const PANELS = {
+  main: {
+    title: 'main.dart',
+    sub: 'Entrypoint de la aplicación Flutter',
+    accent: 'var(--blue)',
+    desc: 'Punto de entrada principal. Envuelve toda la aplicación con <code>ProviderScope</code> de Riverpod para habilitar la gestión de estado reactivo de forma global.',
+    deps: [
+      { color: 'var(--blue)', label: 'flutter/material.dart' },
+      { color: 'var(--emerald)', label: 'flutter_riverpod' },
+      { color: 'var(--violet)', label: 'config/router/app_router.dart' },
+      { color: 'var(--violet)', label: 'config/theme/app_theme.dart' },
+      { color: 'var(--emerald)', label: 'presentation/providers/theme_provider.dart' },
+    ],
+    code: `void main() {\n  runApp(const ProviderScope(\n    child: MainApp(),\n  ));\n}`,
+  },
+  mainapp: {
+    title: 'MainApp — ConsumerWidget',
+    sub: 'Widget raíz que observa el tema global',
+    accent: 'var(--blue)',
+    desc: 'Extiende ConsumerWidget para observar el themeNotifierProvider. Crea la instancia de MaterialApp.router conectando GoRouter y el tema dinámico.',
+    deps: [
+      { color: 'var(--emerald)', label: 'themeNotifierProvider → AppTheme' },
+      { color: 'var(--violet)', label: 'appRouter → GoRouter config' },
+    ],
+    code: `class MainApp extends ConsumerWidget {\n  @override\n  Widget build(ctx, ref) {\n    final appTheme = ref.watch(\n      themeNotifierProvider\n    );\n    return MaterialApp.router(\n      routerConfig: appRouter,\n      theme: appTheme.getTheme(),\n    );\n  }\n}`,
+  },
+  router: {
+    title: 'app_router.dart',
+    sub: 'Configuración GoRouter con 11 rutas',
+    accent: 'var(--violet)',
+    desc: 'Define el enrutador global con GoRouter. Cada GoRoute mapea una URL a su Screen correspondiente. La ruta inicial es la raíz "/" que carga HomeScreen.',
+    deps: [
+      { color: 'var(--violet)', label: 'go_router' },
+      { color: 'var(--amber)', label: 'presentation/screens/*.dart' },
+    ],
+    code: `final appRouter = GoRouter(\n  initialLocation: '/',\n  routes: [\n    GoRoute(path: '/', ...),\n    GoRoute(path: '/buttons', ...),\n    GoRoute(path: '/cards', ...),\n    GoRoute(path: '/progress', ...),\n    GoRoute(path: '/snackbars', ...),\n    GoRoute(path: '/animated', ...),\n    GoRoute(path: '/ui-controls', ...),\n    GoRoute(path: '/tutorial', ...),\n    GoRoute(path: '/infinite', ...),\n    GoRoute(path: '/counter-river', ...),\n    GoRoute(path: '/theme-changer', ...),\n  ],\n);`,
+  },
+  theme: {
+    title: 'app_theme.dart',
+    sub: 'Sistema de temas con Material 3',
+    accent: 'var(--violet)',
+    desc: 'Clase AppTheme inmutable (con copyWith). Soporta 9 colores predefinidos y modo oscuro/claro. Genera un ThemeData de Material 3 con colorSchemeSeed.',
+    deps: [{ color: 'var(--blue)', label: 'flutter/material.dart' }],
+    code: `const colorList = <Color>[\n  Colors.blue, Colors.teal,\n  Colors.green, Colors.red,\n  Colors.purple, Colors.deepPurple,\n  Colors.orange, Colors.pink,\n  Colors.pinkAccent,\n];\n\nclass AppTheme {\n  final int selectedColor;\n  final bool isDarkmode;\n\n  ThemeData getTheme() => ThemeData(\n    useMaterial3: true,\n    brightness: isDarkmode\n      ? Brightness.dark\n      : Brightness.light,\n    colorSchemeSeed:\n      colorList[selectedColor],\n  );\n}`,
+  },
+  menu: {
+    title: 'menu_items.dart',
+    sub: 'Lista de ítems del menú de navegación',
+    accent: 'var(--violet)',
+    desc: 'Define el modelo MenuItem y la lista const appMenuItems con 10 entradas. Cada ítem tiene título, subtítulo, ruta de GoRouter y un ícono Material.',
+    deps: [{ color: 'var(--blue)', label: 'flutter/material.dart' }],
+    code: `class MenuItem {\n  final String title;\n  final String subTitle;\n  final String link;\n  final IconData icon;\n}\n\nconst appMenuItems = <MenuItem>[\n  MenuItem(\n    title: 'Riverpod Counter',\n    link: '/counter-river',\n    icon: Icons.add,\n  ),\n  // ... 9 items más\n];`,
+  },
+  themeProvider: {
+    title: 'theme_provider.dart',
+    sub: 'Gestión de estado del tema — Riverpod',
+    accent: 'var(--emerald)',
+    desc: 'Expone 3 providers: colorListProvider (lista inmutable), isDarkmodeProvider (bool) y themeNotifierProvider (StateNotifier&lt;AppTheme&gt;). El notifier permite toggle dark mode y cambio de color.',
+    deps: [
+      { color: 'var(--emerald)', label: 'flutter_riverpod' },
+      { color: 'var(--violet)', label: 'config/theme/app_theme.dart' },
+    ],
+    code: `class ThemeNotifier\n  extends StateNotifier<AppTheme> {\n\n  ThemeNotifier() : super(AppTheme());\n\n  void toggleDarkmode() {\n    state = state.copyWith(\n      isDarkmode: !state.isDarkmode\n    );\n  }\n\n  void changeColorIndex(int i) {\n    state = state.copyWith(\n      selectedColor: i\n    );\n  }\n}`,
+  },
+  counterProvider: {
+    title: 'counter_provider.dart',
+    sub: 'StateProvider simple de ejemplo',
+    accent: 'var(--emerald)',
+    desc: 'Provider más simple de Riverpod. Un StateProvider&lt;int&gt; con valor inicial 5 que se incrementa directamente desde CounterScreen.',
+    deps: [{ color: 'var(--emerald)', label: 'flutter_riverpod/legacy.dart' }],
+    code: `final counterProvider =\n  StateProvider<int>((ref) {\n    return 5;\n  });`,
+  },
+  homeScreen: {
+    title: 'HomeScreen',
+    sub: 'Pantalla principal · Ruta: /',
+    accent: 'var(--amber)',
+    desc: 'Pantalla raíz con AppBar y un NavigationDrawer lateral (SideMenu). El body contiene un ListView con los ítems del menú usando _CustomListTile. La navegación se realiza con context.push().',
+    deps: [
+      { color: 'var(--rose)', label: 'SideMenu widget' },
+      { color: 'var(--violet)', label: 'menu_items → appMenuItems' },
+      { color: 'var(--violet)', label: 'go_router' },
+    ],
+    code: `class HomeScreen extends StatelessWidget {\n  static const name = 'home_screen';\n\n  @override\n  Widget build(ctx) {\n    final scaffoldKey = GlobalKey();\n    return Scaffold(\n      appBar: AppBar(\n        title: Text('Flutter + Material 3')\n      ),\n      body: _HomeView(),\n      drawer: SideMenu(\n        scaffoldKey: scaffoldKey\n      ),\n    );\n  }\n}`,
+  },
+  buttonsScreen: {
+    title: 'ButtonsScreen',
+    sub: 'Botones Material 3 · /buttons',
+    accent: 'var(--amber)',
+    desc: 'Muestra todas las variantes de botones disponibles en Material 3: ElevatedButton, FilledButton, OutlinedButton, TextButton, IconButton y un CustomButton personalizado usando ClipRRect + Material + InkWell.',
+    deps: [{ color: 'var(--violet)', label: 'go_router (context.pop)' }],
+    code: `// CustomButton personalizado\nClipRRect(\n  borderRadius: BorderRadius.circular(20),\n  child: Material(\n    color: colors.primary,\n    child: InkWell(\n      onTap: () {},\n      child: Padding(...),\n    ),\n  ),\n)`,
+  },
+  cardsScreen: {
+    title: 'CardsScreen',
+    sub: 'Tarjetas estilizadas · /cards',
+    accent: 'var(--amber)',
+    desc: 'Pantalla de demostración de diferentes variantes del widget Card de Material 3, mostrando contenedores estilizados con sombra, bordes y elevación.',
+    deps: [],
+    code: `class CardsScreen extends StatelessWidget {\n  static const name = 'cards_screen';\n  // Muestra Card variants\n  // de Material 3\n}`,
+  },
+  progressScreen: {
+    title: 'ProgressScreen',
+    sub: 'Indicadores de progreso · /progress',
+    accent: 'var(--amber)',
+    desc: 'Demuestra CircularProgressIndicator y LinearProgressIndicator en sus variantes generales (indeterminadas) y controladas con valores específicos.',
+    deps: [],
+    code: `// CircularProgressIndicator\nCircularProgressIndicator(\n  value: progressValue,\n)\n\n// LinearProgressIndicator\nLinearProgressIndicator(\n  value: progressValue,\n)`,
+  },
+  snackbarScreen: {
+    title: 'SnackbarScreen',
+    sub: 'Snackbars y Diálogos · /snackbars',
+    accent: 'var(--amber)',
+    desc: 'Muestra cómo usar ScaffoldMessenger para Snackbars, showDialog para AlertDialog con AcceptButton/CancelButton, y showAboutDialog para licencias.',
+    deps: [{ color: 'var(--violet)', label: 'go_router (context.pop)' }],
+    code: `void showCustomSnackbar(ctx) {\n  ScaffoldMessenger.of(ctx)\n    .showSnackBar(\n      SnackBar(\n        content: Text('Hola Mundo'),\n        action: SnackBarAction(\n          label: 'Ok!',\n          onPressed: () {},\n        ),\n      )\n    );\n}`,
+  },
+  animatedScreen: {
+    title: 'AnimatedScreen',
+    sub: 'AnimatedContainer · /animated',
+    accent: 'var(--amber)',
+    desc: 'StatefulWidget que genera valores aleatorios de ancho, alto, borderRadius y color. Usa AnimatedContainer con Duration 400ms y Curves.elasticOut para transiciones suaves.',
+    deps: [{ color: 'var(--blue)', label: 'dart:math (Random)' }],
+    code: `AnimatedContainer(\n  duration: Duration(\n    milliseconds: 400\n  ),\n  curve: Curves.elasticOut,\n  width: width,\n  height: height,\n  decoration: BoxDecoration(\n    color: color,\n    borderRadius:\n      BorderRadius.circular(radius),\n  ),\n)`,
+  },
+  uiScreen: {
+    title: 'UiControlsScreen',
+    sub: 'Controles de UI · /ui-controls',
+    accent: 'var(--amber)',
+    desc: 'Demostración completa de controles interactivos: Switch, Checkbox, Radio, ListTile y otros controles de Material 3.',
+    deps: [],
+    code: `// UI Controls Material 3\nSwitch(...)\nCheckbox(...)\nRadioListTile(...)\nSwitchListTile(...)`,
+  },
+  tutorialScreen: {
+    title: 'AppTutorialScreen',
+    sub: 'Tutorial onboarding · /tutorial',
+    accent: 'var(--amber)',
+    desc: 'Pantalla de tutorial con PageView y 3 slides (SlideInfo con título, caption e imagen de Picsum). Muestra botón "Comenzar" animado con FadeInRight al llegar al último slide.',
+    deps: [{ color: 'var(--cyan)', label: 'animate_do (FadeInRight)' }],
+    code: `// SlideInfo model\nSlideInfo(\n  'Busca la comida',\n  'Caption aquí...',\n  'https://picsum.photos/...',\n)\n\n// FadeInRight al llegar\n// al último slide\nFadeInRight(\n  from: 15,\n  delay: Duration(seconds: 1),\n  child: FilledButton(...),\n)`,
+  },
+  infiniteScreen: {
+    title: 'InfiniteScrollScreen',
+    sub: 'Lista infinita · /infinite',
+    accent: 'var(--amber)',
+    desc: 'StatefulWidget con ScrollController para detectar el final de la lista y cargar más imágenes de picsum.photos. Incluye pull-to-refresh con RefreshIndicator y SpinPerfect de animate_do.',
+    deps: [{ color: 'var(--cyan)', label: 'animate_do (SpinPerfect, FadeIn)' }],
+    code: `scrollController.addListener(() {\n  if (pixels + 500 >= maxExtent) {\n    loadNextPage(); // +5 images\n  }\n});\n\nFuture<void> onRefresh() async {\n  await Future.delayed(\n    Duration(seconds: 3)\n  );\n  // Reset & reload images\n}`,
+  },
+  counterScreen: {
+    title: 'CounterScreen',
+    sub: 'Contador Riverpod · /counter-river',
+    accent: 'var(--amber)',
+    desc: 'ConsumerWidget de ejemplo que consume counterProvider y themeNotifierProvider simultáneamente. El FAB incrementa el estado directamente. Muestra toggle de dark mode en AppBar.',
+    deps: [
+      { color: 'var(--emerald)', label: 'counterProvider' },
+      { color: 'var(--emerald)', label: 'themeNotifierProvider' },
+    ],
+    code: `class CounterScreen\n  extends ConsumerWidget {\n\n  @override\n  Widget build(ctx, ref) {\n    final count =\n      ref.watch(counterProvider);\n\n    // FAB increment:\n    ref.read(counterProvider\n      .notifier).state++;\n  }\n}`,
+  },
+  themeChangerScreen: {
+    title: 'ThemeChangerScreen',
+    sub: 'Cambio de tema · /theme-changer',
+    accent: 'var(--amber)',
+    desc: 'ConsumerWidget que permite cambiar el color del tema mediante RadioListTile. Lee la lista colorListProvider y el índice seleccionado. Llama changeColorIndex() del notifier.',
+    deps: [
+      { color: 'var(--emerald)', label: 'themeNotifierProvider' },
+      { color: 'var(--emerald)', label: 'colorListProvider' },
+    ],
+    code: `RadioListTile<int>(\n  title: Text(\n    'Este color',\n    style: TextStyle(color: color)\n  ),\n  subtitle: Text(\n    '\${color.toARGB32()}'\n  ),\n  activeColor: color,\n  value: index,\n  groupValue: selectedColor,\n)`,
+  },
+  sideMenu: {
+    title: 'SideMenu',
+    sub: 'NavigationDrawer compartido',
+    accent: 'var(--rose)',
+    desc: 'StatefulWidget que implementa el drawer lateral con NavigationDrawer de Material 3. Divide el menú en dos secciones: "Main" (items 0-2) y "More options" (items 3+). Cierra el drawer automáticamente al navegar.',
+    deps: [
+      { color: 'var(--violet)', label: 'menu_items → appMenuItems' },
+      { color: 'var(--violet)', label: 'go_router (context.push)' },
+    ],
+    code: `NavigationDrawer(\n  selectedIndex: navDrawerIndex,\n  onDestinationSelected: (value) {\n    setState(() {\n      navDrawerIndex = value;\n    });\n    context.push(\n      appMenuItems[value].link\n    );\n    scaffoldKey.currentState\n      ?.closeDrawer();\n  },\n  children: [...],\n)`,
+  },
+  depFlutter: {
+    title: 'Flutter SDK',
+    sub: 'Framework principal',
+    accent: 'var(--cyan)',
+    desc: 'Framework UI multiplataforma de Google. Incluye el motor de rendering Skia/Impeller, sistema de widgets Material 3, gestión de estado básico y acceso a APIs nativas.',
+    deps: [],
+    code: `# pubspec.yaml\ndependencies:\n  flutter:\n    sdk: flutter\n  \n  uses-material-design: true`,
+  },
+  depRiverpod: {
+    title: 'flutter_riverpod ^3.4.3',
+    sub: 'State Management',
+    accent: 'var(--cyan)',
+    desc: 'Librería de gestión de estado reactivo de Remi Rousselet. Mejora de Provider con mejor testabilidad y sin dependencia del árbol de contexto. Se usa StateProvider y StateNotifier.',
+    deps: [],
+    code: `# Providers usados:\n# - StateProvider<int>\n#   counterProvider\n\n# - StateNotifierProvider\n#   themeNotifierProvider\n\n# - Provider\n#   colorListProvider`,
+  },
+  depGoRouter: {
+    title: 'go_router ^17.5.0',
+    sub: 'Navegación declarativa',
+    accent: 'var(--cyan)',
+    desc: 'Paquete oficial de Flutter para navegación declarativa. Soporta deep linking, parámetros de ruta, redirecciones y navegación anidada. Usa el patrón URL para las rutas.',
+    deps: [],
+    code: `# Métodos usados:\ncontext.push('/route')\ncontext.pop()\ncontext.pushNamed(name)\n\n# En MainApp:\nMaterialApp.router(\n  routerConfig: appRouter,\n)`,
+  },
+  depAnimateDo: {
+    title: 'animate_do ^5.1.0',
+    sub: 'Animaciones predefinidas',
+    accent: 'var(--cyan)',
+    desc: 'Colección de animaciones de entrada y salida inspiradas en Animate.css. Usado en InfiniteScrollScreen (SpinPerfect, FadeIn) y AppTutorialScreen (FadeInRight).',
+    deps: [],
+    code: `// SpinPerfect — icono loading\nSpinPerfect(\n  infinite: true,\n  child: Icon(Icons.refresh),\n)\n\n// FadeInRight — botón tutorial\nFadeInRight(\n  from: 15,\n  delay: Duration(seconds: 1),\n  child: FilledButton(...),\n)`,
+  },
+  depCupertino: {
+    title: 'cupertino_icons ^1.0.8',
+    sub: 'Íconos estilo iOS',
+    accent: 'var(--cyan)',
+    desc: 'Fuente de íconos de Cupertino (estilo iOS) para Flutter. Incluida como dependencia estándar en proyectos Flutter para acceder a íconos del ecosistema Apple.',
+    deps: [],
+    code: `# Ejemplo de uso:\nIcon(CupertinoIcons.heart)\nIcon(CupertinoIcons.settings)`,
+  },
+};
+
+/* ── PANEL LOGIC ──────────────────────────────────────── */
+let activeCard = null;
+
+function openPanel(card) {
+  const id = card.dataset.id;
+  const data = PANELS[id];
+  if (!data) return;
+
+  // Deactivate previous
+  if (activeCard && activeCard !== card) {
+    activeCard.classList.remove('active');
+  }
+  card.classList.toggle('active');
+  activeCard = card.classList.contains('active') ? card : null;
+
+  if (!activeCard) { closePanel(); return; }
+
+  // Fill panel
+  document.getElementById('panelTitle').textContent = data.title;
+  document.getElementById('panelSub').textContent = data.sub;
+  document.getElementById('panelAccent').style.background = data.accent;
+
+  let html = `<p>${data.desc}</p>`;
+
+  if (data.deps && data.deps.length) {
+    html += `<h3>Dependencias</h3><ul class="dep-list">`;
+    data.deps.forEach(d => {
+      html += `<li><span class="dep-dot" style="background:${d.color}"></span>${d.label}</li>`;
+    });
+    html += `</ul>`;
+  }
+
+  if (data.code) {
+    html += `<h3>Código clave</h3><pre class="code-block">${escapeHtml(data.code)}</pre>`;
+  }
+
+  document.getElementById('panelBody').innerHTML = html;
+  document.getElementById('detailPanel').classList.add('open');
+}
+
+function closePanel() {
+  document.getElementById('detailPanel').classList.remove('open');
+  if (activeCard) {
+    activeCard.classList.remove('active');
+    activeCard = null;
+  }
+}
+
+function escapeHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+/* ── LAYER TOGGLE ─────────────────────────────────────── */
+function toggleLayer(header) {
+  const layer = header.closest('.layer');
+  const body = layer.querySelector('.layer-body');
+  if (!layer.classList.contains('collapsed')) {
+    body.style.maxHeight = body.scrollHeight + 'px';
+    requestAnimationFrame(() => {
+      layer.classList.add('collapsed');
+      body.style.maxHeight = '0';
+    });
+  } else {
+    layer.classList.remove('collapsed');
+    body.style.maxHeight = body.scrollHeight + 'px';
+    setTimeout(() => { body.style.maxHeight = ''; }, 400);
+  }
+}
+
+/* ── FILTER ───────────────────────────────────────────── */
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const filter = btn.dataset.filter;
+    document.querySelectorAll('.layer').forEach(layer => {
+      if (filter === 'all' || layer.dataset.layer === filter) {
+        layer.style.display = '';
+      } else {
+        layer.style.display = 'none';
+      }
+    });
+  });
+});
+
+/* ── THEME TOGGLE ─────────────────────────────────────── */
+const themeBtn = document.getElementById('themeBtn');
+themeBtn.addEventListener('click', () => {
+  document.body.classList.toggle('light');
+  themeBtn.textContent = document.body.classList.contains('light') ? '🌙' : '☀️';
+});
+
+/* ── KEYBOARD ─────────────────────────────────────────── */
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closePanel();
+});
+
+/* ── CLICK OUTSIDE PANEL ──────────────────────────────── */
+document.addEventListener('click', e => {
+  const panel = document.getElementById('detailPanel');
+  if (panel.classList.contains('open') &&
+      !panel.contains(e.target) &&
+      !e.target.closest('.card')) {
+    closePanel();
+  }
+});
+</script>
+</body>
+</html>
