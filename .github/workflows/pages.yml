@@ -4,9 +4,12 @@ on:
   push:
     branches:
       - main
+      - DMI-Practica05
     paths:
       - '.github/workflows/pages.yml'
       - 'Practica 2/hello_world_app_230040/architecture-diagram.html'
+      - 'Practica 4/TokTik/architecture-diagram.html'
+      - 'Practica 5/widgets_app/architecture-diagram.html'
   workflow_dispatch:
 
 permissions:
@@ -36,7 +39,13 @@ jobs:
       - name: Prepare diagram site
         run: |
           mkdir -p 'site/Practica 2/hello_world_app_230040'
-          cp 'Practica 2/hello_world_app_230040/architecture-diagram.html' 'site/Practica 2/hello_world_app_230040/'
+          cp 'Practica 2/hello_world_app_230040/architecture-diagram.html' 'site/Practica 2/hello_world_app_230040/' 2>/dev/null || true
+          mkdir -p 'site/Practica 4/TokTik'
+          cp 'Practica 4/TokTik/architecture-diagram.html' 'site/Practica 4/TokTik/' 2>/dev/null || true
+          mkdir -p 'site/Practica 5/widgets_app'
+          cp 'Practica 5/widgets_app/architecture-diagram.html' 'site/Practica 5/widgets_app/' 2>/dev/null || true
+          mkdir -p 'site/Practica-05/widgets_app'
+          cp 'Practica 5/widgets_app/architecture-diagram.html' 'site/Practica-05/widgets_app/' 2>/dev/null || true
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

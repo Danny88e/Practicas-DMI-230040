@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Arquitectura — Widgets App · DMI 230040</title>
+  <style>
+    /* ═══════════════════════════ RESET & BASE ═══════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:          #07091a;
+      --surface:     #0f1629;
+      --surface2:    #151d35;
+      --border:      rgba(255,255,255,0.07);
+      --text:        #e2e8f0;
+      --muted:       #64748b;
+      --accent-blue: #38bdf8;
+      --accent-indigo:#818cf8;
+      --accent-purple:#c084fc;
+      --accent-green: #4ade80;
+      --accent-amber: #fbbf24;
+      --accent-rose:  #fb7185;
+      --accent-cyan:  #22d3ee;
+      --accent-teal:  #2dd4bf;
+      --radius:       14px;
+      --transition:   .25s cubic-bezier(.4,0,.2,1);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* ═══════════════════════════ ANIMATED BG ═══════════════════════════ */
+    #bg-canvas {
+      position: fixed; inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .content-wrap { position: relative; z-index: 1; }
+
+    /* ═══════════════════════════ NAV BAR ═══════════════════════════════ */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      height: 64px;
+      background: rgba(7,9,26,0.75);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 4px 32px rgba(0,0,0,.4);
+    }
+
+    .navbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--accent-blue);
+      letter-spacing: .3px;
+    }
+
+    .navbar-brand .badge {
+      background: linear-gradient(135deg,#1e3a5f,#1e1b4b);
+      border: 1px solid var(--accent-indigo);
+      border-radius: 6px;
+      padding: 2px 8px;
+      font-size: .7rem;
+      color: var(--accent-indigo);
+    }
+
+    .tab-group {
+      display: flex;
+      gap: 4px;
+      background: rgba(255,255,255,.04);
+      border-radius: 10px;
+      padding: 4px;
+    }
+
+    .tab-btn {
+      position: relative;
+      padding: 8px 20px;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-size: .875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      letter-spacing: .2px;
+    }
+
+    .tab-btn:hover { color: var(--text); background: rgba(255,255,255,.06); }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, #1e3a5f 0%, #1e1b4b 100%);
+      color: var(--accent-blue);
+      box-shadow: 0 0 0 1px var(--accent-blue), 0 4px 16px rgba(56,189,248,.25);
+    }
+
+    .tab-indicator {
+      position: absolute;
+      bottom: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 24px; height: 2px;
+      background: var(--accent-blue);
+      border-radius: 2px;
+      opacity: 0;
+      transition: var(--transition);
+    }
+    .tab-btn.active .tab-indicator { opacity: 1; }
+
+    .navbar-meta {
+      font-size: .75rem;
+      color: var(--muted);
+    }
+
+    /* ═══════════════════════════ PANELS ════════════════════════════════ */
+    .panel {
+      display: none;
+      padding: 48px 32px 80px;
+      max-width: 1200px;
+      margin: 0 auto;
+      animation: fadeSlide .4s ease forwards;
+    }
+    .panel.active { display: block; }
+
+    @keyframes fadeSlide {
+      from { opacity:0; transform: translateY(18px); }
+      to   { opacity:1; transform: translateY(0); }
+    }
+
+    /* ═══════════════════════════ SECTION TITLES ════════════════════════ */
+    .page-title {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 6px;
+    }
+
+    .page-sub {
+      text-align: center;
+      color: var(--muted);
+      font-size: .9rem;
+      margin-bottom: 56px;
+    }
+
+    .section-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--accent-purple);
+      margin: 48px 0 18px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(192,132,252,.2);
+    }
+
+    .section-label::before {
+      content:'';
+      width: 4px; height: 20px;
+      border-radius: 2px;
+      background: var(--accent-purple);
+    }
+
+    /* ═══════════════════════════ LAYER FLOW (GENERAL) ══════════════════ */
+    .flow-row {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      flex-wrap: nowrap;
+    }
+
+    .flow-arrow {
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      color: var(--muted);
+      font-size: 1.4rem;
+      flex-shrink: 0;
+    }
+
+    .layer-card {
+      flex: 1;
+      border-radius: var(--radius);
+      padding: 24px 20px;
+      border: 1.5px solid;
+      position: relative;
+      overflow: hidden;
+      transition: var(--transition);
+      cursor: pointer;
+    }
+
+    .layer-card::before {
+      content:'';
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: var(--transition);
+      border-radius: var(--radius);
+    }
+
+    .layer-card:hover::before { opacity: 1; }
+
+    .layer-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 48px rgba(0,0,0,.5);
+    }
+
+    .layer-config {
+      background: linear-gradient(160deg, #0f1e3a 0%, #111840 100%);
+      border-color: var(--accent-indigo);
+    }
+    .layer-config::before {
+      background: radial-gradient(ellipse at center, rgba(99,102,241,.12) 0%, transparent 70%);
+    }
+    .layer-config:hover { box-shadow: 0 16px 48px rgba(99,102,241,.2); border-color: #a5b4fc; }
+
+    .layer-presentation {
+      background: linear-gradient(160deg, #0d2040 0%, #0f1e4a 100%);
+      border-color: var(--accent-blue);
+    }
+    .layer-presentation::before {
+      background: radial-gradient(ellipse at center, rgba(56,189,248,.12) 0%, transparent 70%);
+    }
+    .layer-presentation:hover { box-shadow: 0 16px 48px rgba(56,189,248,.2); border-color: #7dd3fc; }
+
+    .layer-state {
+      background: linear-gradient(160deg, #1a0d36 0%, #200d40 100%);
+      border-color: var(--accent-purple);
+    }
+    .layer-state::before {
+      background: radial-gradient(ellipse at center, rgba(168,85,247,.12) 0%, transparent 70%);
+    }
+    .layer-state:hover { box-shadow: 0 16px 48px rgba(168,85,247,.2); border-color: #e9d5ff; }
+
+    .layer-title {
+      font-size: .95rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .layer-desc { font-size: .78rem; color: #94a3b8; line-height: 1.55; margin-bottom: 14px; }
+
+    /* sub-boxes inside layer */
+    .sub-list { display: flex; flex-direction: column; gap: 7px; }
+
+    .sub-item {
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: .76rem;
+      color: #bfdbfe;
+      transition: var(--transition);
+      cursor: default;
+      position: relative;
+      overflow: hidden;
+    }
+    .sub-item::after {
+      content:'';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      border-radius: 2px;
+      transition: var(--transition);
+    }
+    .sub-item:hover { background: rgba(255,255,255,.08); transform: translateX(4px); }
+
+    .sub-item.blue::after { background: var(--accent-blue); }
+    .sub-item.indigo::after { background: var(--accent-indigo); }
+    .sub-item.purple::after { background: var(--accent-purple); }
+    .sub-item.green::after { background: var(--accent-green); }
+    .sub-item.amber::after { background: var(--accent-amber); }
+    .sub-item.cyan::after { background: var(--accent-cyan); }
+    .sub-item.rose::after { background: var(--accent-rose); }
+
+    .sub-item span { display: block; color: var(--muted); font-size: .68rem; margin-top: 2px; }
+
+    /* ═══════════════════════════ DEPS GRID ══════════════════════════════ */
+    .deps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-top: 8px;
+    }
+
+    .dep-card {
+      background: var(--surface2);
+      border-radius: 12px;
+      padding: 18px 20px;
+      border: 1px solid;
+      transition: var(--transition);
+      cursor: default;
+      position: relative;
+      overflow: hidden;
+    }
+    .dep-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: var(--transition);
+    }
+    .dep-card:hover { transform: translateY(-4px); }
+    .dep-card:hover::before { opacity: 1; }
+
+    .dep-card.green { border-color: #22c55e; }
+    .dep-card.green::before { background: radial-gradient(ellipse at 0% 0%, rgba(34,197,94,.12) 0%, transparent 70%); }
+    .dep-card.green:hover { box-shadow: 0 12px 32px rgba(34,197,94,.2); }
+
+    .dep-card.indigo { border-color: var(--accent-indigo); }
+    .dep-card.indigo::before { background: radial-gradient(ellipse at 0% 0%, rgba(129,140,248,.12) 0%, transparent 70%); }
+    .dep-card.indigo:hover { box-shadow: 0 12px 32px rgba(129,140,248,.2); }
+
+    .dep-card.purple { border-color: var(--accent-purple); }
+    .dep-card.purple::before { background: radial-gradient(ellipse at 0% 0%, rgba(192,132,252,.12) 0%, transparent 70%); }
+    .dep-card.purple:hover { box-shadow: 0 12px 32px rgba(192,132,252,.2); }
+
+    .dep-card.blue { border-color: var(--accent-blue); }
+    .dep-card.blue::before { background: radial-gradient(ellipse at 0% 0%, rgba(56,189,248,.12) 0%, transparent 70%); }
+    .dep-card.blue:hover { box-shadow: 0 12px 32px rgba(56,189,248,.2); }
+
+    .dep-name { font-weight: 700; font-size: .88rem; }
+    .dep-ver  { font-size: .72rem; color: var(--muted); margin-bottom: 6px; }
+    .dep-desc { font-size: .78rem; color: #94a3b8; }
+
+    /* ═══════════════════════════ SCREEN GRID (SPECIFIC) ════════════════ */
+    .screen-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 14px;
+    }
+
+    .screen-card {
+      background: var(--surface2);
+      border-radius: var(--radius);
+      border-left: 4px solid;
+      padding: 0;
+      overflow: hidden;
+      transition: var(--transition);
+      cursor: pointer;
+      position: relative;
+    }
+
+    .screen-card:hover {
+      transform: translateY(-5px) scale(1.01);
+    }
+
+    .sc-header {
+      padding: 14px 16px 10px;
+      position: relative;
+    }
+    .sc-glow {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: var(--transition);
+      pointer-events: none;
+    }
+    .screen-card:hover .sc-glow { opacity: 1; }
+
+    .sc-title { font-size: .88rem; font-weight: 700; margin-bottom: 6px; }
+    .tag-row { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
+
+    .tag {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: .62rem; font-weight: 700;
+      padding: 2px 8px; border-radius: 999px;
+      letter-spacing: .3px;
+      text-transform: uppercase;
+    }
+
+    .tag-stateless { background: rgba(14,116,144,.5); color: #cffafe; border: 1px solid #0e7490; }
+    .tag-stateful  { background: rgba(146,64,14,.5);  color: #fef3c7; border: 1px solid #92400e; }
+    .tag-riverpod  { background: rgba(107,33,168,.5); color: #f3e8ff; border: 1px solid #7e22ce; }
+    .tag-router    { background: rgba(22,101,52,.5);  color: #dcfce7; border: 1px solid #166534; }
+    .tag-animate   { background: rgba(154,52,18,.5);  color: #fed7aa; border: 1px solid #9a3412; }
+
+    .sc-body { padding: 0 16px 14px; }
+    .sc-ul { list-style: none; display: flex; flex-direction: column; gap: 3px; }
+    .sc-ul li {
+      font-size: .72rem;
+      color: #94a3b8;
+      padding: 3px 0 3px 12px;
+      position: relative;
+      line-height: 1.5;
+    }
+    .sc-ul li::before {
+      content:'';
+      position: absolute; left: 0; top: 50%;
+      transform: translateY(-50%);
+      width: 5px; height: 5px;
+      border-radius: 50%;
+    }
+
+    /* screen card colors */
+    .sc-stateless { border-color: var(--accent-cyan); }
+    .sc-stateless .sc-ul li::before { background: var(--accent-cyan); }
+    .sc-stateless .sc-glow { background: radial-gradient(ellipse at 50% 0%, rgba(34,211,238,.1) 0%, transparent 60%); }
+    .sc-stateless:hover { box-shadow: 0 12px 32px rgba(34,211,238,.2); }
+
+    .sc-stateful { border-color: var(--accent-amber); }
+    .sc-stateful .sc-ul li::before { background: var(--accent-amber); }
+    .sc-stateful .sc-glow { background: radial-gradient(ellipse at 50% 0%, rgba(251,191,36,.1) 0%, transparent 60%); }
+    .sc-stateful:hover { box-shadow: 0 12px 32px rgba(251,191,36,.2); }
+
+    .sc-riverpod { border-color: var(--accent-purple); }
+    .sc-riverpod .sc-ul li::before { background: var(--accent-purple); }
+    .sc-riverpod .sc-glow { background: radial-gradient(ellipse at 50% 0%, rgba(192,132,252,.12) 0%, transparent 60%); }
+    .sc-riverpod:hover { box-shadow: 0 12px 32px rgba(192,132,252,.2); }
+
+    /* expanded detail overlay */
+    .sc-detail {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .35s cubic-bezier(.4,0,.2,1), padding .35s;
+      background: rgba(0,0,0,.25);
+      font-size: .72rem;
+      color: #94a3b8;
+      padding: 0 16px;
+    }
+    .sc-detail.open { max-height: 200px; padding: 10px 16px; }
+    .sc-detail p { line-height: 1.6; }
+
+    /* ═══════════════════════════ PROVIDERS ══════════════════════════════ */
+    .prov-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .prov-card {
+      background: linear-gradient(135deg, #1e1b4b 0%, #1a1040 100%);
+      border: 1px solid var(--accent-indigo);
+      border-radius: var(--radius);
+      padding: 20px;
+      transition: var(--transition);
+      cursor: default;
+    }
+    .prov-card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(99,102,241,.25); border-color: #a5b4fc; }
+    .prov-card h3 { font-size: .92rem; color: var(--accent-indigo); margin-bottom: 8px; }
+    .prov-card p  { font-size: .78rem; color: #94a3b8; line-height: 1.6; margin-bottom: 10px; }
+
+    .code-block {
+      background: #060918;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-family: 'Consolas', 'Fira Code', monospace;
+      font-size: .71rem;
+      color: var(--accent-green);
+      line-height: 1.65;
+      border: 1px solid rgba(74,222,128,.15);
+    }
+
+    /* ═══════════════════════════ ROUTER TABLE ═══════════════════════════ */
+    .route-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 4px;
+      font-size: .82rem;
+    }
+    .route-table thead tr { background: transparent; }
+    .route-table th {
+      padding: 10px 16px;
+      text-align: left;
+      color: var(--accent-blue);
+      font-weight: 700;
+      font-size: .78rem;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+      border-bottom: 1px solid rgba(56,189,248,.2);
+    }
+    .route-table tbody tr {
+      background: var(--surface2);
+      transition: var(--transition);
+      cursor: default;
+    }
+    .route-table tbody tr:hover { background: #1e2a4a; transform: scale(1.002); }
+    .route-table td {
+      padding: 10px 16px;
+    }
+    .route-table td:first-child { border-radius: 8px 0 0 8px; }
+    .route-table td:last-child  { border-radius: 0 8px 8px 0; }
+    .route-path {
+      font-family: 'Consolas', monospace;
+      color: var(--accent-green);
+      font-size: .8rem;
+    }
+    .route-name { color: var(--accent-indigo); font-size: .78rem; }
+
+    /* ═══════════════════════════ LEGEND ════════════════════════════════ */
+    .legend-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-top: 8px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: .78rem;
+      color: var(--muted);
+    }
+    .legend-dot {
+      width: 12px; height: 12px;
+      border-radius: 3px;
+    }
+
+    /* ═══════════════════════════ MODAL ══════════════════════════════════ */
+    .modal-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.75);
+      backdrop-filter: blur(8px);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+
+    .modal-box {
+      background: #111827;
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 18px;
+      padding: 32px;
+      max-width: 520px;
+      width: 90%;
+      position: relative;
+      animation: popIn .3s cubic-bezier(.34,1.56,.64,1) forwards;
+    }
+    @keyframes popIn {
+      from { opacity:0; transform: scale(.85); }
+      to   { opacity:1; transform: scale(1); }
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 14px; right: 16px;
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 8px;
+      color: var(--muted);
+      font-size: 1.2rem;
+      line-height: 1;
+      cursor: pointer;
+      padding: 4px 10px;
+      transition: var(--transition);
+    }
+    .modal-close:hover { background: rgba(255,255,255,.14); color: var(--text); }
+
+    .modal-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 6px; }
+    .modal-tag-row { margin-bottom: 14px; }
+    .modal-body { font-size: .82rem; color: #94a3b8; line-height: 1.7; }
+    .modal-route {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(74,222,128,.08);
+      border: 1px solid rgba(74,222,128,.2);
+      border-radius: 8px;
+      padding: 5px 12px;
+      font-family: monospace;
+      font-size: .82rem;
+      color: var(--accent-green);
+      margin-top: 12px;
+    }
+    .modal-widgets { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 6px; }
+    .w-chip {
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 8px;
+      padding: 3px 10px;
+      font-size: .72rem;
+      color: #cbd5e1;
+    }
+
+    /* ═══════════════════════════ SCROLL TOP BTN ════════════════════════ */
+    #scrollTopBtn {
+      position: fixed;
+      bottom: 28px; right: 28px;
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      border: none;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem;
+      box-shadow: 0 4px 20px rgba(56,189,248,.3);
+      transition: var(--transition);
+      z-index: 99;
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    #scrollTopBtn.visible { opacity: 1; transform: translateY(0); }
+    #scrollTopBtn:hover { transform: translateY(-2px) scale(1.05); box-shadow: 0 8px 28px rgba(56,189,248,.45); }
+
+    /* ═══════════════════════════ RESPONSIVE ════════════════════════════ */
+    @media(max-width:768px) {
+      .navbar { padding: 0 16px; }
+      .navbar-meta { display: none; }
+      .panel { padding: 32px 16px 60px; }
+      .flow-row { flex-direction: column; }
+      .flow-arrow { transform: rotate(90deg); padding: 8px 0; align-self: center; }
+      .tab-btn { padding: 7px 14px; font-size: .8rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ANIMATED BACKGROUND CANVAS -->
+<canvas id="bg-canvas"></canvas>
+
+<div class="content-wrap">
+
+  <!-- ══════════════════════ NAVBAR ══════════════════════ -->
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <span>🏗️ Widgets App</span>
+      <span class="badge">DMI 230040</span>
+    </div>
+
+    <div class="tab-group">
+      <button class="tab-btn active" onclick="switchTab('general', this)">
+        🌐 Arquitectura General
+        <div class="tab-indicator"></div>
+      </button>
+      <button class="tab-btn" onclick="switchTab('specific', this)">
+        🔍 Arquitectura Específica
+        <div class="tab-indicator"></div>
+      </button>
+    </div>
+
+    <div class="navbar-meta">Práctica 5 · Flutter + Riverpod + GoRouter</div>
+  </nav>
+
+  <!-- ══════════════════════════════════════════════════════
+       PANEL 1 — ARQUITECTURA GENERAL
+  ══════════════════════════════════════════════════════ -->
+  <div class="panel active" id="panel-general">
+
+    <h1 class="page-title">🌐 Arquitectura General</h1>
+    <p class="page-sub">Vista de alto nivel de las capas tecnológicas que componen la aplicación</p>
+
+    <!-- FLOW -->
+    <div class="section-label">Flujo de Capas</div>
+
+    <div class="flow-row">
+
+      <!-- CONFIG -->
+      <div class="layer-card layer-config" onclick="openModal('config')">
+        <div class="layer-title" style="color:#818cf8">⚙️ Config Layer</div>
+        <div class="layer-desc">Configuración global de la app. Sin lógica de negocio — define las reglas del sistema.</div>
+        <div class="sub-list">
+          <div class="sub-item indigo">
+            📍 app_router.dart
+            <span>GoRouter · rutas declarativas</span>
+          </div>
+          <div class="sub-item indigo">
+            🎨 app_theme.dart
+            <span>AppTheme · Material 3 · ColorScheme</span>
+          </div>
+          <div class="sub-item indigo">
+            📋 menu_items.dart
+            <span>Definición de ítems del menú</span>
+          </div>
+        </div>
+        <div style="text-align:center; margin-top:14px; font-size:.68rem; color:var(--muted);">clic para ver detalle</div>
+      </div>
+
+      <div class="flow-arrow">→</div>
+
+      <!-- PRESENTATION -->
+      <div class="layer-card layer-presentation" onclick="openModal('presentation')">
+        <div class="layer-title" style="color:#38bdf8">🖼️ Presentation Layer</div>
+        <div class="layer-desc">Pantallas y widgets. Consume providers y usa la configuración para renderizar la UI.</div>
+        <div class="sub-list">
+          <div class="sub-item blue">
+            📱 screens/
+            <span>11 pantallas demostrativas</span>
+          </div>
+          <div class="sub-item blue">
+            🧩 widgets/
+            <span>SideMenu, componentes reutilizables</span>
+          </div>
+          <div class="sub-item blue">
+            🔄 providers/
+            <span>counter_provider · theme_provider</span>
+          </div>
+        </div>
+        <div style="text-align:center; margin-top:14px; font-size:.68rem; color:var(--muted);">clic para ver detalle</div>
+      </div>
+
+      <div class="flow-arrow">→</div>
+
+      <!-- STATE -->
+      <div class="layer-card layer-state" onclick="openModal('state')">
+        <div class="layer-title" style="color:#c084fc">🔄 State Layer (Riverpod)</div>
+        <div class="layer-desc">Gestión de estado reactiva y global. Los ConsumerWidgets observan y actualizan el estado.</div>
+        <div class="sub-list">
+          <div class="sub-item purple">
+            🔢 StateProvider&lt;int&gt;
+            <span>counterProvider</span>
+          </div>
+          <div class="sub-item purple">
+            🎭 StateNotifierProvider
+            <span>themeNotifierProvider + ThemeNotifier</span>
+          </div>
+          <div class="sub-item purple">
+            🎨 Provider (inmutable)
+            <span>colorListProvider</span>
+          </div>
+        </div>
+        <div style="text-align:center; margin-top:14px; font-size:.68rem; color:var(--muted);">clic para ver detalle</div>
+      </div>
+
+    </div><!-- /flow-row -->
+
+    <!-- DEPS -->
+    <div class="section-label">📦 Dependencias Externas</div>
+    <div class="deps-grid">
+      <div class="dep-card green" onclick="openModal('dep-router')">
+        <div class="dep-name" style="color:#86efac">go_router</div>
+        <div class="dep-ver">^17.5.0</div>
+        <div class="dep-desc">Navegación declarativa basada en URL. Permite context.push() / context.pop() y rutas con nombre.</div>
+      </div>
+      <div class="dep-card indigo" onclick="openModal('dep-riverpod')">
+        <div class="dep-name" style="color:#c7d2fe">flutter_riverpod</div>
+        <div class="dep-ver">^3.4.3</div>
+        <div class="dep-desc">Estado global reactivo. StateProvider, StateNotifierProvider, ConsumerWidget y ProviderScope.</div>
+      </div>
+      <div class="dep-card purple" onclick="openModal('dep-animate')">
+        <div class="dep-name" style="color:#e9d5ff">animate_do</div>
+        <div class="dep-ver">^5.1.0</div>
+        <div class="dep-desc">Animaciones de entrada declarativas: FadeIn, FadeInRight, ZoomIn, SpinPerfect, etc.</div>
+      </div>
+      <div class="dep-card blue" onclick="openModal('dep-flutter')">
+        <div class="dep-name" style="color:#bae6fd">Flutter SDK</div>
+        <div class="dep-ver">≥ 3.10.0 · Dart ≥ 3.0</div>
+        <div class="dep-desc">Framework base. Material Design 3, widgets nativos, gestión de assets y plataformas múltiples.</div>
+      </div>
+    </div>
+
+    <!-- LEGEND -->
+    <div class="section-label">🎨 Leyenda de Colores</div>
+    <div class="legend-row">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-indigo)"></div>Config Layer</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-blue)"></div>Presentation Layer</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-purple)"></div>State Layer (Riverpod)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#22c55e"></div>go_router</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#818cf8"></div>flutter_riverpod</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-purple)"></div>animate_do</div>
+    </div>
+
+  </div><!-- /panel-general -->
+
+
+  <!-- ══════════════════════════════════════════════════════
+       PANEL 2 — ARQUITECTURA ESPECÍFICA
+  ══════════════════════════════════════════════════════ -->
+  <div class="panel" id="panel-specific">
+
+    <h1 class="page-title">🔍 Arquitectura Específica</h1>
+    <p class="page-sub">Detalle de pantallas, providers, rutas y relaciones entre componentes</p>
+
+    <!-- SCREENS -->
+    <div class="section-label">🖼️ Pantallas por Tipo de Widget</div>
+    <div class="screen-grid" id="screenGrid">
+      <!-- Se llena con JS -->
+    </div>
+
+    <!-- LEGEND SCREENS -->
+    <div class="legend-row" style="margin-top:16px">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-cyan)"></div>StatelessWidget</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-amber)"></div>StatefulWidget</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-purple)"></div>ConsumerWidget (Riverpod)</div>
+    </div>
+
+    <!-- PROVIDERS -->
+    <div class="section-label">🔄 Providers (Riverpod)</div>
+    <div class="prov-grid">
+      <div class="prov-card">
+        <h3>🔢 counterProvider</h3>
+        <p>Contador simple de tipo <code style="color:var(--accent-green)">int</code> usando <strong style="color:#a5b4fc">StateProvider</strong>. Se incrementa reactivamente desde CounterScreen usando <code style="color:var(--accent-green)">ref.read</code>.</p>
+        <div class="code-block">final counterProvider = StateProvider&lt;int&gt;((ref) =&gt; 5);</div>
+      </div>
+      <div class="prov-card">
+        <h3>🎨 themeNotifierProvider</h3>
+        <p><strong style="color:#a5b4fc">StateNotifierProvider</strong> que envuelve <code style="color:var(--accent-green)">ThemeNotifier</code>. Controla el color seed activo y el modo oscuro/claro del tema global.</p>
+        <div class="code-block">final themeNotifierProvider =<br>  StateNotifierProvider&lt;ThemeNotifier, AppTheme&gt;(<br>    (ref) =&gt; ThemeNotifier(),<br>  );</div>
+      </div>
+      <div class="prov-card">
+        <h3>🎭 ThemeNotifier</h3>
+        <p>Clase controladora que extiende <code style="color:var(--accent-green)">StateNotifier&lt;AppTheme&gt;</code>. Expone métodos <code style="color:var(--accent-cyan)">toggleDarkmode()</code> y <code style="color:var(--accent-cyan)">changeColorIndex(int)</code>.</p>
+        <div class="code-block">class ThemeNotifier extends StateNotifier&lt;AppTheme&gt; {<br>  void toggleDarkmode() =&gt; state = state.copyWith(...);<br>  void changeColorIndex(i) =&gt; state = state.copyWith(...);<br>}</div>
+      </div>
+      <div class="prov-card">
+        <h3>🌈 colorListProvider</h3>
+        <p>Provider <strong style="color:#a5b4fc">inmutable</strong> que expone la lista de colores disponibles (<code style="color:var(--accent-green)">colorList</code>) para que ThemeChangerScreen la renderice con RadioListTile.</p>
+        <div class="code-block">final colorListProvider =<br>  Provider((ref) =&gt; colorList);</div>
+      </div>
+    </div>
+
+    <!-- ROUTES -->
+    <div class="section-label">📍 Rutas — GoRouter</div>
+    <table class="route-table">
+      <thead>
+        <tr>
+          <th>Pantalla</th>
+          <th>Path</th>
+          <th>name (const)</th>
+          <th>Tipo</th>
+        </tr>
+      </thead>
+      <tbody id="routeTableBody">
+        <!-- Se llena con JS -->
+      </tbody>
+    </table>
+
+  </div><!-- /panel-specific -->
+
+</div><!-- /content-wrap -->
+
+<!-- ══════════════════════════ MODAL ══════════════════════════ -->
+<div class="modal-overlay" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal-box" id="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<!-- SCROLL TOP -->
+<button id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<!-- ══════════════════════════ SCRIPTS ══════════════════════════ -->
+<script>
+/* ─────────────────────── ANIMATED BACKGROUND ─────────────────────── */
+(function(){
+  const canvas = document.getElementById('bg-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H;
+  const resize = () => { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; };
+  window.addEventListener('resize', resize); resize();
+
+  const COLORS = ['#38bdf8','#818cf8','#c084fc','#4ade80','#fbbf24','#fb7185','#22d3ee','#2dd4bf'];
+
+  class Orb {
+    constructor() { this.reset(); }
+    reset() {
+      this.x = Math.random() * W;
+      this.y = Math.random() * H;
+      this.r = 80 + Math.random() * 200;
+      this.vx = (Math.random()-.5)*.25;
+      this.vy = (Math.random()-.5)*.25;
+      this.color = COLORS[Math.floor(Math.random()*COLORS.length)];
+      this.alpha = 0.025 + Math.random() * 0.045;
+    }
+    update() {
+      this.x += this.vx; this.y += this.vy;
+      if (this.x < -this.r || this.x > W+this.r || this.y < -this.r || this.y > H+this.r) this.reset();
+    }
+    draw() {
+      const g = ctx.createRadialGradient(this.x,this.y,0,this.x,this.y,this.r);
+      g.addColorStop(0, this.color + Math.floor(this.alpha*255).toString(16).padStart(2,'0'));
+      g.addColorStop(1, this.color + '00');
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.arc(this.x,this.y,this.r,0,Math.PI*2); ctx.fill();
+    }
+  }
+
+  const orbs = Array.from({length:14}, ()=>new Orb());
+
+  const tick = () => {
+    ctx.clearRect(0,0,W,H);
+    orbs.forEach(o=>{ o.update(); o.draw(); });
+    requestAnimationFrame(tick);
+  };
+  tick();
+})();
+
+/* ─────────────────────── TAB SWITCHING ─────────────────────── */
+function switchTab(id, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+/* ─────────────────────── SCREEN DATA ─────────────────────── */
+const screens = [
+  {
+    title: '🏠 HomeScreen',
+    type: 'stateless',
+    tags: ['StatelessWidget','GoRouter'],
+    route: '/',
+    name: 'home_screen',
+    widgets: ['Scaffold','AppBar','NavigationDrawer (SideMenu)','ListView.builder','ListTile','context.push()'],
+    detail: 'Pantalla principal que muestra el catálogo de componentes. Incluye un NavigationDrawer con secciones agrupadas y navegación declarativa via GoRouter.'
+  },
+  {
+    title: '🔘 ButtonsScreen',
+    type: 'stateless',
+    tags: ['StatelessWidget'],
+    route: '/buttons',
+    name: 'buttons_screen',
+    widgets: ['ElevatedButton','FilledButton','OutlinedButton','TextButton','IconButton','FAB','CustomButton (Material+InkWell)','Wrap'],
+    detail: 'Exploración de todas las variantes de botones en Material Design 3. Incluye botones deshabilitados, con íconos y un botón completamente personalizado usando Material + InkWell.'
+  },
+  {
+    title: '🃏 CardsScreen',
+    type: 'stateless',
+    tags: ['StatelessWidget'],
+    route: '/cards',
+    name: 'cards_screen',
+    widgets: ['Card (elevated)','Card (outlined)','Card (filled)','Card con imagen','ClipRRect','Stack','Image.network'],
+    detail: 'Demostración de las 4 variantes del widget Card: elevada, con borde outline, con superficie de color y con imagen de fondo desde picsum.photos.'
+  },
+  {
+    title: '⏳ ProgressScreen',
+    type: 'stateless',
+    tags: ['StatelessWidget','Stream'],
+    route: '/progress',
+    name: 'progress_screen',
+    widgets: ['CircularProgressIndicator','LinearProgressIndicator','StreamBuilder','Stream.periodic','takeWhile'],
+    detail: 'Muestra indicadores indeterminados y un progreso controlado en tiempo real mediante Stream.periodic que emite valores de 0.0 a 1.0 cada 300ms.'
+  },
+  {
+    title: '💬 SnackBarScreen',
+    type: 'stateless',
+    tags: ['StatelessWidget'],
+    route: '/snackbars',
+    name: 'snackbar_screen',
+    widgets: ['ScaffoldMessenger','SnackBar','SnackBarAction','showDialog','AlertDialog','showAboutDialog','FilledButton.tonal','FAB'],
+    detail: 'Retroalimentación al usuario mediante SnackBar personalizado, AlertDialog con acciones de Aceptar/Cancelar y el showAboutDialog para mostrar licencias.'
+  },
+  {
+    title: '🎞️ AnimatedContainerScreen',
+    type: 'stateful',
+    tags: ['StatefulWidget','Random'],
+    route: '/animated',
+    name: 'animated_screen',
+    widgets: ['AnimatedContainer','StatefulWidget','dart:math Random','Curves.elasticOut','FloatingActionButton'],
+    detail: 'Utiliza AnimatedContainer con una duración de 400ms y la curva elasticOut para animar suavemente cambios aleatorios en dimensiones, color y borderRadius.'
+  },
+  {
+    title: '🎛️ UIControlsScreen',
+    type: 'stateful',
+    tags: ['StatefulWidget','Enum'],
+    route: '/ui-controls',
+    name: 'ui_controls_screen',
+    widgets: ['SwitchListTile','RadioListTile','RadioGroup','CheckboxListTile','ExpansionTile','enum Transportation'],
+    detail: 'Controles interactivos completos: toggle de modo desarrollador, selección de transporte con RadioGroup + enum, y checkboxes de menú del día. setState() administra el estado local.'
+  },
+  {
+    title: '📖 AppTutorialScreen',
+    type: 'stateful',
+    tags: ['StatefulWidget','animate_do'],
+    route: '/tutorial',
+    name: 'tutorial_screen',
+    widgets: ['PageView','PageController','FadeInRight (animate_do)','Stack','Positioned','BouncingScrollPhysics','FilledButton'],
+    detail: 'Tutorial de bienvenida de 3 slides con PageView. Al llegar al último slide aparece con FadeInRight (animate_do + 1s de delay) el botón "Comenzar".'
+  },
+  {
+    title: '♾️ InfiniteScrollScreen',
+    type: 'stateful',
+    tags: ['StatefulWidget','animate_do','RefreshIndicator'],
+    route: '/infinite',
+    name: 'infinite_screen',
+    widgets: ['ScrollController','RefreshIndicator','ListView.builder','FadeInImage','AssetImage (GIF local)','NetworkImage','SpinPerfect','FadeIn'],
+    detail: 'Lista de imágenes con carga infinita: ScrollController detecta el final y llama a loadNextPage(). Pull-to-refresh actualiza el conjunto de imágenes. FadeInImage muestra el GIF local como placeholder.'
+  },
+  {
+    title: '🔢 CounterScreen',
+    type: 'riverpod',
+    tags: ['ConsumerWidget','StateProvider'],
+    route: '/counter-river',
+    name: 'counter_screen',
+    widgets: ['ConsumerWidget','ref.watch(counterProvider)','ref.read(counterProvider.notifier)','FloatingActionButton','IconButton (dark mode toggle)'],
+    detail: 'Contador con Riverpod: ref.watch() reconstruye el widget reactivamente. ref.read() modifica el estado sin suscripción. También muestra el botón de toggle de modo oscuro.'
+  },
+  {
+    title: '🎨 ThemeChangerScreen',
+    type: 'riverpod',
+    tags: ['ConsumerWidget','StateNotifierProvider'],
+    route: '/theme-changer',
+    name: 'theme_changer_screen',
+    widgets: ['ConsumerWidget','RadioListTile<int>','RadioGroup','themeNotifierProvider.notifier','toggleDarkmode()','changeColorIndex()'],
+    detail: 'Personalización del tema en tiempo real: lista de RadioListTile para seleccionar el color seed activo y un IconButton en el AppBar para alternar entre modo claro y oscuro.'
+  },
+];
+
+const routeData = [
+  ['HomeScreen','/',          'home_screen',          'StatelessWidget'],
+  ['ButtonsScreen','/buttons','buttons_screen',       'StatelessWidget'],
+  ['CardsScreen','/cards',    'cards_screen',         'StatelessWidget'],
+  ['ProgressScreen','/progress','progress_screen',    'StatelessWidget'],
+  ['SnackBarScreen','/snackbars','snackbar_screen',   'StatelessWidget'],
+  ['AnimatedScreen','/animated','animated_screen',    'StatefulWidget'],
+  ['UiControlsScreen','/ui-controls','ui_controls_screen','StatefulWidget'],
+  ['AppTutorialScreen','/tutorial','tutorial_screen', 'StatefulWidget'],
+  ['InfiniteScrollScreen','/infinite','infinite_screen','StatefulWidget'],
+  ['CounterScreen','/counter-river','counter_screen', 'ConsumerWidget'],
+  ['ThemeChangerScreen','/theme-changer','theme_changer_screen','ConsumerWidget'],
+];
+
+/* ─────────────────────── RENDER SCREENS ─────────────────────── */
+function buildTagHtml(tags) {
+  return tags.map(t => {
+    let cls = 'tag-stateless';
+    if(t==='StatefulWidget'||t==='Random'||t==='Enum') cls='tag-stateful';
+    if(t==='ConsumerWidget'||t==='StateProvider'||t==='StateNotifierProvider') cls='tag-riverpod';
+    if(t==='GoRouter') cls='tag-router';
+    if(t==='animate_do') cls='tag-animate';
+    return `<span class="tag ${cls}">${t}</span>`;
+  }).join('');
+}
+
+const grid = document.getElementById('screenGrid');
+screens.forEach((s, i) => {
+  const cls = s.type === 'stateless' ? 'sc-stateless' : s.type === 'stateful' ? 'sc-stateful' : 'sc-riverpod';
+  grid.innerHTML += `
+    <div class="screen-card ${cls}" onclick="openScreenModal(${i})">
+      <div class="sc-header">
+        <div class="sc-glow"></div>
+        <div class="sc-title">${s.title}</div>
+        <div class="tag-row">${buildTagHtml(s.tags)}</div>
+      </div>
+      <div class="sc-body">
+        <ul class="sc-ul">
+          ${s.widgets.slice(0,4).map(w=>`<li>${w}</li>`).join('')}
+          ${s.widgets.length>4?`<li style="color:var(--muted)">+${s.widgets.length-4} más…</li>`:''}
+        </ul>
+      </div>
+    </div>`;
+});
+
+/* ─────────────────────── RENDER ROUTES ─────────────────────── */
+const tbody = document.getElementById('routeTableBody');
+routeData.forEach(([screen, path, name, type]) => {
+  const typeColor = type === 'ConsumerWidget' ? 'var(--accent-purple)'
+                  : type === 'StatefulWidget' ? 'var(--accent-amber)'
+                  : 'var(--accent-cyan)';
+  tbody.innerHTML += `
+    <tr>
+      <td>${screen}</td>
+      <td class="route-path">${path}</td>
+      <td class="route-name">${name}</td>
+      <td><span style="color:${typeColor}; font-size:.75rem; font-weight:600;">${type}</span></td>
+    </tr>`;
+});
+
+/* ─────────────────────── MODAL ─────────────────────── */
+const layerModals = {
+  config: {
+    title: '⚙️ Config Layer',
+    color: 'var(--accent-indigo)',
+    content: `
+      <p>La capa de configuración centraliza las reglas globales de la aplicación sin contener lógica de negocio.</p>
+      <div class="modal-widgets" style="margin-top:16px">
+        <span class="w-chip">GoRouter (11 rutas)</span>
+        <span class="w-chip">AppTheme</span>
+        <span class="w-chip">ColorScheme.fromSeed</span>
+        <span class="w-chip">Material Design 3</span>
+        <span class="w-chip">menu_items.dart</span>
+        <span class="w-chip">Dark / Light mode</span>
+      </div>`
+  },
+  presentation: {
+    title: '🖼️ Presentation Layer',
+    color: 'var(--accent-blue)',
+    content: `
+      <p>Contiene todas las pantallas y widgets reutilizables. Los widgets se clasifican en StatelessWidget, StatefulWidget y ConsumerWidget (Riverpod).</p>
+      <div class="modal-widgets" style="margin-top:16px">
+        <span class="w-chip">11 pantallas</span>
+        <span class="w-chip">SideMenu</span>
+        <span class="w-chip">CustomButton</span>
+        <span class="w-chip">_HomeView</span>
+        <span class="w-chip">_Slide (tutorial)</span>
+        <span class="w-chip">_ControlledProgressIndicator</span>
+      </div>`
+  },
+  state: {
+    title: '🔄 State Layer (Riverpod)',
+    color: 'var(--accent-purple)',
+    content: `
+      <p>Gestiona el estado global de forma reactiva. ProviderScope en main.dart envuelve toda la app. Los ConsumerWidgets usan ref.watch() para reaccionar a cambios.</p>
+      <div class="modal-widgets" style="margin-top:16px">
+        <span class="w-chip">ProviderScope</span>
+        <span class="w-chip">StateProvider&lt;int&gt;</span>
+        <span class="w-chip">StateNotifierProvider</span>
+        <span class="w-chip">Provider (inmutable)</span>
+        <span class="w-chip">ThemeNotifier</span>
+        <span class="w-chip">ref.watch / ref.read</span>
+      </div>`
+  },
+  'dep-router': {
+    title: '📍 go_router ^17.5.0',
+    color: '#22c55e',
+    content: `<p>Librería oficial de navegación declarativa para Flutter. Soporta rutas con nombre, parámetros de ruta, redirecciones y deep links.</p>
+      <div class="code-block" style="margin-top:12px">context.push('/buttons');<br>context.pop();<br>context.goNamed('counter_screen');</div>`
+  },
+  'dep-riverpod': {
+    title: '🔄 flutter_riverpod ^3.4.3',
+    color: 'var(--accent-indigo)',
+    content: `<p>Framework de gestión de estado reactiva. Mejora Provider con soporte para testing, DevTools y múltiples tipos de providers.</p>
+      <div class="code-block" style="margin-top:12px">// Observar (reconstruye el widget)<br>final count = ref.watch(counterProvider);<br>// Leer sin suscribirse<br>ref.read(counterProvider.notifier).state++;</div>`
+  },
+  'dep-animate': {
+    title: '✨ animate_do ^5.1.0',
+    color: 'var(--accent-purple)',
+    content: `<p>Paquete de animaciones de entrada declarativas. Permite animar widgets simplemente envolviéndolos en un widget de animación.</p>
+      <div class="code-block" style="margin-top:12px">FadeInRight(from:15, delay:Duration(seconds:1), child:...)<br>SpinPerfect(infinite:true, child:...)<br>FadeIn(child:...)</div>`
+  },
+  'dep-flutter': {
+    title: '📱 Flutter SDK ≥ 3.10',
+    color: 'var(--accent-blue)',
+    content: `<p>Framework multiplataforma de Google. Material Design 3 con ColorScheme.fromSeed(), widgets nativos optimizados y soporte para Android, iOS, Web y Desktop.</p>
+      <div class="code-block" style="margin-top:12px">ThemeData(useMaterial3:true,<br>  colorSchemeSeed:Colors.blue,<br>  brightness:Brightness.dark)</div>`
+  },
+};
+
+function openModal(key) {
+  const data = layerModals[key];
+  if (!data) return;
+  document.getElementById('modal-content').innerHTML = `
+    <div class="modal-title" style="color:${data.color}">${data.title}</div>
+    <div class="modal-body">${data.content}</div>`;
+  document.getElementById('modal').classList.add('open');
+}
+
+function openScreenModal(i) {
+  const s = screens[i];
+  const typeColor = s.type==='stateless'?'var(--accent-cyan)':s.type==='stateful'?'var(--accent-amber)':'var(--accent-purple)';
+  document.getElementById('modal-content').innerHTML = `
+    <div class="modal-title" style="color:${typeColor}">${s.title}</div>
+    <div class="modal-tag-row">${buildTagHtml(s.tags)}</div>
+    <div class="modal-body">${s.detail}</div>
+    <div class="modal-route">📍 ${s.route} &nbsp;|&nbsp; <span style="color:var(--accent-indigo)">${s.name}</span></div>
+    <div class="modal-widgets">
+      ${s.widgets.map(w=>`<span class="w-chip">${w}</span>`).join('')}
+    </div>`;
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+}
+document.addEventListener('keydown', e => { if(e.key==='Escape') closeModal(); });
+
+/* ─────────────────────── SCROLL TOP ─────────────────────── */
+window.addEventListener('scroll', () => {
+  const btn = document.getElementById('scrollTopBtn');
+  if (window.scrollY > 300) btn.classList.add('visible');
+  else btn.classList.remove('visible');
+});
+</script>
+
+</body>
+</html>
+
