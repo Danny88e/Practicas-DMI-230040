@@ -31,9 +31,33 @@ El diagrama interactivo incluye una barra de navegación integrada para alternar
 
 ## 📱 Demostración en Línea (Appetize.io)
 
-> 👉 [**Probar Widgets App en Appetize.io →**](https://appetize.io/app/TU_ENLACE_AQUI)
+> 👉 [**Probar Widgets App en Appetize.io →**](https://appetize.io/app/b_zfiayvtvlc5z7luikybxifpw7e)
 
 Permite ejecutar e interactuar con la aplicación en un emulador virtual directamente desde el navegador web sin necesidad de instalación. Consulta [Explicacion.md](Explicacion.md) para ver la guía de compilación del APK con GitHub Actions y publicación en Appetize.
+
+---
+
+## 📸 Evidencias de Funcionamiento
+
+A continuación se presentan las capturas de pantalla de la aplicación ejecutada en el emulador:
+
+| Nombre | Pequeña descripción | Imagen |
+|---|---|:---:|
+| **Pantalla Principal (Home)** | Menú principal con catálogo interactivo de widgets de Material Design 3 y opciones organizadas con ListTile. | <img src="Evidencia_Widgets_App/1.png" width="220" alt="Home Screen" /> |
+| **Menú Lateral (NavigationDrawer)** | Drawer lateral con categorías agrupadas (*Main* y *More options*), navegación rápida con iconos y divider. | <img src="Evidencia_Widgets_App/2.png" width="220" alt="Navigation Drawer" /> |
+| **Counter Screen (Modo Claro)** | Contador reactivo implementado con Riverpod (`StateProvider`, `ConsumerWidget`, `ref.watch` y `ref.read`). | <img src="Evidencia_Widgets_App/3.png" width="220" alt="Counter Screen Claro" /> |
+| **Counter Screen (Modo Oscuro)** | Alternancia dinámica al modo oscuro gestionada reactivamente a través de `themeNotifierProvider`. | <img src="Evidencia_Widgets_App/4.png" width="220" alt="Counter Screen Oscuro" /> |
+| **Buttons Screen** | Demostración de ElevatedButton, FilledButton, OutlinedButton, TextButton, CustomButton y FloatingActionButton. | <img src="Evidencia_Widgets_App/5.png" width="220" alt="Buttons Screen" /> |
+| **Cards Screen (Elevación y Outline)** | Tarjetas con elevación progresiva (0 a 5) y variantes con bordes redondeados y de contorno (`outline`). | <img src="Evidencia_Widgets_App/6.png" width="220" alt="Cards Screen Elevation" /> |
+| **Cards Screen (Filled y Remotas)** | Tarjetas con fondo tonal (`surfaceContainerHighest`) y contenedores estilizados con imágenes remotas. | <img src="Evidencia_Widgets_App/7.png" width="220" alt="Cards Screen Filled" /> |
+| **Progress Indicators** | Indicadores indeterminados y progreso circular y lineal controlado reactivamente con `StreamBuilder` y `Stream.periodic`. | <img src="Evidencia_Widgets_App/8.png" width="220" alt="Progress Indicators" /> |
+| **Snackbars y Diálogos** | Pantalla de retroalimentación con botones de licencias, diálogos modales y FloatingActionButton para Snackbar. | <img src="Evidencia_Widgets_App/9.png" width="220" alt="Snackbars Screen" /> |
+| **Alerta / Cuadro de Diálogo** | Implementación de `AlertDialog` con confirmación, título, contenido y botones de acción (Cancelar y Aceptar). | <img src="Evidencia_Widgets_App/10.png" width="220" alt="Alert Dialog" /> |
+| **Animated Container** | Animación implícita con `AnimatedContainer`, modificando tamaño, color y radio de borde de forma aleatoria con `Random`. | <img src="Evidencia_Widgets_App/11.png" width="220" alt="Animated Container" /> |
+| **UI Controls + Tiles** | Controles interactivos de selección: `SwitchListTile` (Developer Mode), `ExpansionTile` y `CheckboxListTile`. | <img src="Evidencia_Widgets_App/12.png" width="220" alt="UI Controls" /> |
+| **App Tutorial (Onboarding)** | Tutorial introductorio implementado con `PageView`, `PageController`, títulos, descripciones y botón de salida. | <img src="Evidencia_Widgets_App/13.png" width="220" alt="App Tutorial" /> |
+| **InfiniteScroll y Pull to Refresh** | Lista infinita con `ScrollController`, actualización mediante gesto *Pull to Refresh* (`RefreshIndicator`) y `FadeInImage`. | <img src="Evidencia_Widgets_App/14.png" width="220" alt="Infinite Scroll" /> |
+| **Theme Changer** | Selector dinámico del color seed principal de la aplicación mediante `RadioListTile` en tiempo real. | <img src="Evidencia_Widgets_App/15.png" width="220" alt="Theme Changer" /> |
 
 ---
 
@@ -144,28 +168,6 @@ El proyecto cuenta con un workflow automatizado en `.github/workflows/build-apk.
 1. Cada `push` a la rama `DMI-Practica05` compila automáticamente el APK en Ubuntu.
 2. Puedes descargar directamente el archivo `WidgetsApp-release-apk.zip` desde la pestaña **Actions** en GitHub.
 3. Para instrucciones completas, revisa [Explicacion.md](Explicacion.md).
-
----
-
-## 📸 Capturas de Pantalla y Evidencias de Funcionamiento
-
-> _Evidencias de ejecución en dispositivo físico / emulador:_
-
-| Home (Menú) | Navigation Drawer | Buttons Screen |
-|:---:|:---:|:---:|
-| ![Home]() | ![Drawer]() | ![Buttons]() |
-
-| Cards Screen | Progress Indicators | Snackbars & Diálogos |
-|:---:|:---:|:---:|
-| ![Cards]() | ![Progress]() | ![Snackbars]() |
-
-| Animated Container | UI Controls | App Tutorial |
-|:---:|:---:|:---:|
-| ![Animated]() | ![UI Controls]() | ![Tutorial]() |
-
-| Infinite Scroll & Refresh | Counter Riverpod | Theme Changer |
-|:---:|:---:|:---:|
-| ![Infinite Scroll]() | ![Counter]() | ![Theme Changer]() |
 
 ---
 

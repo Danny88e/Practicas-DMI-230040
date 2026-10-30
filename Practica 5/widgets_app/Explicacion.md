@@ -40,7 +40,7 @@ git push origin DMI-Practica05
 ## Paso 2 — Ver la compilación en GitHub Actions y descargar el APK
 
 1. Abre tu repositorio en GitHub desde el navegador:  
-   `https://github.com/TU-USUARIO/Practicas-DMI-230040`
+   `https://github.com/Danny88e/Practicas-DMI-230040`
 2. Haz clic en la pestaña superior **"Actions"** (con el ícono de play ▶️).
 3. En el menú izquierdo verás el flujo llamado: **"Build Widgets App APK"**.
 4. Verás una ejecución en curso con un círculo amarillo girando 🟡 (dice algo como *"feat(ci): configurar build..."*).
