@@ -31,7 +31,7 @@ El diagrama interactivo incluye una barra de navegación integrada para alternar
 
 ## 📱 Demostración en Línea (Appetize.io)
 
-> 👉 [**Probar Widgets App en Appetize.io →**](https://appetize.io/app/b_zfiayvtvlc5z7luikybxifpw7e)
+> 👉 [**Probar Widgets App en Appetize.io →**](https://appetize.io/app/b_yloxrtsrnhaqixz6vo4vako4rq)
 
 Permite ejecutar e interactuar con la aplicación en un emulador virtual directamente desde el navegador web sin necesidad de instalación. Consulta [Explicacion.md](Explicacion.md) para ver la guía de compilación del APK con GitHub Actions y publicación en Appetize.
 
