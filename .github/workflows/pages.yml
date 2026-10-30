@@ -20,22 +20,15 @@ permissions:
 
 concurrency:
   group: github-pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  build:
+    name: Build Diagram Site
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
-
-      - name: Enable GitHub Pages
-        uses: actions/configure-pages@v5
-        with:
-          enablement: true
 
       - name: Prepare diagram site
         run: |
@@ -49,12 +42,22 @@ jobs:
           mkdir -p 'site/Practica-05/widgets_app'
           cp 'Practica 5/widgets_app/architecture-diagram.html' 'site/Practica-05/widgets_app/' 2>/dev/null || true
           cp 'Practica 5/widgets_app/architecture_diagram.html' 'site/Practica-05/widgets_app/' 2>/dev/null || true
+          cp 'Practica 5/widgets_app/architecture-diagram.html' 'site/index.html' 2>/dev/null || true
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: site
 
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
