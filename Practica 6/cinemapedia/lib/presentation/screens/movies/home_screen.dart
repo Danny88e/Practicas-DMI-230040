@@ -1,79 +1,116 @@
-import 'package:cinemapedia/domain/entities/movie.dart';
-import 'package:cinemapedia/presentation/providers/movies/movies_providers.dart';
+import 'package:cinemapedia/presentation/providers/providers.dart';
 import 'package:flutter/material.dart';
+import 'package:cinemapedia/presentation/widgets/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class HomeScreen extends ConsumerWidget {
+
+
+class HomeScreen extends StatelessWidget {
+
   static const name = 'home-screen';
 
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final movies = ref.watch(nowPlayingMoviesProvider);
-
-    return Scaffold(
-      appBar: AppBar(title: const Text('Cinemapedia')),
-      body: movies.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stackTrace) => Center(
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(Icons.error_outline, size: 40),
-                const SizedBox(height: 12),
-                Text(
-                  'No se pudieron cargar las películas.\n$error',
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 12),
-                FilledButton.icon(
-                  onPressed: () => ref.invalidate(nowPlayingMoviesProvider),
-                  icon: const Icon(Icons.refresh),
-                  label: const Text('Reintentar'),
-                ),
-              ],
-            ),
-          ),
-        ),
-        data: (movieList) => movieList.isEmpty
-            ? const Center(child: Text('No hay películas disponibles.'))
-            : ListView.separated(
-                itemCount: movieList.length,
-                separatorBuilder: (context, index) => const Divider(height: 1),
-                itemBuilder: (context, index) =>
-                    _MovieTile(movie: movieList[index]),
-              ),
-      ),
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      body: _HomeView(),
+      bottomNavigationBar: CustomBottomNavigation(),
     );
   }
 }
 
-class _MovieTile extends StatelessWidget {
-  const _MovieTile({required this.movie});
+class _HomeView extends ConsumerStatefulWidget {
+  const _HomeView();
 
-  final Movie movie;
+  @override
+  _HomeViewState createState() => _HomeViewState();
+}
+
+class _HomeViewState extends ConsumerState<_HomeView> {
+
+  @override
+  void initState() {
+    super.initState();
+    
+    ref.read( nowPlayingMoviesProvider.notifier ).loadNextPage();
+    ref.read( popularMoviesProvider.notifier ).loadNextPage();
+    ref.read( topRatedMoviesProvider.notifier ).loadNextPage();
+    ref.read( upcomingMoviesProvider.notifier ).loadNextPage();
+  }
+
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: movie.posterPath == 'no-poster'
-          ? const SizedBox(width: 48, child: Icon(Icons.movie_outlined))
-          : Image.network(
-              movie.posterPath,
-              width: 48,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) =>
-                  const SizedBox(width: 48, child: Icon(Icons.movie_outlined)),
-            ),
-      title: Text(movie.title),
-      subtitle: Text(
-        movie.overview.isEmpty ? 'Sin descripción disponible.' : movie.overview,
-        maxLines: 2,
-        overflow: TextOverflow.ellipsis,
-      ),
+
+    final initialLoading = ref.watch(initialLoadingProvider);
+    if ( initialLoading ) return const FullScreenLoader();
+    
+    final slideShowMovies = ref.watch( moviesSlideshowProvider );
+    final nowPlayingMovies = ref.watch( nowPlayingMoviesProvider );
+    final popularMovies = ref.watch( popularMoviesProvider );
+    final topRatedMovies = ref.watch( topRatedMoviesProvider );
+    final upcomingMovies = ref.watch( upcomingMoviesProvider );
+
+    return CustomScrollView(
+      slivers: [
+
+        const SliverAppBar(
+          floating: true,
+          flexibleSpace: FlexibleSpaceBar(
+            title: CustomAppbar(),
+          ),
+        ),
+
+
+        SliverList(delegate: SliverChildBuilderDelegate(
+          (context, index) {
+              return Column(
+                  children: [
+              
+                    // const CustomAppbar(),
+              
+                    MoviesSlideshow(movies: slideShowMovies ),
+              
+                    MovieHorizontalListview(
+                      movies: nowPlayingMovies,
+                      title: 'En cines',
+                      subTitle: 'Lunes 20',
+                      loadNextPage: () =>ref.read(nowPlayingMoviesProvider.notifier).loadNextPage()
+                      
+                    ),
+              
+                    MovieHorizontalListview(
+                      movies: upcomingMovies,
+                      title: 'Próximamente',
+                      subTitle: 'En este mes',
+                      loadNextPage: () =>ref.read(upcomingMoviesProvider.notifier).loadNextPage()
+                    ),
+              
+                    MovieHorizontalListview(
+                      movies: popularMovies,
+                      title: 'Populares',
+                      // subTitle: '',
+                      loadNextPage: () =>ref.read(popularMoviesProvider.notifier).loadNextPage()
+                    ),
+              
+                    MovieHorizontalListview(
+                      movies: topRatedMovies,
+                      title: 'Mejor calificadas',
+                      subTitle: 'Desde siempre',
+                      loadNextPage: () =>ref.read(topRatedMoviesProvider.notifier).loadNextPage()
+                    ),
+
+                    const SizedBox( height: 10 ),
+              
+              
+                  ],
+                );
+          },
+          childCount: 1
+        )),
+
+      ]
     );
   }
 }

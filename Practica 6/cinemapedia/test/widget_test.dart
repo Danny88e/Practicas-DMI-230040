@@ -34,10 +34,17 @@ void main() {
       ),
     ];
 
+    MoviesNotifier createNotifier() => MoviesNotifier(
+          fetchMoreMovies: ({int page = 1}) async => movies,
+        );
+
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          nowPlayingMoviesProvider.overrideWith((ref) async => movies),
+          nowPlayingMoviesProvider.overrideWith((ref) => createNotifier()),
+          popularMoviesProvider.overrideWith((ref) => createNotifier()),
+          topRatedMoviesProvider.overrideWith((ref) => createNotifier()),
+          upcomingMoviesProvider.overrideWith((ref) => createNotifier()),
         ],
         child: const MainApp(),
       ),
@@ -45,8 +52,11 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Cinemapedia'), findsOneWidget);
-    expect(find.text('Película de prueba'), findsOneWidget);
-    expect(find.text('Descripción de prueba'), findsOneWidget);
+    expect(find.text('Película de prueba'), findsWidgets);
+    expect(find.text('En cines'), findsOneWidget);
+    expect(find.text('Próximamente'), findsOneWidget);
+    expect(find.text('Populares'), findsOneWidget);
+    expect(find.text('Mejor calificadas'), findsOneWidget);
   });
 
   test('TMDB response accepts movies with missing optional fields', () {
