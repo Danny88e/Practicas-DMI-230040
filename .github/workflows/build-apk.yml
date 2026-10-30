@@ -1,14 +1,14 @@
-name: Build TokTik APK
+name: Build Widgets App APK
 
 on:
   workflow_dispatch:
   push:
     branches:
-      - DMI-Practica04
+      - DMI-Practica05
       - main
     paths:
       - '.github/workflows/build-apk.yml'
-      - 'Practica 4/TokTik/**'
+      - 'Practica 5/widgets_app/**'
 
 permissions:
   contents: write
@@ -38,25 +38,26 @@ jobs:
         run: flutter --version
 
       - name: Get Dependencies
-        working-directory: Practica 4/TokTik
+        working-directory: Practica 5/widgets_app
         run: flutter pub get
 
       - name: Build APK Release
-        working-directory: Practica 4/TokTik
+        working-directory: Practica 5/widgets_app
         run: flutter build apk --release
 
       - name: Upload APK to Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: TokTik-release-apk
-          path: 'Practica 4/TokTik/build/app/outputs/flutter-apk/app-release.apk'
+          name: WidgetsApp-release-apk
+          path: 'Practica 5/widgets_app/build/app/outputs/flutter-apk/app-release.apk'
           if-no-files-found: error
           retention-days: 14
 
       - name: Publish to GitHub Release
         uses: softprops/action-gh-release@v2
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/DMI-Practica05'
         with:
-          tag_name: v1.0.0-apk
-          name: "TokTik v1.0.0 Release APK"
-          body: "Descarga directa de APK de TokTik para Appetize.io y pruebas."
-          files: 'Practica 4/TokTik/build/app/outputs/flutter-apk/app-release.apk'
+          tag_name: v1.0.0-widgets-app
+          name: "Widgets App v1.0.0 Release APK"
+          body: "Descarga directa del APK de Widgets App (Práctica 5) para Appetize.io y pruebas."
+          files: 'Practica 5/widgets_app/build/app/outputs/flutter-apk/app-release.apk'
