@@ -10,7 +10,6 @@ on:
       - 'Practica 2/hello_world_app_230040/architecture-diagram.html'
       - 'Practica 4/TokTik/architecture-diagram.html'
       - 'Practica 5/widgets_app/architecture-diagram.html'
-      - 'Practica 5/widgets_app/architecture_diagram.html'
   workflow_dispatch:
 
 permissions:
@@ -38,10 +37,8 @@ jobs:
           cp 'Practica 4/TokTik/architecture-diagram.html' 'site/Practica 4/TokTik/' 2>/dev/null || true
           mkdir -p 'site/Practica 5/widgets_app'
           cp 'Practica 5/widgets_app/architecture-diagram.html' 'site/Practica 5/widgets_app/' 2>/dev/null || true
-          cp 'Practica 5/widgets_app/architecture_diagram.html' 'site/Practica 5/widgets_app/' 2>/dev/null || true
           mkdir -p 'site/Practica-05/widgets_app'
           cp 'Practica 5/widgets_app/architecture-diagram.html' 'site/Practica-05/widgets_app/' 2>/dev/null || true
-          cp 'Practica 5/widgets_app/architecture_diagram.html' 'site/Practica-05/widgets_app/' 2>/dev/null || true
           cp 'Practica 5/widgets_app/architecture-diagram.html' 'site/index.html' 2>/dev/null || true
 
       - name: Upload Pages artifact
