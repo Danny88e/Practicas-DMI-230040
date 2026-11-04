@@ -1,0 +1,66 @@
+name: Build Cinemapedia APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - DMI-Practica06
+      - main
+    paths:
+      - '.github/workflows/build-cinemapedia-apk.yml'
+      - 'Practica 6/cinemapedia/**'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build Cinemapedia Release APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Verify Flutter version
+        run: flutter --version
+
+      - name: Create .env file from secret
+        working-directory: "Practica 6/cinemapedia"
+        run: echo "THE_MOVIEDB_KEY=${{ secrets.THE_MOVIEDB_KEY }}" > .env
+
+      - name: Get Dependencies
+        working-directory: "Practica 6/cinemapedia"
+        run: flutter pub get
+
+      - name: Build APK Release
+        working-directory: "Practica 6/cinemapedia"
+        run: flutter build apk --release
+
+      - name: Upload APK to Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Cinemapedia-230040-release-apk
+          path: 'Practica 6/cinemapedia/build/app/outputs/flutter-apk/app-release.apk'
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Publish to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: cinemapedia-v1.0.0
+          name: "Cinemapedia 230040 - Release APK"
+          body: "APK de Cinemapedia 230040 (Práctica 6 - DMI). Incluye menú lateral, carrusel mejorado y configuración de país."
+          files: 'Practica 6/cinemapedia/build/app/outputs/flutter-apk/app-release.apk'
