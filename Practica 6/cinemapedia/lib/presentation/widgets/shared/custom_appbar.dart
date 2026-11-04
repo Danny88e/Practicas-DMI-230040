@@ -6,6 +6,7 @@ import 'package:cinemapedia/domain/entities/movie.dart';
 
 import 'package:cinemapedia/presentation/delegates/search_movie_delegate.dart';
 import 'package:cinemapedia/presentation/providers/providers.dart';
+import 'package:cinemapedia/presentation/widgets/shared/country_config_modal.dart';
 
 class CustomAppbar extends ConsumerWidget {
   const CustomAppbar({super.key});
@@ -15,6 +16,8 @@ class CustomAppbar extends ConsumerWidget {
 
     final colors = Theme.of(context).colorScheme;
     final titleStyle = Theme.of(context).textTheme.titleMedium;
+    // País actualmente seleccionado (para mostrar la bandera en el botón)
+    final selectedCountry = ref.watch(selectedCountryProvider);
 
     return SafeArea(
       bottom: false,
@@ -35,7 +38,23 @@ class CustomAppbar extends ConsumerWidget {
               Text('Cinemapedia 230040', style: titleStyle ),
       
               const Spacer(),
+
+              // Botón de Configuración de País (reemplaza botón de temáticas)
+              IconButton(
+                tooltip: 'Configuración de País',
+                onPressed: () => showCountryConfigModal(context),
+                icon: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      _getFlag(selectedCountry),
+                      style: const TextStyle(fontSize: 18),
+                    ),
+                  ],
+                ),
+              ),
       
+              // Botón de búsqueda
               IconButton(onPressed: () {
 
                 final searchedMovies = ref.read( searchedMoviesProvider );
@@ -62,5 +81,17 @@ class CustomAppbar extends ConsumerWidget {
         ),
       )
     );
+  }
+
+  /// Devuelve la bandera emoji para el código de país dado
+  String _getFlag(String countryCode) {
+    const flags = {
+      'MX': '🇲🇽',
+      'GB': '🇬🇧',
+      'JP': '🇯🇵',
+      'NG': '🇳🇬',
+      'AU': '🇦🇺',
+    };
+    return flags[countryCode] ?? '🌍';
   }
 }
