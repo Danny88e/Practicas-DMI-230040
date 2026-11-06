@@ -5,30 +5,38 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final nowPlayingMoviesProvider = StateNotifierProvider<MoviesNotifier, List<Movie>>((ref) {
   final fetchMoreMovies = ref.watch( movieRepositoryProvider ).getNowPlaying;
-  return MoviesNotifier(
+  final notifier = MoviesNotifier(
     fetchMoreMovies: fetchMoreMovies
   );
+  notifier.loadNextPage();
+  return notifier;
 });
 
 final popularMoviesProvider = StateNotifierProvider<MoviesNotifier, List<Movie>>((ref) {
   final fetchMoreMovies = ref.watch( movieRepositoryProvider ).getPopular;
-  return MoviesNotifier(
+  final notifier = MoviesNotifier(
     fetchMoreMovies: fetchMoreMovies
   );
+  notifier.loadNextPage();
+  return notifier;
 });
 
 final upcomingMoviesProvider = StateNotifierProvider<MoviesNotifier, List<Movie>>((ref) {
   final fetchMoreMovies = ref.watch( movieRepositoryProvider ).getUpcoming;
-  return MoviesNotifier(
+  final notifier = MoviesNotifier(
     fetchMoreMovies: fetchMoreMovies
   );
+  notifier.loadNextPage();
+  return notifier;
 });
 
 final topRatedMoviesProvider = StateNotifierProvider<MoviesNotifier, List<Movie>>((ref) {
   final fetchMoreMovies = ref.watch( movieRepositoryProvider ).getTopRated;
-  return MoviesNotifier(
+  final notifier = MoviesNotifier(
     fetchMoreMovies: fetchMoreMovies
   );
+  notifier.loadNextPage();
+  return notifier;
 });
 
 
@@ -39,6 +47,7 @@ class MoviesNotifier extends StateNotifier<List<Movie>> {
   
   int currentPage = 0;
   bool isLoading = false;
+  bool hasCompletedInitialLoad = false;
   MovieCallback fetchMoreMovies;
 
 
@@ -50,12 +59,20 @@ class MoviesNotifier extends StateNotifier<List<Movie>> {
     if ( isLoading ) return;
     isLoading = true;
 
-    currentPage++;
-    final List<Movie> movies = await fetchMoreMovies( page: currentPage );
-    state = [...state, ...movies];
-    
-    await Future.delayed(const Duration(milliseconds: 300));
-    isLoading = false;
+    final nextPage = currentPage + 1;
+    try {
+      final List<Movie> movies = await fetchMoreMovies(page: nextPage);
+      currentPage = nextPage;
+      if (mounted) state = [...state, ...movies];
+    } catch (_) {
+      // Complete the initial loading state even if the request fails.
+    } finally {
+      isLoading = false;
+      if (mounted) {
+        hasCompletedInitialLoad = true;
+        if (state.isEmpty) state = [...state];
+      }
+    }
   }
 
 

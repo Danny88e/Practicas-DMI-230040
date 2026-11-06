@@ -16,20 +16,27 @@ For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
 
-## Configurar el token de TMDB
+## API de TMDB
 
-1. Copia `.env.example.json` como `.env.json`.
-2. Reemplaza el valor de `TMDB_BEARER_TOKEN` con tu token de acceso de lectura.
-3. No compartas ni agregues `.env.json` a Git; está ignorado por `.gitignore`.
+El token de acceso de lectura se configura localmente en `.env`, con esta variable:
 
-El token se compila dentro de la aplicación local al ejecutar Flutter. No publiques
-el binario ni despliegues esta configuración como si fuera un secreto de servidor.
+```dotenv
+TMDB_BEARER_TOKEN=pega_aqui_tu_token_de_lectura
+```
 
-## Ejecutar en Windows
+No guardes el token real en este README ni lo subas a Git. `.env` está excluido
+por `.gitignore`; conserva el token en un gestor de secretos o contraseñas.
+Al ejecutar en Flutter Web, el token queda accesible desde el navegador, así que
+esta configuración es solo para desarrollo local y no debe usarse como secreto
+en una aplicación pública.
+
+## Ejecutar
+
+Después de crear `.env` en la raíz del proyecto y agregar un token válido:
 
 ```powershell
 flutter pub get
-flutter run -d windows --dart-define-from-file=.env.json
+flutter run -d chrome
 ```
 
 También puedes seleccionar otro dispositivo disponible con `flutter devices`.

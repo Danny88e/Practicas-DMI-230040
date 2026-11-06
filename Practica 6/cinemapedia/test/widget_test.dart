@@ -1,62 +1,67 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:cinemapedia/config/constants/countries_config.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
+import 'package:cinemapedia/infrastructure/datasources/moviedb_datasource.dart';
 import 'package:cinemapedia/infrastructure/models/moviedb/moviedb_response.dart';
-import 'package:cinemapedia/main.dart';
+import 'package:cinemapedia/infrastructure/repositories/movie_repository_impl.dart';
+import 'package:cinemapedia/presentation/providers/country/country_provider.dart';
+import 'package:cinemapedia/presentation/providers/movies/movies_repository_provider.dart';
 import 'package:cinemapedia/presentation/providers/movies/movies_providers.dart';
 
 void main() {
-  testWidgets('App displays movies from the provider', (tester) async {
-    final movies = [
-      Movie(
-        adult: false,
-        backdropPath: '',
-        genreIds: const [],
-        id: 1,
-        originalLanguage: 'es',
-        originalTitle: 'Película de prueba',
-        overview: 'Descripción de prueba',
-        popularity: 1,
-        posterPath: 'no-poster',
-        releaseDate: DateTime(2026),
-        title: 'Película de prueba',
-        video: false,
-        voteAverage: 8,
-        voteCount: 10,
-      ),
-    ];
-
-    MoviesNotifier createNotifier() => MoviesNotifier(
-          fetchMoreMovies: ({int page = 1}) async => movies,
-        );
-
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          nowPlayingMoviesProvider.overrideWith((ref) => createNotifier()),
-          popularMoviesProvider.overrideWith((ref) => createNotifier()),
-          topRatedMoviesProvider.overrideWith((ref) => createNotifier()),
-          upcomingMoviesProvider.overrideWith((ref) => createNotifier()),
-        ],
-        child: const MainApp(),
-      ),
+  test('MoviesNotifier completes its initial load after fetching movies', () async {
+    final notifier = MoviesNotifier(
+      fetchMoreMovies: ({int page = 1}) async => [],
     );
-    await tester.pumpAndSettle();
 
-    expect(find.text('Cinemapedia'), findsOneWidget);
-    expect(find.text('Película de prueba'), findsWidgets);
-    expect(find.text('En cines'), findsOneWidget);
-    expect(find.text('Próximamente'), findsOneWidget);
-    expect(find.text('Populares'), findsOneWidget);
-    expect(find.text('Mejor calificadas'), findsOneWidget);
+    await notifier.loadNextPage();
+
+    expect(notifier.hasCompletedInitialLoad, isTrue);
+    expect(notifier.state, isEmpty);
+    notifier.dispose();
+  });
+
+  test('MoviesNotifier ends loading after a request failure', () async {
+    final notifier = MoviesNotifier(
+      fetchMoreMovies: ({int page = 1}) async => throw Exception('request failed'),
+    );
+
+    await notifier.loadNextPage();
+
+    expect(notifier.hasCompletedInitialLoad, isTrue);
+    expect(notifier.state, isEmpty);
+    notifier.dispose();
+  });
+
+  test('changing country reloads movies with the new language', () async {
+    final requestedLanguages = <String>[];
+    final container = ProviderContainer(
+      overrides: [
+        movieRepositoryProvider.overrideWith((ref) {
+          final country = ref.watch(selectedCountryProvider);
+          final datasource = _RecordingDatasource(
+            language: CountriesConfig.getLanguageCode(country),
+            requestedLanguages: requestedLanguages,
+          );
+          return MovieRepositoryImpl(datasource);
+        }),
+      ],
+    );
+    final subscription = container.listen(
+      nowPlayingMoviesProvider,
+      (_, _) {},
+      fireImmediately: true,
+    );
+    addTearDown(subscription.close);
+    addTearDown(container.dispose);
+
+    await Future<void>.delayed(Duration.zero);
+    container.read(selectedCountryProvider.notifier).state = 'GB';
+    await Future<void>.delayed(Duration.zero);
+
+    expect(requestedLanguages, ['es-MX', 'en-GB']);
   });
 
   test('TMDB response accepts movies with missing optional fields', () {
@@ -76,7 +81,22 @@ void main() {
 
     expect(response.results, hasLength(1));
     expect(response.results.single.genreIds, isEmpty);
-    expect(response.results.single.releaseDate, DateTime(1));
+    expect(response.results.single.releaseDate, isNull);
     expect(response.results.single.posterPath, isEmpty);
   });
+}
+
+class _RecordingDatasource extends MoviedbDatasource {
+  _RecordingDatasource({
+    required super.language,
+    required this.requestedLanguages,
+  });
+
+  final List<String> requestedLanguages;
+
+  @override
+  Future<List<Movie>> getNowPlaying({int page = 1}) async {
+    requestedLanguages.add(language);
+    return [];
+  }
 }

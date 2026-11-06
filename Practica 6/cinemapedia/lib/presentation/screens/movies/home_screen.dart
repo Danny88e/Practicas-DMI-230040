@@ -31,17 +31,6 @@ class _HomeView extends ConsumerStatefulWidget {
 class _HomeViewState extends ConsumerState<_HomeView> {
 
   @override
-  void initState() {
-    super.initState();
-    
-    ref.read( nowPlayingMoviesProvider.notifier ).loadNextPage();
-    ref.read( popularMoviesProvider.notifier ).loadNextPage();
-    ref.read( topRatedMoviesProvider.notifier ).loadNextPage();
-    ref.read( upcomingMoviesProvider.notifier ).loadNextPage();
-  }
-
-
-  @override
   Widget build(BuildContext context) {
 
     final initialLoading = ref.watch(initialLoadingProvider);

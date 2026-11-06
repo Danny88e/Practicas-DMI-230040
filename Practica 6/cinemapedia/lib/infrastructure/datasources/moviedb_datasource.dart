@@ -19,26 +19,13 @@ class MoviedbDatasource extends MoviesDatasource {
 
   Dio get dio => Dio(BaseOptions(
     baseUrl: 'https://api.themoviedb.org/3',
+    headers: {
+      'Authorization': 'Bearer ${Environment.tmdbBearerToken}',
+    },
     queryParameters: {
-      'api_key': Environment.theMovieDbKey,
       'language': language,
     }
   ));
-
-  List<Movie> _jsonToMovies( Map<String,dynamic> json ) {
-
-    final movieDBResponse = MovieDbResponse.fromJson(json);
-
-    final List<Movie> movies = movieDBResponse.results
-    .where((moviedb) => moviedb.posterPath != 'no-poster' )
-    .map(
-      (moviedb) => MovieMapper.movieDBToEntity(moviedb)
-    ).toList();
-
-    return movies;
-
-  }
-
 
   List<Movie> _jsonToMovies( Map<String,dynamic> json ) {
 

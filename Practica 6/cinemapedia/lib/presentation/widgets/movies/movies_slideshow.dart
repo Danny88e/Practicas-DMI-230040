@@ -28,6 +28,7 @@ class MoviesSlideshow extends ConsumerWidget {
       child: Swiper(
         viewportFraction: 0.8,
         scale: 0.9,
+        loop: false,
         autoplay: true,
         pagination: SwiperPagination(
           margin: const EdgeInsets.only(top: 0),
@@ -95,6 +96,10 @@ class _Slide extends StatelessWidget {
                     }
                     return FadeIn(child: child);
                   },
+                  errorBuilder: (context, error, stackTrace) => const ColoredBox(
+                    color: Colors.black12,
+                    child: Center(child: Icon(Icons.broken_image_outlined)),
+                  ),
                 ),
               ),
 

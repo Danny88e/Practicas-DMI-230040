@@ -145,6 +145,14 @@ class _Slide extends StatelessWidget {
                   );
                   
                 },
+                errorBuilder: (context, error, stackTrace) => const SizedBox(
+                  width: 150,
+                  height: 225,
+                  child: ColoredBox(
+                    color: Colors.black12,
+                    child: Center(child: Icon(Icons.broken_image_outlined)),
+                  ),
+                ),
               ),
             ),
           ),

@@ -34,6 +34,7 @@ migrate_working_dir/
 /coverage/
 
 # Local TMDB credentials
+.env
 .env.json
 
 # Symbolication related
