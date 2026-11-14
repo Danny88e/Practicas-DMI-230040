@@ -1,64 +1,72 @@
-import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:card_swiper/card_swiper.dart';
-import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+
+import 'package:cinemapedia/config/constants/app_localizations.dart';
+import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:cinemapedia/presentation/providers/providers.dart';
 
-
 class MoviesSlideshow extends ConsumerWidget {
-  
   final List<Movie> movies;
-  
+
   const MoviesSlideshow({
-    super.key, 
-    required this.movies
+    super.key,
+    required this.movies,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
     final colors = Theme.of(context).colorScheme;
-    // Leer el país seleccionado para clasificaciones dinámicas
-    final selectedCountry = ref.watch(selectedCountryProvider);
+    final currentLang = ref.watch(languageProvider);
 
     return SizedBox(
-      height: 210,
+      height: 230,
       width: double.infinity,
       child: Swiper(
-        viewportFraction: 0.8,
+        viewportFraction: 0.82,
         scale: 0.9,
         autoplay: true,
+        autoplayDelay: 4000,
         pagination: SwiperPagination(
           margin: const EdgeInsets.only(top: 0),
           builder: DotSwiperPaginationBuilder(
             activeColor: colors.primary,
-            color: colors.secondary
-          )
+            color: colors.secondary.withOpacity(0.4),
+            size: 6.0,
+            activeSize: 9.0,
+          ),
+        ),
+        control: const SwiperControl(
+          iconNext: Icons.arrow_forward_ios_rounded,
+          iconPrevious: Icons.arrow_back_ios_rounded,
+          size: 18,
+          color: Colors.white70,
+          padding: EdgeInsets.symmetric(horizontal: 4),
         ),
         itemCount: movies.length,
         itemBuilder: (context, index) => _Slide(
           movie: movies[index],
-          selectedCountry: selectedCountry,
+          langCode: currentLang,
         ),
       ),
     );
   }
 }
 
-
 class _Slide extends StatelessWidget {
-
   final Movie movie;
-  final String selectedCountry;
+  final String langCode;
 
   const _Slide({
     required this.movie,
-    required this.selectedCountry,
+    required this.langCode,
   });
 
   @override
   Widget build(BuildContext context) {
+    final ageRating = AppLocalizations.getAgeRating(movie.voteAverage, langCode);
+    final isRTL = langCode == 'ar';
 
     final decoration = BoxDecoration(
       borderRadius: BorderRadius.circular(20),
@@ -66,46 +74,50 @@ class _Slide extends StatelessWidget {
         BoxShadow(
           color: Colors.black45,
           blurRadius: 10,
-          offset: Offset(0, 10)
-        )
-      ]
+          offset: Offset(0, 10),
+        ),
+      ],
     );
 
-    // Calcular clasificación de edad dinámica según país
-    final ageRating = _getAgeRating(movie.voteAverage, selectedCountry);
-
     return Padding(
-      padding: const EdgeInsets.only( bottom: 30 ),
+      padding: const EdgeInsets.only(bottom: 30),
       child: DecoratedBox(
         decoration: decoration,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(20),
           child: Stack(
             children: [
-              // Imagen de fondo
+              // Imagen de fondo con carga fluida
               SizedBox.expand(
                 child: Image.network(
                   movie.backdropPath,
                   fit: BoxFit.cover,
                   loadingBuilder: (context, child, loadingProgress) {
-                    if ( loadingProgress != null ) {
+                    if (loadingProgress != null) {
                       return const DecoratedBox(
-                        decoration: BoxDecoration( color: Colors.black12 )
+                        decoration: BoxDecoration(color: Colors.black12),
+                        child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
                       );
                     }
-                    return FadeIn(child: child);
+                    return child;
                   },
+                  errorBuilder: (context, error, stackTrace) => Container(
+                    color: Colors.grey.shade900,
+                    child: const Center(
+                      child: Icon(Icons.movie_outlined, size: 50, color: Colors.white24),
+                    ),
+                  ),
                 ),
               ),
 
-              // Gradiente sobre la imagen para legibilidad del texto
+              // Gradiente protector para garantizar legibilidad del texto
               Positioned.fill(
                 child: DecoratedBox(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
-                      stops: const [0.5, 1.0],
+                      stops: const [0.45, 1.0],
                       colors: [
                         Colors.transparent,
                         Colors.black.withOpacity(0.85),
@@ -115,32 +127,33 @@ class _Slide extends StatelessWidget {
                 ),
               ),
 
-              // Overlay de información en la parte inferior
+              // Contenedor de texto y métricas superpuesto
               Positioned(
                 bottom: 0,
                 left: 0,
                 right: 0,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment:
+                        isRTL ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-
-                      // Título local de la película
+                      // Título en el idioma local
                       Text(
                         movie.title,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
+                        textDirection: isRTL ? TextDirection.rtl : TextDirection.ltr,
                         style: const TextStyle(
                           color: Colors.white,
-                          fontSize: 14,
+                          fontSize: 15,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
 
-                      // Título original
-                      if (movie.originalTitle != movie.title)
+                      // Título original (si difiere del título local)
+                      if (movie.originalTitle.isNotEmpty && movie.originalTitle != movie.title)
                         Text(
                           movie.originalTitle,
                           maxLines: 1,
@@ -154,20 +167,17 @@ class _Slide extends StatelessWidget {
 
                       const SizedBox(height: 4),
 
-                      // Fila: estrellas (rating) + clasificación de edad
+                      // Fila con Estrellas (Rating) + Clasificación por edad dinámica
                       Row(
                         children: [
-                          // Estrellas de rating
                           _StarRating(voteAverage: movie.voteAverage),
-
                           const Spacer(),
-
-                          // Badge de clasificación por edad
+                          // Badge de Clasificación por edad según el país/idioma
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                             decoration: BoxDecoration(
-                              color: Colors.orange.shade700,
-                              borderRadius: BorderRadius.circular(4),
+                              color: Colors.orange.shade800,
+                              borderRadius: BorderRadius.circular(6),
                             ),
                             child: Text(
                               ageRating,
@@ -180,67 +190,30 @@ class _Slide extends StatelessWidget {
                           ),
                         ],
                       ),
-
                     ],
                   ),
                 ),
               ),
 
+              // Tap de navegación al detalle
+              Positioned.fill(
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(20),
+                    onTap: () => context.push('/home/0/movie/${movie.id}'),
+                  ),
+                ),
+              ),
             ],
           ),
-        )
+        ),
       ),
     );
   }
-
-  /// Devuelve la clasificación de edad apropiada según el país seleccionado
-  /// basada en el voteAverage de la película como aproximación
-  String _getAgeRating(double voteAverage, String countryCode) {
-    switch (countryCode) {
-      case 'MX':
-        // Sistema mexicano: A, AA, B, B-15, C, D
-        if (voteAverage >= 8.0) return 'AA';
-        if (voteAverage >= 6.0) return 'B';
-        if (voteAverage >= 4.0) return 'B-15';
-        return 'C';
-
-      case 'GB':
-        // Sistema europeo BBFC / PEGI
-        if (voteAverage >= 8.0) return 'PG';
-        if (voteAverage >= 6.0) return 'PEGI 12';
-        if (voteAverage >= 4.0) return 'PEGI 16';
-        return 'PEGI 18';
-
-      case 'JP':
-        // Sistema japonés: G, PG12, R15+, R18+
-        if (voteAverage >= 8.0) return 'G';
-        if (voteAverage >= 6.0) return 'PG12';
-        if (voteAverage >= 4.0) return 'R15+';
-        return 'R18+';
-
-      case 'NG':
-        // Sistema nigeriano / africano: G, PG, 12A, 15, 18
-        if (voteAverage >= 8.0) return 'G';
-        if (voteAverage >= 6.0) return 'PG';
-        if (voteAverage >= 4.0) return '15';
-        return '18';
-
-      case 'AU':
-        // Sistema australiano: G, PG, M, MA15+, R18+
-        if (voteAverage >= 8.0) return 'G';
-        if (voteAverage >= 6.0) return 'PG';
-        if (voteAverage >= 5.0) return 'M';
-        if (voteAverage >= 4.0) return 'MA15+';
-        return 'R18+';
-
-      default:
-        return 'NR';
-    }
-  }
 }
 
-
-/// Widget de estrellas para mostrar el rating de la película
+/// Widget de estrellas de rating
 class _StarRating extends StatelessWidget {
   final double voteAverage;
 
@@ -248,7 +221,6 @@ class _StarRating extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Convertir de escala 0-10 a 0-5 estrellas
     final stars = (voteAverage / 2).clamp(0.0, 5.0);
     final fullStars = stars.floor();
     final hasHalfStar = (stars - fullStars) >= 0.5;
@@ -256,31 +228,22 @@ class _StarRating extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        // Estrellas llenas
         for (int i = 0; i < fullStars; i++)
           const Icon(Icons.star, color: Colors.amber, size: 14),
-
-        // Media estrella
         if (hasHalfStar)
           const Icon(Icons.star_half, color: Colors.amber, size: 14),
-
-        // Estrellas vacías
         for (int i = fullStars + (hasHalfStar ? 1 : 0); i < 5; i++)
           const Icon(Icons.star_border, color: Colors.amber, size: 14),
-
         const SizedBox(width: 4),
-
-        // Número del rating
         Text(
           voteAverage.toStringAsFixed(1),
           style: const TextStyle(
             color: Colors.white,
-            fontSize: 11,
-            fontWeight: FontWeight.w500,
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ],
     );
   }
 }
-
