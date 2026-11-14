@@ -13,8 +13,10 @@ class ActorMovieDbDatasource extends ActorsDatasource {
 
   final dio = Dio(BaseOptions(
     baseUrl: 'https://api.themoviedb.org/3',
+    headers: {
+      'Authorization': 'Bearer ${Environment.tmdbBearerToken}',
+    },
     queryParameters: {
-      'api_key': Environment.theMovieDbKey,
       'language': 'es-MX'
     }
   ));

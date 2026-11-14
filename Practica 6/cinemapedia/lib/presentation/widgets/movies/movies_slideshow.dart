@@ -26,6 +26,7 @@ class MoviesSlideshow extends ConsumerWidget {
       child: Swiper(
         viewportFraction: 0.82,
         scale: 0.9,
+        loop: false,
         autoplay: true,
         autoplayDelay: 4000,
         pagination: SwiperPagination(
