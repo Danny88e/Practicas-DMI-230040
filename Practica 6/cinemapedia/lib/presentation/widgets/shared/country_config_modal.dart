@@ -106,34 +106,34 @@ class _CountryTile extends StatelessWidget {
     final colors = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
 
-    return ListTile(
-      onTap: onTap,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      tileColor: isSelected ? colors.primaryContainer.withOpacity(0.4) : null,
-      leading: Text(flag, style: const TextStyle(fontSize: 32)),
-      title: Row(
-        children: [
-          Text(
-            '$flag $code',
-            style: textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: isSelected ? colors.primary : null,
+    return Material(
+      color: Colors.transparent,
+      borderRadius: BorderRadius.circular(12),
+      clipBehavior: Clip.antiAlias,
+      child: ListTile(
+        onTap: onTap,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        tileColor: isSelected ? colors.primaryContainer.withOpacity(0.4) : null,
+        leading: Text(flag, style: const TextStyle(fontSize: 32)),
+        title: Row(
+          children: [
+            Text(
+              '$flag $code',
+              style: textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: isSelected ? colors.primary : null,
+              ),
             ),
-          ),
-          const SizedBox(width: 8),
-          Text(
-            name,
-            style: textTheme.bodyMedium,
-          ),
-        ],
+            const SizedBox(width: 8),
+            Text(name, style: textTheme.bodyMedium),
+          ],
+        ),
+        subtitle: Text(
+          continent,
+          style: textTheme.bodySmall?.copyWith(color: colors.onSurfaceVariant),
+        ),
+        trailing: isSelected ? Icon(Icons.check_circle, color: colors.primary) : null,
       ),
-      subtitle: Text(
-        continent,
-        style: textTheme.bodySmall?.copyWith(color: colors.onSurfaceVariant),
-      ),
-      trailing: isSelected
-          ? Icon(Icons.check_circle, color: colors.primary)
-          : null,
     );
   }
 }
