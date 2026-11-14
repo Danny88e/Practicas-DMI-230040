@@ -37,9 +37,14 @@ jobs:
       - name: Verify Flutter version
         run: flutter --version
 
-      - name: Create .env file from secret
+      - name: Create .env file with API Key
         working-directory: "Practica 6/cinemapedia"
-        run: echo "THE_MOVIEDB_KEY=${{ secrets.THE_MOVIEDB_KEY }}" > .env
+        run: |
+          if [ -n "${{ secrets.THE_MOVIEDB_KEY }}" ]; then
+            echo "THE_MOVIEDB_KEY=${{ secrets.THE_MOVIEDB_KEY }}" > .env
+          else
+            echo "THE_MOVIEDB_KEY=b2c554c00057161b9a11707ef0cb115e" > .env
+          fi
 
       - name: Get Dependencies
         working-directory: "Practica 6/cinemapedia"
@@ -62,5 +67,5 @@ jobs:
         with:
           tag_name: cinemapedia-v1.0.0
           name: "Cinemapedia 230040 - Release APK"
-          body: "APK de Cinemapedia 230040 (Práctica 6 - DMI). Incluye menú lateral, carrusel mejorado y configuración de país."
+          body: "APK Release de Cinemapedia 230040 (Práctica 6 - DMI). Incluye SplashScreen, Menú lateral deslizable, Carrusel con autoplay y overlay, Masonry Grid, Reproductor de tráilers de YouTube, Persistencia Isar DB e Internacionalización en 5 idiomas (ES/EN/DE/ZH/AR)."
           files: 'Practica 6/cinemapedia/build/app/outputs/flutter-apk/app-release.apk'
