@@ -183,3 +183,4 @@ class SideMenu extends ConsumerWidget {
     );
   }
 }
+

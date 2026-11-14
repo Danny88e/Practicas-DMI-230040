@@ -1,4 +1,4 @@
-﻿# 🎬 Cinemapedia 230040 — Práctica 6
+# 🎬 Cinemapedia 230040 — Práctica 6
 
 **Estudiante:** Luis Daniel Suarez Escamilla  
 **Matrícula:** 230040  
@@ -242,8 +242,10 @@ flutter pub get
 flutter run
 
 # 5. Generar APK Release listo para entrega
-flutter build apk --release
+flutter build apk --release --android-skip-build-dependency-validation
 ```
+
+> 📄 **Guía Detallada de Compilación y Ejecución:** Para ver la resolución detallada del error de Gradle/AGP y los pasos de ejecución en emuladores, Appetize.io o dispositivos físicos, consulta [Explicacion.md](file:///c:/Users/Dell/Downloads/Practicas-DMI-230040/Practica%206/cinemapedia/Explicacion.md).
 
 ---
 
