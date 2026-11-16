@@ -52,11 +52,17 @@ jobs:
 
       - name: Patch plugins for AGP compatibility
         run: |
+          find ~/.pub-cache -path "*/isar_flutter_libs*/android/build.gradle" -exec sed -i "/android {/a \    namespace 'dev.isar.isar_flutter_libs'" {} + || true
           find ~/.pub-cache -type f -name "build.gradle" -exec sed -i "s/proguard-android.txt/proguard-android-optimize.txt/g" {} + || true
 
       - name: Build APK Release
         working-directory: "Practica 6/cinemapedia"
-        run: flutter build apk --release --android-skip-build-dependency-validation
+        run: |
+          flutter build apk --release --android-skip-build-dependency-validation || {
+            echo "::error::Release build failed. Printing verbose diagnostics..."
+            flutter build apk --release --android-skip-build-dependency-validation -v
+            exit 1
+          }
 
       - name: Upload APK to Artifacts
         uses: actions/upload-artifact@v4
