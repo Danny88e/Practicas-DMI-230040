@@ -64,6 +64,7 @@ jobs:
 
       - name: Publish to GitHub Release
         uses: softprops/action-gh-release@v2
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/DMI-Practica06'
         with:
           tag_name: cinemapedia-v1.0.0
           name: "Cinemapedia 230040 - Release APK"

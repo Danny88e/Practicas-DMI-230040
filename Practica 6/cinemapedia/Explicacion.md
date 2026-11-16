@@ -47,14 +47,15 @@ An exception occurred applying plugin request [id: 'dev.flutter.flutter-gradle-p
    ```
 
 2. **Actualización del Gradle Wrapper en `android/gradle/wrapper/gradle-wrapper.properties`:**  
-   Se configuró Gradle 9.5:
+   Se corrigió la URL de descarga para apuntar a la versión canónica con tres dígitos **`gradle-9.5.0-all.zip`** (evitando el error `FileNotFoundException 404` que ocurría al omitir el `.0`):
    ```properties
    distributionBase=GRADLE_USER_HOME
    distributionPath=wrapper/dists
    zipStoreBase=GRADLE_USER_HOME
    zipStorePath=wrapper/dists
-   distributionUrl=https\://services.gradle.org/distributions/gradle-9.5-all.zip
+   distributionUrl=https\://services.gradle.org/distributions/gradle-9.5.0-all.zip
    ```
+   > ⚠️ **Nota sobre Gradle:** Los servidores oficiales de Gradle (`services.gradle.org` y `downloads.gradle.org`) requieren la nomenclatura exacta `9.5.0` (`gradle-9.5.0-all.zip`). Si se omite el último dígito (`gradle-9.5-all.zip`), el servidor responde con `HTTP 404 Not Found`.
 
 3. **Uso de la bandera de validación en el Pipeline CI/CD (`.github/workflows/build-cinemapedia-apk.yml`):**  
    Se agregó `--android-skip-build-dependency-validation` para garantizar una compilación desatendida libre de bloqueos:
@@ -195,3 +196,4 @@ Al ejecutar la aplicación, verifica los siguientes puntos solicitados para la e
 | 10 | **Masonry Grid en Populares y Favoritos** | Cuadrícula con alturas alternadas y scroll infinito eficiente. |
 | 11 | **Pantalla de Detalle Completa** | Toca cualquier película para ver portada animada, sinopsis, actores, **reproductor de trailers de YouTube** y carrusel de películas similares. |
 | 12 | **Persistencia de Favoritos (Isar DB)** | Presiona el botón flotante de corazón en el detalle. La película se guarda localmente y permanece visible en la pestaña *Favoritos* incluso tras cerrar la app. |
+
