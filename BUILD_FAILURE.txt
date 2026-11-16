@@ -1,0 +1,21 @@
+Upgrading build.gradle.kts
+Running Gradle task 'assembleRelease'...                        
+
+FAILURE: Build failed with an exception.
+
+* Where:
+Build file '/home/runner/work/Practicas-DMI-230040/Practicas-DMI-230040/Practica 6/cinemapedia/android/build.gradle.kts' line: 19
+
+* What went wrong:
+Build completed with 1 failures.
+> 'com.android.build.api.dsl.ApplicationDefaultConfig com.android.build.api.dsl.ApplicationExtension.getDefaultConfig()'
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 1m 9s
+Running Gradle task 'assembleRelease'...                           71.5s
+Gradle task assembleRelease failed with exit code 1
