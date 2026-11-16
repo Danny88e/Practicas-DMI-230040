@@ -19,20 +19,8 @@ pluginManagement {
 
 plugins {
     id("dev.flutter.flutter-plugin-loader") version "1.0.0"
-    id("com.android.application") version "8.11.1" apply false
-    id("org.jetbrains.kotlin.android") version "2.2.20" apply false
+    id("com.android.application") version "8.7.3" apply false
+    id("org.jetbrains.kotlin.android") version "2.0.21" apply false
 }
 
 include(":app")
-
-gradle.beforeProject {
-    val bFile = this.buildFile
-    if (bFile != null && bFile.exists()) {
-        try {
-            val content = bFile.readText()
-            if (content.contains("proguard-android.txt")) {
-                bFile.writeText(content.replace("proguard-android.txt", "proguard-android-optimize.txt"))
-            }
-        } catch (_: Exception) {}
-    }
-}

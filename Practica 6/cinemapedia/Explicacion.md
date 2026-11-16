@@ -9,62 +9,54 @@
 
 ## 🛠️ 1. Diagnóstico y Solución de Errores en `flutter build apk --release`
 
-Durante el proceso de empaquetado del APK en entornos de integración continua (CI/CD) y compilación local, se diagnosticaron y solucionaron dos incidencias técnicas:
+Durante el proceso de configuración y empaquetado del APK en entornos de integración continua (CI/CD) y compilación local, se diagnosticaron y solucionaron las siguientes incidencias:
 
-### 1.1 Incompatibilidad de Plugins Externos (`flutter_inappwebview_android` y `proguard-android.txt`)
+### 1.1 Incompatibilidad de ABI / API en AGP (`getDefaultConfig()`)
 
 ```text
 FAILURE: Build failed with an exception.
 
 * Where:
-Build file '/home/runner/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/build.gradle' line: 44
+Build file '/home/runner/work/Practicas-DMI-230040/Practicas-DMI-230040/Practica 6/cinemapedia/android/build.gradle.kts' line: 19
 
 * What went wrong:
-A problem occurred evaluating project ':flutter_inappwebview_android'.
-> `getDefaultProguardFile('proguard-android.txt')` is no longer supported since it includes `-dontoptimize`, which prevents R8 from performing many optimizations. Instead use `getDefaultProguardFile('proguard-android-optimize.txt)`, and if needed, temporarily use `-dontoptimize` in a custom keep rule file while fixing breakages.
+Build completed with 1 failures.
+> 'com.android.build.api.dsl.ApplicationDefaultConfig com.android.build.api.dsl.ApplicationExtension.getDefaultConfig()'
 ```
 
 #### 🔍 Causa Técnica:
-La librería externa `flutter_inappwebview_android` (utilizada internamente por `youtube_player_flutter` para reproducir los tráilers de películas) invoca la directiva obsoleta `getDefaultProguardFile('proguard-android.txt')`. En versiones experimentales de AGP 9.0+, Google removió por completo ese archivo del SDK de Android, provocando que Gradle falle al evaluar el subproyecto.
+El plugin oficial de Flutter (`dev.flutter.flutter-gradle-plugin`) fue compilado contra la API de **Android Gradle Plugin 8.7.x**. En versiones posteriores (como AGP 8.11+ o 9.x), la firma interna del método `getDefaultConfig()` cambió en la DSL de Android, provocando una incompatibilidad binaria en tiempo de ejecución de Gradle al evaluar los subproyectos.
 
-#### 🔧 Solución Integral Aplicada:
-1. **Estandarización a la Suite de Producción Estable (igual a Práctica 5):**  
-   Se configuró en `android/settings.gradle.kts` el **Android Gradle Plugin `8.11.1`** con **Kotlin `2.2.20`** y en `gradle-wrapper.properties` la distribución **Gradle `8.14`**:
-   ```kotlin
-   plugins {
-       id("dev.flutter.flutter-plugin-loader") version "1.0.0"
-       id("com.android.application") version "8.11.1" apply false
-       id("org.jetbrains.kotlin.android") version "2.2.20" apply false
-   }
-   ```
-2. **Hook Dinámico en Gradle (`settings.gradle.kts`):**  
-   Se implementó un escuchador en `gradle.beforeProject` para que, antes de que cualquier plugin externo sea evaluado, reemplace automáticamente cualquier referencia a `proguard-android.txt` por `proguard-android-optimize.txt` en caso de ejecutarse en entornos más nuevos:
-   ```kotlin
-   gradle.beforeProject {
-       val bFile = this.buildFile
-       if (bFile != null && bFile.exists()) {
-           try {
-               val content = bFile.readText()
-               if (content.contains("proguard-android.txt")) {
-                   bFile.writeText(content.replace("proguard-android.txt", "proguard-android-optimize.txt"))
-               }
-           } catch (_: Exception) {}
-       }
-   }
-   ```
-3. **Paso Automatizado en CI/CD (`.github/workflows/build-cinemapedia-apk.yml`):**  
-   Se añadió un comando preventivo tras `flutter pub get` que asegura la compatibilidad de todos los paquetes cacheados:
-   ```bash
-   find ~/.pub-cache -type f -name "build.gradle" -exec sed -i "s/proguard-android.txt/proguard-android-optimize.txt/g" {} + || true
-   ```
-4. **Archivo de Reglas ProGuard (`android/app/proguard-rules.pro`):**  
-   Se agregaron reglas de conservación para Flutter, Isar DB y WebViews para optimizaciones sin advertencias de R8.
+#### 🔧 Solución Aplicada (Estándar Oficial Flutter Stable):
+Se alinearon las versiones a la suite de compatibilidad oficial y estable de Flutter:
+* **Android Gradle Plugin (AGP):** `8.7.3`
+* **Kotlin Gradle Plugin:** `2.0.21`
+* **Gradle Wrapper:** `8.9` (`gradle-8.9-all.zip`)
+
+En `android/settings.gradle.kts`:
+```kotlin
+plugins {
+    id("dev.flutter.flutter-plugin-loader") version "1.0.0"
+    id("com.android.application") version "8.7.3" apply false
+    id("org.jetbrains.kotlin.android") version "2.0.21" apply false
+}
+```
+
+En `android/gradle/wrapper/gradle-wrapper.properties`:
+```properties
+distributionUrl=https\://services.gradle.org/distributions/gradle-8.9-all.zip
+```
 
 ---
 
-### 1.2 Nomenclatura Canónica de Versiones de Gradle
+### 1.2 Compatibilidad de Plugins Externos (`flutter_inappwebview_android`)
 
-Los servidores de distribución de Gradle (`services.gradle.org`) requieren la nomenclatura canónica completa de tres dígitos para sus distribuciones (por ejemplo, `gradle-8.14-all.zip` o `gradle-9.5.0-all.zip`). Omitir el subíndice provoca respuestas `404 Not Found (FileNotFoundException)`. Con la configuración actual de Gradle 8.14 / 9.5.0, la descarga se ejecuta con respuesta `HTTP 200 OK`.
+La librería externa `flutter_inappwebview_android` (utilizada internamente por `youtube_player_flutter` para reproducir los tráilers) contenía la directiva `getDefaultProguardFile('proguard-android.txt')`. Para garantizar que compile sin fricción en cualquier entorno:
+1. Se añadió un paso preventivo en `.github/workflows/build-cinemapedia-apk.yml` tras `flutter pub get`:
+   ```bash
+   find ~/.pub-cache -type f -name "build.gradle" -exec sed -i "s/proguard-android.txt/proguard-android-optimize.txt/g" {} + || true
+   ```
+2. Se creó el archivo `android/app/proguard-rules.pro` protegiendo las clases de Flutter, Isar DB y WebViews.
 
 ---
 
