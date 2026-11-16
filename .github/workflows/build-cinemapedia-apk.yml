@@ -58,11 +58,21 @@ jobs:
       - name: Build APK Release
         working-directory: "Practica 6/cinemapedia"
         run: |
-          flutter build apk --release --android-skip-build-dependency-validation || {
-            echo "::error::Release build failed. Printing verbose diagnostics..."
-            flutter build apk --release --android-skip-build-dependency-validation -v
+          flutter build apk --release --android-skip-build-dependency-validation > build_release.log 2>&1 || {
+            echo "### ❌ Build Failure Log" >> $GITHUB_STEP_SUMMARY
+            echo '```text' >> $GITHUB_STEP_SUMMARY
+            tail -n 80 build_release.log >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            cat build_release.log
             exit 1
           }
+
+      - name: Upload Build Log on Failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-failure-log
+          path: 'Practica 6/cinemapedia/build_release.log'
 
       - name: Upload APK to Artifacts
         uses: actions/upload-artifact@v4
