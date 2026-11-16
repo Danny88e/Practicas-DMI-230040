@@ -7,61 +7,64 @@
 
 ---
 
-## 🛠️ 1. Diagnóstico y Solución del Error en `flutter build apk --release`
+## 🛠️ 1. Diagnóstico y Solución de Errores en `flutter build apk --release`
 
-Al intentar compilar el APK de la aplicación con el comando `flutter build apk --release`, se presentó el siguiente error y advertencia en el entorno de compilación de Gradle:
+Durante el proceso de empaquetado del APK en entornos de integración continua (CI/CD) y compilación local, se diagnosticaron y solucionaron dos incidencias técnicas:
+
+### 1.1 Incompatibilidad de Plugins Externos (`flutter_inappwebview_android` y `proguard-android.txt`)
 
 ```text
-Running Gradle task 'assembleRelease'...                        
-Warning: Flutter support for your project's Gradle version (9.3.1) will soon be dropped. Please upgrade your Gradle version to a version of at least 9.5.0 soon.
-Alternatively, use the flag "--android-skip-build-dependency-validation" to bypass this check.
-
 FAILURE: Build failed with an exception.
 
 * Where:
-Build file '/home/runner/work/Practicas-DMI-230040/Practicas-DMI-230040/Practica 6/cinemapedia/android/app/build.gradle.kts' line: 1
+Build file '/home/runner/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/build.gradle' line: 44
 
 * What went wrong:
-An exception occurred applying plugin request [id: 'dev.flutter.flutter-gradle-plugin']
-> Failed to apply plugin 'dev.flutter.flutter-gradle-plugin'.
-   > Error: Your project's Android Gradle Plugin version (Android Gradle Plugin version 9.1.0) is lower than Flutter's minimum supported version of Android Gradle Plugin version 9.1.1. Please upgrade your Android Gradle Plugin version. 
-     Alternatively, use the flag "--android-skip-build-dependency-validation" to bypass this check.
+A problem occurred evaluating project ':flutter_inappwebview_android'.
+> `getDefaultProguardFile('proguard-android.txt')` is no longer supported since it includes `-dontoptimize`, which prevents R8 from performing many optimizations. Instead use `getDefaultProguardFile('proguard-android-optimize.txt)`, and if needed, temporarily use `-dontoptimize` in a custom keep rule file while fixing breakages.
 ```
 
-### 🔍 ¿Por qué ocurrió este error?
-1. **Incompatibilidad de Android Gradle Plugin (AGP):**  
-   El archivo `android/settings.gradle.kts` tenía configurada la versión `9.1.0` de `com.android.application`. La versión moderna del plugin oficial de Flutter (`dev.flutter.flutter-gradle-plugin`) realiza una validación interna estricta de compatibilidad y exige que, dentro de la rama 9.x de AGP, la versión mínima sea **`9.1.1`**.
-2. **Advertencia de obsolescencia de Gradle Wrapper:**  
-   El wrapper configurado en `gradle-wrapper.properties` utilizaba `gradle-9.3.1-all.zip`. Flutter alertó que el soporte para la versión `9.3.1` está deprecado y requiere actualizar a la versión **`9.5.0`** o superior.
+#### 🔍 Causa Técnica:
+La librería externa `flutter_inappwebview_android` (utilizada internamente por `youtube_player_flutter` para reproducir los tráilers de películas) invoca la directiva obsoleta `getDefaultProguardFile('proguard-android.txt')`. En versiones experimentales de AGP 9.0+, Google removió por completo ese archivo del SDK de Android, provocando que Gradle falle al evaluar el subproyecto.
 
-### 🔧 Correcciones aplicadas en el código:
-
-1. **Actualización de AGP en `android/settings.gradle.kts`:**  
-   Se modificó la versión del plugin de `9.1.0` a `9.1.1`:
+#### 🔧 Solución Integral Aplicada:
+1. **Estandarización a la Suite de Producción Estable (igual a Práctica 5):**  
+   Se configuró en `android/settings.gradle.kts` el **Android Gradle Plugin `8.11.1`** con **Kotlin `2.2.20`** y en `gradle-wrapper.properties` la distribución **Gradle `8.14`**:
    ```kotlin
    plugins {
        id("dev.flutter.flutter-plugin-loader") version "1.0.0"
-       id("com.android.application") version "9.1.1" apply false
-       id("org.jetbrains.kotlin.android") version "2.4.0" apply false
+       id("com.android.application") version "8.11.1" apply false
+       id("org.jetbrains.kotlin.android") version "2.2.20" apply false
    }
    ```
-
-2. **Actualización del Gradle Wrapper en `android/gradle/wrapper/gradle-wrapper.properties`:**  
-   Se corrigió la URL de descarga para apuntar a la versión canónica con tres dígitos **`gradle-9.5.0-all.zip`** (evitando el error `FileNotFoundException 404` que ocurría al omitir el `.0`):
-   ```properties
-   distributionBase=GRADLE_USER_HOME
-   distributionPath=wrapper/dists
-   zipStoreBase=GRADLE_USER_HOME
-   zipStorePath=wrapper/dists
-   distributionUrl=https\://services.gradle.org/distributions/gradle-9.5.0-all.zip
+2. **Hook Dinámico en Gradle (`settings.gradle.kts`):**  
+   Se implementó un escuchador en `gradle.beforeProject` para que, antes de que cualquier plugin externo sea evaluado, reemplace automáticamente cualquier referencia a `proguard-android.txt` por `proguard-android-optimize.txt` en caso de ejecutarse en entornos más nuevos:
+   ```kotlin
+   gradle.beforeProject {
+       val bFile = this.buildFile
+       if (bFile != null && bFile.exists()) {
+           try {
+               val content = bFile.readText()
+               if (content.contains("proguard-android.txt")) {
+                   bFile.writeText(content.replace("proguard-android.txt", "proguard-android-optimize.txt"))
+               }
+           } catch (_: Exception) {}
+       }
+   }
    ```
-   > ⚠️ **Nota sobre Gradle:** Los servidores oficiales de Gradle (`services.gradle.org` y `downloads.gradle.org`) requieren la nomenclatura exacta `9.5.0` (`gradle-9.5.0-all.zip`). Si se omite el último dígito (`gradle-9.5-all.zip`), el servidor responde con `HTTP 404 Not Found`.
-
-3. **Uso de la bandera de validación en el Pipeline CI/CD (`.github/workflows/build-cinemapedia-apk.yml`):**  
-   Se agregó `--android-skip-build-dependency-validation` para garantizar una compilación desatendida libre de bloqueos:
+3. **Paso Automatizado en CI/CD (`.github/workflows/build-cinemapedia-apk.yml`):**  
+   Se añadió un comando preventivo tras `flutter pub get` que asegura la compatibilidad de todos los paquetes cacheados:
    ```bash
-   flutter build apk --release --android-skip-build-dependency-validation
+   find ~/.pub-cache -type f -name "build.gradle" -exec sed -i "s/proguard-android.txt/proguard-android-optimize.txt/g" {} + || true
    ```
+4. **Archivo de Reglas ProGuard (`android/app/proguard-rules.pro`):**  
+   Se agregaron reglas de conservación para Flutter, Isar DB y WebViews para optimizaciones sin advertencias de R8.
+
+---
+
+### 1.2 Nomenclatura Canónica de Versiones de Gradle
+
+Los servidores de distribución de Gradle (`services.gradle.org`) requieren la nomenclatura canónica completa de tres dígitos para sus distribuciones (por ejemplo, `gradle-8.14-all.zip` o `gradle-9.5.0-all.zip`). Omitir el subíndice provoca respuestas `404 Not Found (FileNotFoundException)`. Con la configuración actual de Gradle 8.14 / 9.5.0, la descarga se ejecuta con respuesta `HTTP 200 OK`.
 
 ---
 
