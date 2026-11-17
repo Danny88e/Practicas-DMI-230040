@@ -99,7 +99,7 @@ const MovieSchema = CollectionSchema(
   getId: _movieGetId,
   getLinks: _movieGetLinks,
   attach: _movieAttach,
-  version: '3.0.5',
+  version: '3.1.0+1',
 );
 
 int _movieEstimateSize(
