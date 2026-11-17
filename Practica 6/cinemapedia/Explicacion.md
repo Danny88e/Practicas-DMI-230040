@@ -44,6 +44,15 @@ La versión de Flutter en GitHub Actions (Flutter 3.50+) exige como mínimo **An
    - `android/gradle.properties`: Optimización de memoria JVM (`-Xmx3G -XX:MaxMetaspaceSize=1G`) para el entorno de runners de GitHub Actions (7GB RAM).
    - `android/app/proguard-rules.pro`: Reglas específicas para Flutter, Isar DB y WebViews.
 
+### 1.2 Correcciones en Código Dart para Compilación Release
+Durante la compilación anticipada (AOT / Tree Shaking) en modo Release, se resolvieron 3 incompatibilidades de tipado y versiones de librerías:
+1. **Fallback seguro en `Environment.theMovieDbKey`:**  
+   Se definió la propiedad estática `theMovieDbKey` en `lib/config/constants/environment.dart` con valor por defecto de contingencia en caso de que el archivo `.env` no estuviera empaquetado en el bundle de assets.
+2. **Directorio Requerido en Isar Database:**  
+   En `lib/infrastructure/datasources/isar_datasource.dart`, la versión moderna de Isar exige indicar explícitamente la ruta de almacenamiento. Se integró `path_provider` con `getApplicationDocumentsDirectory()` pasando `directory: dir.path` a `Isar.open()`.
+3. **Sincronización del Schema en `movie.g.dart`:**  
+   El schema autogenerado tenía fijada la versión `3.0.5`, lo cual disparaba una aserción en tiempo de ejecución/compilación con la librería Isar `3.1.0+1`. Se sincronizó el encabezado de versión a `'3.1.0+1'`.
+
 ---
 
 ## 📦 2. Cómo Generar el APK Release Localmente
