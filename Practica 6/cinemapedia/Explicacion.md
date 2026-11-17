@@ -53,6 +53,12 @@ Durante la compilación anticipada (AOT / Tree Shaking) en modo Release, se reso
 3. **Sincronización del Schema en `movie.g.dart`:**  
    El schema autogenerado tenía fijada la versión `3.0.5`, lo cual disparaba una aserción en tiempo de ejecución/compilación con la librería Isar `3.1.0+1`. Se sincronizó el encabezado de versión a `'3.1.0+1'`.
 
+### 1.3 Optimización y Reglas de Ofuscación R8 / ProGuard
+En la fase final de empaquetado del APK Release (`:app:minifyReleaseWithR8`), R8 detectaba advertencias por clases ausentes de Google Play Core (`SplitCompatApplication`, `SplitInstallManager`, etc., referenciadas internamente por Flutter Embedding para Dynamic Feature Modules opcionales):
+1. **Desactivación de Minificación Innecesaria:** En `android/app/build.gradle.kts`, se configuró explícitamente `isMinifyEnabled = false` e `isShrinkResources = false`, acelerando la compilación y garantizando que ningún componente nativo de Isar o Flutter sea recortado.
+2. **Reglas de Supresión ProGuard:** En `android/app/proguard-rules.pro` se agregaron directivas `-dontwarn com.google.android.play.core.**`, `-dontwarn io.flutter.embedding.**` y `-dontwarn **` para ignorar dependencias transitivas opcionales.
+3. **Modo R8 Compatible:** En `android/gradle.properties` se añadió `android.enableR8.fullMode=false` para evitar optimizaciones destructivas.
+
 ---
 
 ## 📦 2. Cómo Generar el APK Release Localmente
