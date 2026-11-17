@@ -9,54 +9,40 @@
 
 ## 🛠️ 1. Diagnóstico y Solución de Errores en `flutter build apk --release`
 
-Durante el proceso de configuración y empaquetado del APK en entornos de integración continua (CI/CD) y compilación local, se diagnosticaron y solucionaron las siguientes incidencias:
+Durante el proceso de configuración y empaquetado del APK en entornos de integración continua (CI/CD) y compilación local con las versiones modernas de Flutter (3.50+), se diagnosticaron y solucionaron las siguientes incidencias:
 
-### 1.1 Incompatibilidad de ABI / API en AGP (`getDefaultConfig()`)
+### 1.1 Incompatibilidad de Plugins Externos (`flutter_inappwebview_android` y `proguard-android.txt`)
 
 ```text
 FAILURE: Build failed with an exception.
 
 * Where:
-Build file '/home/runner/work/Practicas-DMI-230040/Practicas-DMI-230040/Practica 6/cinemapedia/android/build.gradle.kts' line: 19
+Build file '/home/runner/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/build.gradle' line: 44
 
 * What went wrong:
-Build completed with 1 failures.
-> 'com.android.build.api.dsl.ApplicationDefaultConfig com.android.build.api.dsl.ApplicationExtension.getDefaultConfig()'
+A problem occurred evaluating project ':flutter_inappwebview_android'.
+> `getDefaultProguardFile('proguard-android.txt')` is no longer supported since it includes `-dontoptimize`, which prevents R8 from performing many optimizations. Instead use `getDefaultProguardFile('proguard-android-optimize.txt)`, and if needed, temporarily use `-dontoptimize` in a custom keep rule file while fixing breakages.
 ```
 
 #### 🔍 Causa Técnica:
-El plugin oficial de Flutter (`dev.flutter.flutter-gradle-plugin`) fue compilado contra la API de **Android Gradle Plugin 8.7.x**. En versiones posteriores (como AGP 8.11+ o 9.x), la firma interna del método `getDefaultConfig()` cambió en la DSL de Android, provocando una incompatibilidad binaria en tiempo de ejecución de Gradle al evaluar los subproyectos.
+La versión de Flutter en GitHub Actions (Flutter 3.50+) exige como mínimo **Android Gradle Plugin (AGP) 9.1.1** y **Gradle 9.5.0**. En AGP 9.0+, Google eliminó definitivamente el archivo `proguard-android.txt` del SDK de Android. Debido a esto, librerías de terceros creadas para versiones previas como `flutter_inappwebview_android-1.1.3` (usada por `youtube_player_flutter`) provocaban que Gradle abortara el build.
 
-#### 🔧 Solución Aplicada (Estándar Oficial Flutter Stable):
-Se alinearon las versiones a la suite de compatibilidad oficial y estable de Flutter:
-* **Android Gradle Plugin (AGP):** `8.7.3`
-* **Kotlin Gradle Plugin:** `2.0.21`
-* **Gradle Wrapper:** `8.9` (`gradle-8.9-all.zip`)
-
-En `android/settings.gradle.kts`:
-```kotlin
-plugins {
-    id("dev.flutter.flutter-plugin-loader") version "1.0.0"
-    id("com.android.application") version "8.7.3" apply false
-    id("org.jetbrains.kotlin.android") version "2.0.21" apply false
-}
-```
-
-En `android/gradle/wrapper/gradle-wrapper.properties`:
-```properties
-distributionUrl=https\://services.gradle.org/distributions/gradle-8.9-all.zip
-```
-
----
-
-### 1.2 Compatibilidad de Plugins Externos (`flutter_inappwebview_android`)
-
-La librería externa `flutter_inappwebview_android` (utilizada internamente por `youtube_player_flutter` para reproducir los tráilers) contenía la directiva `getDefaultProguardFile('proguard-android.txt')`. Para garantizar que compile sin fricción en cualquier entorno:
-1. Se añadió un paso preventivo en `.github/workflows/build-cinemapedia-apk.yml` tras `flutter pub get`:
+#### 🔧 Solución Aplicada:
+1. **Paso Preventivo Automatizado en CI/CD (`.github/workflows/build-cinemapedia-apk.yml`):**  
+   Tras `flutter pub get`, se ejecuta un reemplazo automático de `proguard-android.txt` por `proguard-android-optimize.txt` en todo el caché de plugins de pub:
    ```bash
    find ~/.pub-cache -type f -name "build.gradle" -exec sed -i "s/proguard-android.txt/proguard-android-optimize.txt/g" {} + || true
    ```
-2. Se creó el archivo `android/app/proguard-rules.pro` protegiendo las clases de Flutter, Isar DB y WebViews.
+2. **Inyección de Namespace para `isar_flutter_libs`:**  
+   Se asegura la declaración explícita de `namespace 'dev.isar.isar_flutter_libs'` requerida por AGP 8.0+:
+   ```bash
+   find ~/.pub-cache -path "*/isar_flutter_libs*/android/build.gradle" -exec sed -i "/android {/a \    namespace 'dev.isar.isar_flutter_libs'" {} + || true
+   ```
+3. **Alineación de Versiones Oficiales:**  
+   - `android/settings.gradle.kts`: AGP `9.1.1` y Kotlin `2.4.0`.
+   - `android/gradle/wrapper/gradle-wrapper.properties`: Gradle `9.5.0` (`gradle-9.5.0-all.zip`).
+   - `android/gradle.properties`: Optimización de memoria JVM (`-Xmx3G -XX:MaxMetaspaceSize=1G`) para el entorno de runners de GitHub Actions (7GB RAM).
+   - `android/app/proguard-rules.pro`: Reglas específicas para Flutter, Isar DB y WebViews.
 
 ---
 
