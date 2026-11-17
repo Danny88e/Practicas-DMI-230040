@@ -111,25 +111,328 @@ Note: Recompile with -Xlint:unchecked for details.
 Font asset "CupertinoIcons.ttf" was tree-shaken, reducing it from 257628 to 848 bytes (99.7% reduction). Tree-shaking can be disabled by providing the --no-tree-shake-icons flag when building your app.
 Font asset "MaterialIcons-Regular.otf" was tree-shaken, reducing it from 1645184 to 4692 bytes (99.7% reduction). Tree-shaking can be disabled by providing the --no-tree-shake-icons flag when building your app.
 Caught exception: Already watching path: /home/runner/work/Practicas-DMI-230040/Practicas-DMI-230040/Practica 6/cinemapedia/android
-ERROR: Missing classes detected while running R8. Please add the missing classes or apply additional keep rules that are generated in /home/runner/work/Practicas-DMI-230040/Practicas-DMI-230040/Practica 6/cinemapedia/build/app/outputs/mapping/release/missing_rules.txt.
-ERROR: R8: Missing class com.google.android.play.core.splitcompat.SplitCompatApplication (referenced from: void io.flutter.embedding.android.FlutterPlayStoreSplitApplication.<init>() and 2 other contexts)
-Missing class com.google.android.play.core.splitinstall.SplitInstallException (referenced from: void io.flutter.embedding.engine.deferredcomponents.PlayStoreDeferredComponentManager.lambda$installDeferredComponent$1(int, java.lang.String, java.lang.Exception))
-Missing class com.google.android.play.core.splitinstall.SplitInstallManager (referenced from: com.google.android.play.core.splitinstall.SplitInstallManager io.flutter.embedding.engine.deferredcomponents.PlayStoreDeferredComponentManager.splitInstallManager and 5 other contexts)
-Missing class com.google.android.play.core.splitinstall.SplitInstallManagerFactory (referenced from: void io.flutter.embedding.engine.deferredcomponents.PlayStoreDeferredComponentManager.<init>(android.content.Context, io.flutter.embedding.engine.FlutterJNI))
-Missing class com.google.android.play.core.splitinstall.SplitInstallRequest$Builder (referenced from: void io.flutter.embedding.engine.deferredcomponents.PlayStoreDeferredComponentManager.installDeferredComponent(int, java.lang.String))
-Missing class com.google.android.play.core.splitinstall.SplitInstallRequest (referenced from: void io.flutter.embedding.engine.deferredcomponents.PlayStoreDeferredComponentManager.installDeferredComponent(int, java.lang.String))
-Missing class com.google.android.play.core.splitinstall.SplitInstallSessionState (referenced from: void io.flutter.embedding.engine.deferredcomponents.PlayStoreDeferredComponentManager$FeatureInstallStateUpdatedListener.onStateUpdate(com.google.android.play.core.splitinstall.SplitInstallSessionState) and 1 other context)
-Missing class com.google.android.play.core.splitinstall.SplitInstallStateUpdatedListener (referenced from: void io.flutter.embedding.engine.deferredcomponents.PlayStoreDeferredComponentManager.<init>(android.content.Context, io.flutter.embedding.engine.FlutterJNI) and 2 other contexts)
-Missing class com.google.android.play.core.tasks.OnFailureListener (referenced from: void io.flutter.embedding.engine.deferredcomponents.PlayStoreDeferredComponentManager.installDeferredComponent(int, java.lang.String))
-Missing class com.google.android.play.core.tasks.OnSuccessListener (referenced from: void io.flutter.embedding.engine.deferredcomponents.PlayStoreDeferredComponentManager.installDeferredComponent(int, java.lang.String))
-Missing class com.google.android.play.core.tasks.Task (referenced from: void io.flutter.embedding.engine.deferredcomponents.PlayStoreDeferredComponentManager.installDeferredComponent(int, java.lang.String) and 1 other context)
 
 FAILURE: Build failed with an exception.
 
 * What went wrong:
-Execution failed for task ':app:minifyReleaseWithR8' (registered by plugin 'com.android.internal.application').
-> A failure occurred while executing com.android.build.gradle.internal.tasks.R8Task$R8Runnable
-   > Compilation failed to complete
+Execution failed for task ':isar_flutter_libs:checkReleaseAarMetadata' (registered by plugin 'com.android.internal.library').
+> A failure occurred while executing com.android.build.gradle.internal.tasks.CheckAarMetadataWorkAction
+   > 21 issues were found when checking AAR metadata:
+
+       1.  Dependency 'androidx.fragment:fragment:1.7.1' requires libraries and applications that
+           depend on it to compile against version 34 or later of the
+           Android APIs.
+
+           :isar_flutter_libs is currently compiled against android-30.
+
+           Recommended action: Update this project to use a newer compileSdk
+           of at least 34, for example 37.
+
+           Note that updating a library or application's compileSdk (which
+           allows newer APIs to be used) can be done separately from updating
+           targetSdk (which opts the app in to new runtime behavior) and
+           minSdk (which determines which devices the app can be installed
+           on).
+
+       2.  Dependency 'androidx.window:window:1.2.0' requires libraries and applications that
+           depend on it to compile against version 34 or later of the
+           Android APIs.
+
+           :isar_flutter_libs is currently compiled against android-30.
+
+           Recommended action: Update this project to use a newer compileSdk
+           of at least 34, for example 37.
+
+           Note that updating a library or application's compileSdk (which
+           allows newer APIs to be used) can be done separately from updating
+           targetSdk (which opts the app in to new runtime behavior) and
+           minSdk (which determines which devices the app can be installed
+           on).
+
+       3.  Dependency 'androidx.window:window-java:1.2.0' requires libraries and applications that
+           depend on it to compile against version 34 or later of the
+           Android APIs.
+
+           :isar_flutter_libs is currently compiled against android-30.
+
+           Recommended action: Update this project to use a newer compileSdk
+           of at least 34, for example 37.
+
+           Note that updating a library or application's compileSdk (which
+           allows newer APIs to be used) can be done separately from updating
+           targetSdk (which opts the app in to new runtime behavior) and
+           minSdk (which determines which devices the app can be installed
+           on).
+
+       4.  Dependency 'androidx.activity:activity:1.8.1' requires libraries and applications that
+           depend on it to compile against version 34 or later of the
+           Android APIs.
+
+           :isar_flutter_libs is currently compiled against android-30.
+
+           Recommended action: Update this project to use a newer compileSdk
+           of at least 34, for example 37.
+
+           Note that updating a library or application's compileSdk (which
+           allows newer APIs to be used) can be done separately from updating
+           targetSdk (which opts the app in to new runtime behavior) and
+           minSdk (which determines which devices the app can be installed
+           on).
+
+       5.  Dependency 'androidx.lifecycle:lifecycle-livedata-core-ktx:2.7.0' requires libraries and applications that
+           depend on it to compile against version 34 or later of the
+           Android APIs.
+
+           :isar_flutter_libs is currently compiled against android-30.
+
+           Recommended action: Update this project to use a newer compileSdk
+           of at least 34, for example 37.
+
+           Note that updating a library or application's compileSdk (which
+           allows newer APIs to be used) can be done separately from updating
+           targetSdk (which opts the app in to new runtime behavior) and
+           minSdk (which determines which devices the app can be installed
+           on).
+
+       6.  Dependency 'androidx.lifecycle:lifecycle-livedata:2.7.0' requires libraries and applications that
+           depend on it to compile against version 34 or later of the
+           Android APIs.
+
+           :isar_flutter_libs is currently compiled against android-30.
+
+           Recommended action: Update this project to use a newer compileSdk
+           of at least 34, for example 37.
+
+           Note that updating a library or application's compileSdk (which
+           allows newer APIs to be used) can be done separately from updating
+           targetSdk (which opts the app in to new runtime behavior) and
+           minSdk (which determines which devices the app can be installed
+           on).
+
+       7.  Dependency 'androidx.lifecycle:lifecycle-viewmodel:2.7.0' requires libraries and applications that
+           depend on it to compile against version 34 or later of the
+           Android APIs.
+
+           :isar_flutter_libs is currently compiled against android-30.
+
+           Recommended action: Update this project to use a newer compileSdk
+           of at least 34, for example 37.
+
+           Note that updating a library or application's compileSdk (which
+           allows newer APIs to be used) can be done separately from updating
+           targetSdk (which opts the app in to new runtime behavior) and
+           minSdk (which determines which devices the app can be installed
+           on).
+
+       8.  Dependency 'androidx.lifecycle:lifecycle-livedata-core:2.7.0' requires libraries and applications that
+           depend on it to compile against version 34 or later of the
+           Android APIs.
+
+           :isar_flutter_libs is currently compiled against android-30.
+
+           Recommended action: Update this project to use a newer compileSdk
+           of at least 34, for example 37.
+
+           Note that updating a library or application's compileSdk (which
+           allows newer APIs to be used) can be done separately from updating
+           targetSdk (which opts the app in to new runtime behavior) and
+           minSdk (which determines which devices the app can be installed
+           on).
+
+       9.  Dependency 'androidx.lifecycle:lifecycle-viewmodel-savedstate:2.7.0' requires libraries and applications that
+           depend on it to compile against version 34 or later of the
+           Android APIs.
+
+           :isar_flutter_libs is currently compiled against android-30.
+
+           Recommended action: Update this project to use a newer compileSdk
+           of at least 34, for example 37.
+
+           Note that updating a library or application's compileSdk (which
+           allows newer APIs to be used) can be done separately from updating
+           targetSdk (which opts the app in to new runtime behavior) and
+           minSdk (which determines which devices the app can be installed
+           on).
+
+      10.  Dependency 'androidx.core:core-ktx:1.13.1' requires libraries and applications that
+           depend on it to compile against version 34 or later of the
+           Android APIs.
+
+           :isar_flutter_libs is currently compiled against android-30.
+
+           Recommended action: Update this project to use a newer compileSdk
+           of at least 34, for example 37.
+
+           Note that updating a library or application's compileSdk (which
+           allows newer APIs to be used) can be done separately from updating
+           targetSdk (which opts the app in to new runtime behavior) and
+           minSdk (which determines which devices the app can be installed
+           on).
+
+      11.  Dependency 'androidx.core:core:1.13.1' requires libraries and applications that
+           depend on it to compile against version 34 or later of the
+           Android APIs.
+
+           :isar_flutter_libs is currently compiled against android-30.
+
+           Recommended action: Update this project to use a newer compileSdk
+           of at least 34, for example 37.
+
+           Note that updating a library or application's compileSdk (which
+           allows newer APIs to be used) can be done separately from updating
+           targetSdk (which opts the app in to new runtime behavior) and
+           minSdk (which determines which devices the app can be installed
+           on).
+
+      12.  Dependency 'androidx.lifecycle:lifecycle-runtime:2.7.0' requires libraries and applications that
+           depend on it to compile against version 34 or later of the
+           Android APIs.
+
+           :isar_flutter_libs is currently compiled against android-30.
+
+           Recommended action: Update this project to use a newer compileSdk
+           of at least 34, for example 37.
+
+           Note that updating a library or application's compileSdk (which
+           allows newer APIs to be used) can be done separately from updating
+           targetSdk (which opts the app in to new runtime behavior) and
+           minSdk (which determines which devices the app can be installed
+           on).
+
+      13.  Dependency 'androidx.lifecycle:lifecycle-process:2.7.0' requires libraries and applications that
+           depend on it to compile against version 34 or later of the
+           Android APIs.
+
+           :isar_flutter_libs is currently compiled against android-30.
+
+           Recommended action: Update this project to use a newer compileSdk
+           of at least 34, for example 37.
+
+           Note that updating a library or application's compileSdk (which
+           allows newer APIs to be used) can be done separately from updating
+           targetSdk (which opts the app in to new runtime behavior) and
+           minSdk (which determines which devices the app can be installed
+           on).
+
+      14.  Dependency 'androidx.savedstate:savedstate:1.2.1' requires libraries and applications that
+           depend on it to compile against version 33 or later of the
+           Android APIs.
+
+           :isar_flutter_libs is currently compiled against android-30.
+
+           Recommended action: Update this project to use a newer compileSdk
+           of at least 33, for example 37.
+
+           Note that updating a library or application's compileSdk (which
+           allows newer APIs to be used) can be done separately from updating
+           targetSdk (which opts the app in to new runtime behavior) and
+           minSdk (which determines which devices the app can be installed
+           on).
+
+      15.  Dependency 'androidx.profileinstaller:profileinstaller:1.3.1' requires libraries and applications that
+           depend on it to compile against version 33 or later of the
+           Android APIs.
+
+           :isar_flutter_libs is currently compiled against android-30.
+
+           Recommended action: Update this project to use a newer compileSdk
+           of at least 33, for example 37.
+
+           Note that updating a library or application's compileSdk (which
+           allows newer APIs to be used) can be done separately from updating
+           targetSdk (which opts the app in to new runtime behavior) and
+           minSdk (which determines which devices the app can be installed
+           on).
+
+      16.  Dependency 'androidx.startup:startup-runtime:1.1.1' requires libraries and applications that
+           depend on it to compile against version 31 or later of the
+           Android APIs.
+
+           :isar_flutter_libs is currently compiled against android-30.
+
+           Recommended action: Update this project to use a newer compileSdk
+           of at least 31, for example 37.
+
+           Note that updating a library or application's compileSdk (which
+           allows newer APIs to be used) can be done separately from updating
+           targetSdk (which opts the app in to new runtime behavior) and
+           minSdk (which determines which devices the app can be installed
+           on).
+
+      17.  Dependency 'androidx.tracing:tracing:1.2.0' requires libraries and applications that
+           depend on it to compile against version 33 or later of the
+           Android APIs.
+
+           :isar_flutter_libs is currently compiled against android-30.
+
+           Recommended action: Update this project to use a newer compileSdk
+           of at least 33, for example 37.
+
+           Note that updating a library or application's compileSdk (which
+           allows newer APIs to be used) can be done separately from updating
+           targetSdk (which opts the app in to new runtime behavior) and
+           minSdk (which determines which devices the app can be installed
+           on).
+
+      18.  Dependency 'androidx.exifinterface:exifinterface:1.4.1' requires libraries and applications that
+           depend on it to compile against version 34 or later of the
+           Android APIs.
+
+           :isar_flutter_libs is currently compiled against android-30.
+
+           Recommended action: Update this project to use a newer compileSdk
+           of at least 34, for example 37.
+
+           Note that updating a library or application's compileSdk (which
+           allows newer APIs to be used) can be done separately from updating
+           targetSdk (which opts the app in to new runtime behavior) and
+           minSdk (which determines which devices the app can be installed
+           on).
+
+      19.  Dependency 'androidx.arch.core:core-runtime:2.2.0' requires libraries and applications that
+           depend on it to compile against version 33 or later of the
+           Android APIs.
+
+           :isar_flutter_libs is currently compiled against android-30.
+
+           Recommended action: Update this project to use a newer compileSdk
+           of at least 33, for example 37.
+
+           Note that updating a library or application's compileSdk (which
+           allows newer APIs to be used) can be done separately from updating
+           targetSdk (which opts the app in to new runtime behavior) and
+           minSdk (which determines which devices the app can be installed
+           on).
+
+      20.  Dependency 'androidx.window.extensions.core:core:1.0.0' requires libraries and applications that
+           depend on it to compile against version 33 or later of the
+           Android APIs.
+
+           :isar_flutter_libs is currently compiled against android-30.
+
+           Recommended action: Update this project to use a newer compileSdk
+           of at least 33, for example 37.
+
+           Note that updating a library or application's compileSdk (which
+           allows newer APIs to be used) can be done separately from updating
+           targetSdk (which opts the app in to new runtime behavior) and
+           minSdk (which determines which devices the app can be installed
+           on).
+
+      21.  Dependency 'androidx.annotation:annotation-experimental:1.4.0' requires libraries and applications that
+           depend on it to compile against version 34 or later of the
+           Android APIs.
+
+           :isar_flutter_libs is currently compiled against android-30.
+
+           Recommended action: Update this project to use a newer compileSdk
+           of at least 34, for example 37.
+
+           Note that updating a library or application's compileSdk (which
+           allows newer APIs to be used) can be done separately from updating
+           targetSdk (which opts the app in to new runtime behavior) and
+           minSdk (which determines which devices the app can be installed
+           on).
 
 * Try:
 > Run with --stacktrace option to get the stack trace.
@@ -137,6 +440,6 @@ Execution failed for task ':app:minifyReleaseWithR8' (registered by plugin 'com.
 > Run with --scan to get full insights from a Build Scan (powered by Develocity).
 > Get more help at https://help.gradle.org.
 
-BUILD FAILED in 3m 48s
-Running Gradle task 'assembleRelease'...                          229.1s
+BUILD FAILED in 4m 10s
+Running Gradle task 'assembleRelease'...                          251.1s
 Gradle task assembleRelease failed with exit code 1
