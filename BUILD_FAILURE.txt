@@ -440,6 +440,6 @@ Execution failed for task ':isar_flutter_libs:checkReleaseAarMetadata' (register
 > Run with --scan to get full insights from a Build Scan (powered by Develocity).
 > Get more help at https://help.gradle.org.
 
-BUILD FAILED in 4m 10s
-Running Gradle task 'assembleRelease'...                          251.1s
+BUILD FAILED in 4m 49s
+Running Gradle task 'assembleRelease'...                          293.0s
 Gradle task assembleRelease failed with exit code 1
