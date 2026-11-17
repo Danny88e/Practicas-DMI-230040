@@ -9,7 +9,14 @@ import 'package:cinemapedia/presentation/providers/language/language_provider.da
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: '.env');
+  // dotenv puede fallar si el asset .env no fue empaquetado (aapt omite
+  // dotfiles por defecto). Con try/catch la app arranca igual y
+  // Environment.theMovieDbKey usa su clave de respaldo.
+  try {
+    await dotenv.load(fileName: '.env');
+  } catch (e) {
+    debugPrint('WARN: no se pudo cargar .env ($e); usando clave de respaldo');
+  }
   final prefs = await SharedPreferences.getInstance();
 
   runApp(

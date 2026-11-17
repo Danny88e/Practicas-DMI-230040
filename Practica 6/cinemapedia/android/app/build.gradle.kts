@@ -34,6 +34,14 @@ android {
             )
         }
     }
+
+    // El patron por defecto de aapt ignora TODOS los dotfiles (".*"), lo que
+    // excluia el asset ".env" de flutter_dotenv del APK final en release.
+    // Se redeclara el patron SIN la entrada ".*" para que .env se empaquete.
+    androidResources {
+        ignoreAssetsPattern =
+            "!.svn:!.git:!.gitignore:!.ds_store:!*.scc:<dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"
+    }
 }
 
 kotlin {
