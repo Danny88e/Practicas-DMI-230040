@@ -31,6 +31,7 @@ Cada práctica tiene su propio README con el objetivo, descripción y, cuando co
 | 03 | [Yes, No, Maybe](Practica%203/yes_no_app/README.md) | Interfaz de chat en Flutter con mensajes, estado administrado con Provider e imágenes remotas. | 30 firmas | 🟢 Completada |
 | 04 | [TokTik: Video App](Practica%204/TokTik/README.md) | Reproducción de videos verticales, splash estacional con audio, APIs externas (YouTube/Pixabay/Pexels), [Diagramas en GitHub Pages](https://danny88e.github.io/Practicas-DMI-230040/Practica%204/TokTik/architecture-diagram.html) y [Demo en Appetize.io](https://appetize.io/app/b_zfiayvtvlc5z7luikybxifpw7e) | 30 firmas | 🟢 Completada |
 | 05 | [Widgets App](Practica%205/widgets_app/README.md) | Catálogo interactivo de componentes de Flutter + Material 3, navegación con GoRouter, gestión de estado con Riverpod, [Diagrama Interactivo](https://danny88e.github.io/Practicas-DMI-230040/Practica%205/widgets_app/architecture-diagram.html) y [Demo en Appetize.io](https://appetize.io/app/b_zfiayvtvlc5z7luikybxifpw7e) | 40 firmas | 🟢 Completada |
+| 06 | [Cinemapedia](Practica%206/cinemapedia/README.md) | App de películas con la API de The Movie DB: carrusel con autoplay, masonry grid, favoritos con persistencia Isar, tráilers de YouTube, i18n en 5 idiomas (ES/EN/DE/ZH/AR), [APK Release](https://github.com/Danny88e/Practicas-DMI-230040/releases/tag/cinemapedia-v1.0.0) y [Demo en Appetize.io](https://appetize.io/app/b_zfiayvtvlc5z7luikybxifpw7e) | 100 firmas | 🟢 Completada |
 
 | Evaluación | Material | Descripción |
 | --- | --- | --- |
@@ -55,6 +56,8 @@ Cada práctica tiene su propio README con el objetivo, descripción y, cuando co
 │   └── yes_no_app/          # Aplicación de chat
 ├── Practica 4/
 │   └── TokTik/              # Aplicación de videos cortos
-└── Practica 5/
-    └── widgets_app/         # Catálogo de widgets Flutter + Material 3
+├── Practica 5/
+│   └── widgets_app/         # Catálogo de widgets Flutter + Material 3
+└── Practica 6/
+    └── cinemapedia/         # App de películas con TMDB (Práctica 6)
 ```

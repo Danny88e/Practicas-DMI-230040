@@ -64,6 +64,18 @@ En `:isar_flutter_libs:checkReleaseAarMetadata`, el plugin Isar 3.1.0+1 (proyect
 1. **Elevación del SDK:** Se reescribe `compileSdk 30` → `compileSdk 36` en el `android/build.gradle` de `isar_flutter_libs` (idempotente: elimina un `namespace` previamente inyectado antes de reinsertarlo, para tolerar la caché de `pub-cache`).
 2. **Red de seguridad general:** Se eleva cualquier `compileSdk` numérico obsoleto (< 33) en los `build.gradle` de todos los plugins del `pub-cache`, y se mantiene la inyección de `namespace` exigida por AGP 9.
 
+### 1.5 Pantalla en Blanco al Arrancar: `.env` Omitido del Asset Bundle
+En Appetize.io y en la instalación directa del APK, la aplicación permanecía en **pantalla blanca indefinida**. Causa raíz: `main.dart` ejecuta `await dotenv.load(fileName: '.env')` **antes** de `runApp`; `flutter_dotenv` resuelve el archivo vía `rootBundle`, es decir, exige que `.env` esté empaquetado como asset. El archivo sí figuraba en el `pubspec.yaml`, pero **el empaquetador de assets de Flutter omite silenciosamente los archivos que coinciden con patrones de `.gitignore`** (comportamiento conocido del toolchain), y `.env` estaba listado en `.gitignore`:
+1. **Fix:** Se eliminó el patrón `.env` de `.gitignore` y se commiteó el archivo con la clave de demostración de TMDB (misma clave pública del fallback del workflow de CI). Con el asset presente, `dotenv.load()` resuelve y `runApp` se ejecuta.
+2. **Nota de despliegue:** Con este cambio, las máquinas de laboratorio no necesitan crear `.env`: `git clone` + `flutter pub get` + `flutter run` funcionan de inmediato.
+
+### 1.6 Icono de la Aplicación (Legacy + Adaptive Icons API 26+)
+El `ic_launcher.png` seguía siendo el logo por defecto de Flutter (el requisito 20 exige icono visible y centrado bajo cualquier máscara: círculo, cuadrado, squircle). Además, el PNG fuente `assets/logos/Cinemapedia_logo.png` tenía el patrón de "transparencia" **horneado como píxeles reales** (tablero de ajedrez opaco, no canal alpha), por lo que no podía usarse directamente. Se implementó el pipeline `tools/gen_icons.ps1` (PowerShell + System.Drawing, sin requerir SDK de Flutter):
+1. **Detección del badge:** se escanea el logo 2048×2048 para hallar el bounding box del emblema (250,256–1797,1804) y se muestrea el color de fondo real (`#310953`).
+2. **Iconos legacy (pre API 26):** `mipmap-{m,h,xh,xxh,xxxh}dpi/ic_launcher.png` (48–192 px), badge a sangre completa con esquinas recortadas sobre fondo sólido.
+3. **Iconos adaptive (API 26+):** `mipmap-anydpi-v26/ic_launcher.xml` con capa `<background>` (`@color/ic_launcher_background`) y `<foreground>` (`@mipmap/ic_launcher_foreground`, badge al 66 % — zona segura de 72/108 dp — sobre lienzo transparente), en las 5 densidades (108–432 px). Con cualquier máscara del launcher el emblema queda completo y centrado.
+4. **Extras:** `android:label` actualizado a «Cinemapedia» y versión elevada a `1.0.1+2`.
+
 ---
 
 ## 📦 2. Cómo Generar el APK Release Localmente

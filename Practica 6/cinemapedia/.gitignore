@@ -34,7 +34,9 @@ migrate_working_dir/
 /coverage/
 
 # Local TMDB credentials
-.env
+# NOTA: `.env` se trackea a proposito: el asset bundle de Flutter omite archivos
+# que coinciden con .gitignore, y dotenv.load() en main.dart requiere el asset
+# empaquetado (sin el, la app arranca en pantalla blanca).
 .env.json
 
 # Symbolication related
