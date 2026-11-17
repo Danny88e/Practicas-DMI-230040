@@ -59,12 +59,12 @@ jobs:
             sed -i "/namespace 'dev.isar.isar_flutter_libs'/d" "$ISAR_GRADLE"
             sed -i "0,/android {/s//android {\n    namespace 'dev.isar.isar_flutter_libs'/" "$ISAR_GRADLE"
             # Isar 3.1.0 compila contra SDK 30; sus dependencias AndroidX exigen 33+. Subir a 36.
-            sed -i -E "s/compileSdk(SVersion)? ?[0-9]+/compileSdk 36/g" "$ISAR_GRADLE"
+            sed -i -E "s/compileSdk(Version)? ?[0-9]+/compileSdk 36/g" "$ISAR_GRADLE"
           else
             echo "WARNING: isar_flutter_libs build.gradle no encontrado"
           fi
           # Red de seguridad: subir compileSdk obsoleto (<33) en cualquier plugin de pub-cache
-          find ~/.pub-cache -type f -name "build.gradle" -exec sed -i -E "s/compileSdk(SVersion)? ?[0-9]+/compileSdk 36/g" {} + || true
+          find ~/.pub-cache -type f -name "build.gradle" -exec sed -i -E "s/compileSdk(Version)? ?[0-9]+/compileSdk 36/g" {} + || true
           find ~/.pub-cache -type f -name "build.gradle" -exec sed -i "s/proguard-android.txt/proguard-android-optimize.txt/g" {} + || true
 
       - name: Build APK Release
