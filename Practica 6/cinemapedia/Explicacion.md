@@ -59,6 +59,11 @@ En la fase final de empaquetado del APK Release (`:app:minifyReleaseWithR8`), R8
 2. **Reglas de Supresión ProGuard:** En `android/app/proguard-rules.pro` se agregaron directivas `-dontwarn com.google.android.play.core.**`, `-dontwarn io.flutter.embedding.**` y `-dontwarn **` para ignorar dependencias transitivas opcionales.
 3. **Modo R8 Compatible:** En `android/gradle.properties` se añadió `android.enableR8.fullMode=false` para evitar optimizaciones destructivas.
 
+### 1.4 Compatibilidad de `isar_flutter_libs` con el SDK de Compilación (CI)
+En `:isar_flutter_libs:checkReleaseAarMetadata`, el plugin Isar 3.1.0+1 (proyecto inactivo desde 2023) declara `compileSdk 30`, mientras que sus dependencias transitivas de AndroidX (window 1.2.0, lifecycle 2.7.0, core-ktx 1.13.1, etc.) exigen compilar contra API 33+. Como Isar no recibe mantenimiento, el pipeline de CI inyecta el parche en tiempo de construcción (paso *Patch plugins for AGP compatibility*):
+1. **Elevación del SDK:** Se reescribe `compileSdk 30` → `compileSdk 36` en el `android/build.gradle` de `isar_flutter_libs` (idempotente: elimina un `namespace` previamente inyectado antes de reinsertarlo, para tolerar la caché de `pub-cache`).
+2. **Red de seguridad general:** Se eleva cualquier `compileSdk` numérico obsoleto (< 33) en los `build.gradle` de todos los plugins del `pub-cache`, y se mantiene la inyección de `namespace` exigida por AGP 9.
+
 ---
 
 ## 📦 2. Cómo Generar el APK Release Localmente
