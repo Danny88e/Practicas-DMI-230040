@@ -68,6 +68,7 @@ class _MovieDetails extends ConsumerWidget {
     final currentLang = ref.watch(languageProvider);
     final contentType = ref.watch(contentTypeProvider);
     final isMovies = contentType == 'movie';
+    final ageRating = ref.watch(ageRatingProvider(movie.id));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -78,6 +79,7 @@ class _MovieDetails extends ConsumerWidget {
           size: size,
           textStyles: textStyles,
           langCode: currentLang,
+          ageRating: ageRating.whenOrNull(data: (rating) => rating) ?? 'NR',
         ),
 
         // Géneros de la película / serie
@@ -155,17 +157,18 @@ class _TitleAndOverview extends StatelessWidget {
   final Size size;
   final TextTheme textStyles;
   final String langCode;
+  final String ageRating;
 
   const _TitleAndOverview({
     required this.movie,
     required this.size,
     required this.textStyles,
     required this.langCode,
+    required this.ageRating,
   });
 
   @override
   Widget build(BuildContext context) {
-    final ageRating = AppLocalizations.getAgeRating(movie.voteAverage, langCode);
     final isRTL = langCode == 'ar';
 
     return Padding(
@@ -221,22 +224,6 @@ class _TitleAndOverview extends StatelessWidget {
                 Row(
                   children: [
                     MovieRating(voteAverage: movie.voteAverage),
-                    const SizedBox(width: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                      decoration: BoxDecoration(
-                        color: Colors.orange.shade800,
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: Text(
-                        ageRating,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
                   ],
                 ),
 
@@ -255,6 +242,23 @@ class _TitleAndOverview extends StatelessWidget {
                       style: const TextStyle(fontSize: 13, color: Colors.white70),
                     ),
                   ],
+                ),
+
+                const SizedBox(height: 4),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: Colors.orange.shade800,
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Text(
+                    ageRating,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
 
                 const SizedBox(height: 8),

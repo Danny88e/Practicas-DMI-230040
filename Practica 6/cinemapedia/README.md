@@ -227,25 +227,22 @@ El repositorio cuenta con el flujo automatizado `.github/workflows/build-cinemap
 3. Sube el archivo `.apk` y obtén de inmediato un emulador Android interactivo ejecutable desde cualquier navegador web sin instalar nada en tu computadora.
 
 ### Opción 3: Ejecución en Equipos de Laboratorio Universitario
-Una vez clonado el repositorio en una máquina con Flutter:
+Una vez clonado el repositorio en una máquina con Flutter (el archivo `.env` con la clave TMDB **ya viene incluido** en el repositorio):
 ```bash
 # 1. Navegar a la carpeta del proyecto
 cd "Practica 6/cinemapedia"
 
-# 2. Configurar la clave de TMDB en .env
-echo "THE_MOVIEDB_KEY=tu_clave_de_tmdb" > .env
-
-# 3. Obtener paquetes y dependencias
+# 2. Obtener paquetes y dependencias
 flutter pub get
 
-# 4. Compilar y ejecutar en modo debug
+# 3. Compilar y ejecutar en modo debug
 flutter run
 
-# 5. Generar APK Release listo para entrega
+# 4. Generar APK Release listo para entrega
 flutter build apk --release --android-skip-build-dependency-validation
 ```
 
-> 📄 **Guía Detallada de Compilación y Ejecución:** Para ver la resolución detallada del error de Gradle/AGP y los pasos de ejecución en emuladores, Appetize.io o dispositivos físicos, consulta [Explicacion.md](file:///c:/Users/Dell/Downloads/Practicas-DMI-230040/Practica%206/cinemapedia/Explicacion.md).
+> 📄 **Guía Detallada de Compilación y Ejecución:** Para ver la resolución detallada del error de Gradle/AGP y los pasos de ejecución en emuladores, Appetize.io o dispositivos físicos, consulta [Explicacion.md](Explicacion.md).
 
 ---
 
@@ -253,6 +250,7 @@ flutter build apk --release --android-skip-build-dependency-validation
 
 - **Demostración en Línea (Appetize.io):** [Ver demostración interactiva](https://appetize.io/app/b_zfiayvtvlc5z7luikybxifpw7e)
 - **Documentación Interactiva en GitHub Pages:** [https://danny88e.github.io/Practicas-DMI-230040/](https://danny88e.github.io/Practicas-DMI-230040/)
+- **APK Release (descarga directa):** [Releases → cinemapedia-v1.0.0](https://github.com/Danny88e/Practicas-DMI-230040/releases/tag/cinemapedia-v1.0.0)
 
 ---
 

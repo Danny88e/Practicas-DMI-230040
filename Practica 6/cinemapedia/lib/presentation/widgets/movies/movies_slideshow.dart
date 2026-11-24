@@ -153,6 +153,18 @@ class _Slide extends StatelessWidget {
                         ),
                       ),
 
+                      if (movie.overview.trim().isNotEmpty)
+                        Text(
+                          movie.overview,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          textDirection: isRTL ? TextDirection.rtl : TextDirection.ltr,
+                          style: TextStyle(
+                            color: Colors.white.withOpacity(0.9),
+                            fontSize: 11,
+                          ),
+                        ),
+
                       // Título original (si difiere del título local)
                       if (movie.originalTitle.isNotEmpty && movie.originalTitle != movie.title)
                         Text(
