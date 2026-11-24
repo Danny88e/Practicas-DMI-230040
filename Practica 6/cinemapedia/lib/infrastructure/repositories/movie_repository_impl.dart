@@ -49,5 +49,10 @@ class MovieRepositoryImpl extends MoviesRepository {
     return datasource.getYoutubeVideosById(movieId);
   }
 
+  @override
+  Future<String> getAgeRating(int movieId) {
+    return datasource.getAgeRating(movieId);
+  }
+
 
 }

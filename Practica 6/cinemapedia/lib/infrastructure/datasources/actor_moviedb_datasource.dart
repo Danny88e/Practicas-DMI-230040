@@ -11,13 +11,16 @@ import 'package:dio/dio.dart';
 
 class ActorMovieDbDatasource extends ActorsDatasource {
 
-  final dio = Dio(BaseOptions(
+  final String language;
+  final String contentType;
+
+  ActorMovieDbDatasource({required this.language, required this.contentType});
+
+  Dio get dio => Dio(BaseOptions(
     baseUrl: 'https://api.themoviedb.org/3',
-    headers: {
-      'Authorization': 'Bearer ${Environment.tmdbBearerToken}',
-    },
     queryParameters: {
-      'language': 'es-MX'
+      'api_key': Environment.theMovieDbKey,
+      'language': language,
     }
   ));
 
@@ -25,7 +28,7 @@ class ActorMovieDbDatasource extends ActorsDatasource {
   Future<List<Actor>> getActorsByMovie(String movieId) async{
     
     final response = await dio.get(
-      '/movie/$movieId/credits'
+      '/$contentType/$movieId/credits'
     );
 
     final castResponse = CreditsResponse.fromJson(response.data);

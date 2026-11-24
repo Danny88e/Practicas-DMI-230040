@@ -15,8 +15,12 @@ class MoviedbDatasource extends MoviesDatasource {
     this.contentType = 'movie',
   });
 
+  bool get _isTv => contentType == 'tv';
+
   Dio get _dio => Dio(BaseOptions(
         baseUrl: 'https://api.themoviedb.org/3',
+        connectTimeout: const Duration(seconds: 15),
+        receiveTimeout: const Duration(seconds: 20),
         queryParameters: {
           'api_key': Environment.theMovieDbKey,
           'language': language,
@@ -34,61 +38,88 @@ class MoviedbDatasource extends MoviesDatasource {
     return movies;
   }
 
-  @override
-  Future<List<Movie>> getNowPlaying({int page = 1}) async {
-    final endpoint = (contentType == 'tv') ? '/tv/on_the_air' : '/movie/now_playing';
+  /// Descarga una lista y, si el idioma activo no es inglés y algún elemento
+  /// llegó sin sinopsis, recupera la versión en inglés y completa solo los
+  /// campos vacíos. Así se cumple la política de respaldo sin alterar los
+  /// textos que sí existen en el idioma elegido.
+  Future<List<Movie>> _fetchMovieList(
+    String endpoint, {
+    Map<String, dynamic> queryParameters = const {},
+    int page = 1,
+  }) async {
     final response = await _dio.get(
       endpoint,
-      queryParameters: {'page': page},
+      queryParameters: {...queryParameters, 'page': page},
     );
 
-    return _jsonToMovies(response.data);
+    final movies = _jsonToMovies(response.data);
+    if (language.toLowerCase().startsWith('en') ||
+        movies.isEmpty ||
+        !movies.any((movie) => movie.overview.trim().isEmpty)) {
+      return movies;
+    }
+
+    try {
+      final englishResponse = await _dio.get(
+        endpoint,
+        queryParameters: {
+          ...queryParameters,
+          'page': page,
+          'language': 'en-US',
+        },
+      );
+      final englishMovies = _jsonToMovies(englishResponse.data);
+      final englishOverviews = {
+        for (final movie in englishMovies) movie.id: movie.overview,
+      };
+
+      return movies.map((movie) {
+        if (movie.overview.trim().isNotEmpty) return movie;
+        final englishOverview = englishOverviews[movie.id]?.trim() ?? '';
+        return englishOverview.isEmpty
+            ? movie
+            : movie.copyWith(overview: englishOverview);
+      }).toList();
+    } catch (_) {
+      return movies;
+    }
   }
 
   @override
-  Future<List<Movie>> getPopular({int page = 1}) async {
-    final endpoint = (contentType == 'tv') ? '/tv/popular' : '/movie/popular';
-    final response = await _dio.get(
-      endpoint,
-      queryParameters: {'page': page},
-    );
-
-    return _jsonToMovies(response.data);
+  Future<List<Movie>> getNowPlaying({int page = 1}) {
+    final endpoint = _isTv ? '/tv/on_the_air' : '/movie/now_playing';
+    return _fetchMovieList(endpoint, page: page);
   }
 
   @override
-  Future<List<Movie>> getTopRated({int page = 1}) async {
-    final endpoint = (contentType == 'tv') ? '/tv/top_rated' : '/movie/top_rated';
-    final response = await _dio.get(
-      endpoint,
-      queryParameters: {'page': page},
-    );
-
-    return _jsonToMovies(response.data);
+  Future<List<Movie>> getPopular({int page = 1}) {
+    final endpoint = _isTv ? '/tv/popular' : '/movie/popular';
+    return _fetchMovieList(endpoint, page: page);
   }
 
   @override
-  Future<List<Movie>> getUpcoming({int page = 1}) async {
-    final endpoint = (contentType == 'tv') ? '/tv/airing_today' : '/movie/upcoming';
-    final response = await _dio.get(
-      endpoint,
-      queryParameters: {'page': page},
-    );
+  Future<List<Movie>> getTopRated({int page = 1}) {
+    final endpoint = _isTv ? '/tv/top_rated' : '/movie/top_rated';
+    return _fetchMovieList(endpoint, page: page);
+  }
 
-    return _jsonToMovies(response.data);
+  @override
+  Future<List<Movie>> getUpcoming({int page = 1}) {
+    final endpoint = _isTv ? '/tv/airing_today' : '/movie/upcoming';
+    return _fetchMovieList(endpoint, page: page);
   }
 
   @override
   Future<Movie> getMovieById(String id) async {
-    final endpoint = (contentType == 'tv') ? '/tv/$id' : '/movie/$id';
+    var endpoint = _isTv ? '/tv/$id' : '/movie/$id';
 
     Response response;
     try {
       response = await _dio.get(endpoint);
     } catch (_) {
       // Intento inverso en caso de que sea ID de película o serie cruzada
-      final altEndpoint = (contentType == 'tv') ? '/movie/$id' : '/tv/$id';
-      response = await _dio.get(altEndpoint);
+      endpoint = _isTv ? '/movie/$id' : '/tv/$id';
+      response = await _dio.get(endpoint);
     }
 
     if (response.statusCode != 200) {
@@ -96,38 +127,22 @@ class MoviedbDatasource extends MoviesDatasource {
     }
 
     final movieDetails = MovieDetails.fromJson(response.data);
-    Movie movie = MovieMapper.movieDetailsToEntity(movieDetails);
+    var movie = MovieMapper.movieDetailsToEntity(movieDetails);
 
     // Política de Respaldo: Si no cuenta con sinopsis en el idioma seleccionado,
     // aplicar respaldo automático al inglés (en-US)
-    if (movie.overview.trim().isEmpty && !language.startsWith('en')) {
+    if (movie.overview.trim().isEmpty &&
+        !language.toLowerCase().startsWith('en')) {
       try {
         final enResponse = await _dio.get(
           endpoint,
-          queryParameters: {
-            'api_key': Environment.theMovieDbKey,
-            'language': 'en-US',
-          },
+          queryParameters: {'language': 'en-US'},
         );
         if (enResponse.statusCode == 200) {
-          final enDetails = MovieDetails.fromJson(enResponse.data);
-          if (enDetails.overview.trim().isNotEmpty) {
-            movie = Movie(
-              adult: movie.adult,
-              backdropPath: movie.backdropPath,
-              genreIds: movie.genreIds,
-              id: movie.id,
-              originalLanguage: movie.originalLanguage,
-              originalTitle: movie.originalTitle,
-              overview: enDetails.overview,
-              popularity: movie.popularity,
-              posterPath: movie.posterPath,
-              releaseDate: movie.releaseDate,
-              title: movie.title,
-              video: movie.video,
-              voteAverage: movie.voteAverage,
-              voteCount: movie.voteCount,
-            );
+          final enMovie =
+              MovieMapper.movieDetailsToEntity(MovieDetails.fromJson(enResponse.data));
+          if (enMovie.overview.trim().isNotEmpty) {
+            movie = movie.copyWith(overview: enMovie.overview);
           }
         }
       } catch (_) {
@@ -140,23 +155,21 @@ class MoviedbDatasource extends MoviesDatasource {
 
   @override
   Future<List<Movie>> searchMovies(String query) async {
-    if (query.isEmpty) return [];
+    final trimmedQuery = query.trim();
+    if (trimmedQuery.isEmpty) return [];
 
-    final endpoint = (contentType == 'tv') ? '/search/tv' : '/search/movie';
-    final response = await _dio.get(
+    final endpoint = _isTv ? '/search/tv' : '/search/movie';
+    return _fetchMovieList(
       endpoint,
-      queryParameters: {'query': query},
+      queryParameters: {'query': trimmedQuery},
     );
-
-    return _jsonToMovies(response.data);
   }
 
   @override
   Future<List<Movie>> getSimilarMovies(int movieId) async {
-    final endpoint = (contentType == 'tv') ? '/tv/$movieId/similar' : '/movie/$movieId/similar';
+    final endpoint = _isTv ? '/tv/$movieId/similar' : '/movie/$movieId/similar';
     try {
-      final response = await _dio.get(endpoint);
-      return _jsonToMovies(response.data);
+      return await _fetchMovieList(endpoint);
     } catch (_) {
       return [];
     }
@@ -164,22 +177,150 @@ class MoviedbDatasource extends MoviesDatasource {
 
   @override
   Future<List<Video>> getYoutubeVideosById(int movieId) async {
-    final endpoint = (contentType == 'tv') ? '/tv/$movieId/videos' : '/movie/$movieId/videos';
+    final endpoint = _isTv ? '/tv/$movieId/videos' : '/movie/$movieId/videos';
     try {
       final response = await _dio.get(endpoint);
       final moviedbVideosReponse = MoviedbVideosResponse.fromJson(response.data);
       final videos = <Video>[];
 
       for (final moviedbVideo in moviedbVideosReponse.results) {
-        if (moviedbVideo.site == 'YouTube') {
+        if (moviedbVideo.site == 'YouTube' &&
+            moviedbVideo.key.trim().isNotEmpty) {
           final video = VideoMapper.moviedbVideoToEntity(moviedbVideo);
           videos.add(video);
         }
       }
 
+      // El tráiler oficial siempre se reproduce primero; luego teasers y clips.
+      videos.sort((a, b) => _videoPriority(a).compareTo(_videoPriority(b)));
       return videos;
     } catch (_) {
       return [];
     }
+  }
+
+  int _videoPriority(Video video) {
+    if (video.type == 'Trailer' && video.official) return 0;
+    if (video.type == 'Trailer') return 1;
+    if (video.type == 'Teaser' && video.official) return 2;
+    if (video.type == 'Teaser') return 3;
+    return 4;
+  }
+
+  /// Obtiene la clasificación por edades real de TMDB para el país asociado
+  /// al idioma activo. Devuelve 'NR' cuando TMDB no tiene certificación.
+  @override
+  Future<String> getAgeRating(int movieId) async {
+    final endpoint = _isTv
+        ? '/tv/$movieId/content_ratings'
+        : '/movie/$movieId/release_dates';
+
+    try {
+      final response = await _dio.get(endpoint);
+      final results = response.data['results'];
+      if (results is! List) return 'NR';
+
+      for (final countryCode in _ratingCountries) {
+        final rating = _extractRating(results, countryCode);
+        if (rating != null && rating.trim().isNotEmpty) {
+          return _formatRating(rating, countryCode);
+        }
+      }
+    } catch (_) {
+      // Sin conexión o sin datos: NR
+    }
+
+    return 'NR';
+  }
+
+  List<String> get _ratingCountries {
+    switch (language.split('-').first.toLowerCase()) {
+      case 'es':
+        return const ['MX'];
+      case 'en':
+        return const ['US'];
+      case 'de':
+        return const ['DE'];
+      case 'zh':
+        return const ['CN', 'TW'];
+      case 'ar':
+        return const ['SA', 'AE', 'EG'];
+      default:
+        return const ['US'];
+    }
+  }
+
+  String? _extractRating(List results, String countryCode) {
+    Map? countryResult;
+    for (final item in results) {
+      if (item is Map && item['iso_3166_1'] == countryCode) {
+        countryResult = item;
+        break;
+      }
+    }
+    if (countryResult == null) return null;
+
+    if (_isTv) {
+      final rating = (countryResult['rating'] as String?)?.trim();
+      return (rating == null || rating.isEmpty) ? null : rating;
+    }
+
+    final releaseDates = countryResult['release_dates'];
+    if (releaseDates is! List) return null;
+
+    final candidates = releaseDates.whereType<Map>().toList()
+      ..sort((a, b) =>
+          _releaseTypePriority(a['type']).compareTo(_releaseTypePriority(b['type'])));
+
+    for (final releaseDate in candidates) {
+      final certification =
+          (releaseDate['certification'] as String?)?.trim() ?? '';
+      if (certification.isNotEmpty &&
+          certification.toUpperCase() != 'NR' &&
+          certification.toUpperCase() != 'NOT RATED') {
+        return certification;
+      }
+    }
+
+    return null;
+  }
+
+  int _releaseTypePriority(dynamic type) {
+    final releaseType = type is int ? type : int.tryParse('$type') ?? 99;
+    const priorities = {3: 0, 2: 1, 4: 2, 5: 3, 1: 4, 6: 5};
+    return priorities[releaseType] ?? 10;
+  }
+
+  String _formatRating(String rating, String countryCode) {
+    final value = rating.trim();
+    final upperValue = value.toUpperCase();
+    if (upperValue == 'NR' || upperValue == 'NOT RATED') return 'NR';
+
+    if (countryCode == 'DE' && RegExp(r'^\d+$').hasMatch(value)) {
+      return 'FSK $value';
+    }
+
+    if (countryCode == 'MX') {
+      final normalized = value
+          .replaceAll('-', '')
+          .replaceAll(' ', '')
+          .toUpperCase();
+      if (RegExp(r'^(AA|A|B|B15|C)$').hasMatch(normalized)) {
+        return normalized;
+      }
+    }
+
+    if (countryCode == 'TW') {
+      const taiwanRatings = {
+        '0': '普遍級',
+        '6': '保護級',
+        '12': '輔導級',
+        '15': '輔導級',
+        '18': '限制級',
+      };
+      return taiwanRatings[value] ?? value;
+    }
+
+    return value;
   }
 }

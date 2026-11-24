@@ -4,6 +4,7 @@ import 'package:cinemapedia/config/helpers/human_formats.dart';
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
+import 'package:cinemapedia/config/constants/app_localizations.dart';
 
 
 typedef SearchMoviesCallback = Future<List<Movie>> Function( String query );
@@ -13,6 +14,7 @@ class SearchMovieDelegate extends SearchDelegate<Movie?>{
 
   final SearchMoviesCallback searchMovies;
   List<Movie> initialMovies;
+  final String langCode;
   
   StreamController<List<Movie>> debouncedMovies = StreamController.broadcast();
   StreamController<bool> isLoadingStream = StreamController.broadcast();
@@ -23,8 +25,9 @@ class SearchMovieDelegate extends SearchDelegate<Movie?>{
   SearchMovieDelegate({
     required this.searchMovies,
     required this.initialMovies,
+    required this.langCode,
   }):super(
-    searchFieldLabel: 'Buscar películas',
+    searchFieldLabel: AppLocalizations.get('search_hint', langCode),
     // textInputAction: TextInputAction.done
   );
 
